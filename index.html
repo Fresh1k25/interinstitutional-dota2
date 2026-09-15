@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Interinstitutional — NUWEE Dota 2</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #020b18;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ================= HEADER ================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    height: 70px;
+    padding: 0 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(2, 12, 28, 0.9);
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(70, 180, 255, 0.2);
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #28b9ff;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.admin-button {
+    background: #22aef5;
+    color: #00101e;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 10px 18px;
+
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    min-height: 700px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            rgba(0, 15, 40, 0.35),
+            rgba(0, 5, 15, 0.75)
+        ),
+        url("assets/hero-reference.png");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    width: 90%;
+    max-width: 1400px;
+
+    text-align: center;
+}
+
+.university {
+    position: absolute;
+    top: 50px;
+    left: 60px;
+
+    text-align: left;
+
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.title {
+    font-size: clamp(50px, 8vw, 110px);
+    font-weight: 900;
+
+    letter-spacing: -5px;
+
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-weight: 800;
+
+    letter-spacing: 5px;
+}
+
+.info {
+    position: absolute;
+
+    left: 60px;
+    bottom: 60px;
+
+    display: flex;
+    gap: 40px;
+
+    text-align: left;
+}
+
+.info-item {
+    border-left: 3px solid #24baff;
+    padding-left: 12px;
+}
+
+.info-item strong {
+    display: block;
+    font-size: 20px;
+}
+
+.info-item span {
+    color: #9edaff;
+    font-size: 13px;
+}
+
+.prize {
+    position: absolute;
+
+    right: 60px;
+    bottom: 60px;
+
+    text-align: right;
+}
+
+.prize span {
+    color: #9edaff;
+}
+
+.prize strong {
+    display: block;
+
+    font-size: 42px;
+}
+
+/* ================= PLAYOFF ================= */
+
+.playoffs {
+    padding: 100px 50px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 80, 170, 0.25),
+            transparent 60%
+        );
+}
+
+.section-title {
+    max-width: 1400px;
+    margin: auto;
+
+    margin-bottom: 50px;
+}
+
+.section-title small {
+    color: #30baff;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+
+.section-title h2 {
+    font-size: 60px;
+    margin: 10px 0;
+}
+
+
+/* ================= BRACKET ================= */
+
+.bracket-wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 0 50px;
+}
+
+.bracket {
+    position: relative;
+    width: 1840px;
+    min-width: 1840px;
+    height: 900px;
+    margin: 0 auto;
+    transform-origin: top left;
+    will-change: transform;
+}
+
+/* ================= COLUMNS ================= */
+
+.bracket-column {
+    position: absolute;
+    width: 220px;
+    z-index: 2;
+}
+
+.bracket-column.r1-upper { left: 20px; top: 0; }
+.bracket-column.r2-upper { left: 400px; top: 55px; }
+.bracket-column.final-upper { left: 1180px; top: 165px; }
+
+/* Нижня сітка спеціально опущена від верхньої */
+.bracket-column.r1-lower { left: 20px; top: 545px; }
+.bracket-column.r2-lower { left: 400px; top: 510px; }
+.bracket-column.r3-lower { left: 790px; top: 555px; }
+.bracket-column.final-lower { left: 1180px; top: 535px; }
+
+.bracket-column.grand-final {
+    left: 1560px;
+    top: 285px;
+}
+
+/* ================= ROUND TITLE ================= */
+
+.bracket-round-title {
+    color: #fff;
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 9px;
+    white-space: nowrap;
+}
+
+.bracket-round-date {
+    display: block;
+    margin-top: 4px;
+    color: #9edaff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* ================= MATCH ================= */
+
+.bracket-match {
+    position: relative;
+    width: 220px;
+    height: 100px;
+    box-sizing: border-box;
+
+    background: rgba(4, 17, 34, 0.72);
+    border: 3px solid rgba(235, 249, 255, 0.96);
+    border-radius: 12px;
+    overflow: hidden;
+
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.10);
+    backdrop-filter: blur(5px);
+
+    z-index: 3;
+}
+
+.bracket-match.locked {
+    opacity: .72;
+}
+
+.bracket-match.finished {
+    box-shadow:
+        0 0 18px rgba(0, 170, 255, .18),
+        inset 0 0 20px rgba(0, 100, 180, .08);
+}
+
+.bracket-team {
+    height: 47px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+
+    border-bottom: 2px solid rgba(220, 245, 255, 0.85);
+    padding: 0 0 0 10px;
+}
+
+.bracket-team:last-child {
+    border-bottom: none;
+}
+
+.bracket-team.winner {
+    background: rgba(0, 145, 255, .16);
+}
+
+.bracket-team-name {
+    flex: 1;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.bracket-logo-box {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 2px solid rgba(155, 220, 255, .85);
+    border-radius: 8px;
+    background: rgba(8, 32, 58, .95);
+    overflow: hidden;
+    box-shadow: inset 0 0 12px rgba(0, 150, 255, .12);
+}
+
+/* Якщо логотип вже встановлений — рамка/квадрат автоматично зникає. */
+.bracket-logo-box.has-logo {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.bracket-logo-box img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    display: block;
+}
+
+.bracket-logo-placeholder {
+    color: #9bdcff;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.bracket-score {
+    width: 48px;
+    height: 100%;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-left: 2px solid rgba(220, 245, 255, 0.85);
+
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+/* ================= MATCH SPACING ================= */
+
+.r1-upper .bracket-match + .bracket-match {
+    margin-top: 18px;
+}
+
+.r2-upper .bracket-match + .bracket-match {
+    margin-top: 100px;
+}
+
+.r1-lower .bracket-match + .bracket-match {
+    margin-top: 38px;
+}
+
+.r2-lower .bracket-match + .bracket-match {
+    margin-top: 100px;
+}
+
+/* ================= CONNECTORS ================= */
+
+.bracket-lines {
+    position: absolute;
+    inset: 0;
+    width: 1840px;
+    height: 900px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.bracket-lines path {
+    fill: none;
+    stroke: rgba(120, 210, 255, .72);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+}
+
+/* =========================================================
+   PLAYOFFS — ОКРЕМИЙ БЛОК
+   ========================================================= */
+
+.playoffs {
+    position: relative;
+    padding: 80px 30px 100px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020b18 0%,
+            #03172d 48%,
+            #020b18 100%
+        );
+
+    border-top: 1px solid rgba(70, 180, 255, 0.14);
+    border-bottom: 1px solid rgba(70, 180, 255, 0.14);
+
+    overflow: hidden;
+}
+
+.playoffs::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(0, 100, 220, 0.22),
+            transparent 58%
+        );
+
+    pointer-events: none;
+}
+
+.playoffs > * {
+    position: relative;
+    z-index: 1;
+}
+
+.playoffs .section-title {
+    max-width: 1600px;
+    margin: 0 auto 35px;
+    text-align: right;
+}
+
+.playoffs .section-title small {
+    display: none;
+}
+
+.playoffs .section-title h2 {
+    margin: 0;
+
+    color: #fff;
+
+    font-size: clamp(45px, 6vw, 75px);
+    font-weight: 900;
+
+    letter-spacing: -3px;
+
+    text-shadow:
+        0 0 25px rgba(0, 150, 255, 0.16);
+}
+
+
+/* =========================================================
+   BRACKET PANEL
+   ========================================================= */
+
+.bracket-wrapper {
+    position: relative;
+
+    max-width: 1650px;
+    margin: 0 auto;
+
+    padding: 25px 20px 45px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5, 29, 57, 0.62),
+            rgba(2, 14, 29, 0.82)
+        );
+
+    border: 1px solid rgba(100, 200, 255, 0.13);
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 70px rgba(0, 0, 0, 0.28),
+        inset 0 0 55px rgba(0, 100, 200, 0.045);
+
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+
+/* =========================================================
+   РОЗДІЛЮВАЧ
+   ========================================================= */
+
+.section-divider {
+    height: 35px;
+
+    background:
+        #00050d;
+
+    border-top: 1px solid rgba(60, 180, 255, 0.08);
+    border-bottom: 1px solid rgba(60, 180, 255, 0.08);
+}
+
+
+/* =========================================================
+   TEAMS — ОКРЕМИЙ ФОН
+   ========================================================= */
+
+.teams {
+    position: relative;
+
+    margin-top: 0;
+
+    padding: 100px 50px 120px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #010713 0%,
+            #061a31 50%,
+            #010713 100%
+        );
+
+    border-top: 1px solid rgba(60, 180, 255, 0.12);
+
+    overflow: hidden;
+}
+
+.teams::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(0, 110, 230, 0.18),
+            transparent 52%
+        );
+
+    pointer-events: none;
+}
+
+.teams > * {
+    position: relative;
+    z-index: 1;
+}
+
+.teams .section-title {
+    max-width: 1400px;
+
+    margin: 0 auto 45px;
+
+    text-align: center;
+}
+
+.teams .section-title small {
+    display: block;
+
+    color: #30baff;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    letter-spacing: 4px;
+}
+
+.teams .section-title h2 {
+    margin: 8px 0 0;
+
+    color: #fff;
+
+    font-size: clamp(42px, 5vw, 65px);
+
+    font-weight: 900;
+
+    letter-spacing: -2px;
+}
+
+.team-list {
+    position: relative;
+
+    max-width: 1400px;
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(220px, 1fr));
+
+    gap: 20px;
+}
+
+.team-card {
+    min-height: 100px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(9, 38, 70, 0.95),
+            rgba(4, 22, 43, 0.95)
+        );
+
+    border: 1px solid rgba(100, 200, 255, 0.18);
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.2);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(100, 210, 255, 0.5);
+
+    box-shadow:
+        0 15px 40px rgba(0, 120, 255, 0.15);
+}
+
+/* ================= TEAM LOGO — FIXED SQUARE ================= */
+
+.team-logo-box {
+    width: 78px;
+    height: 78px;
+    flex: 0 0 78px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(155, 220, 255, 0.85);
+    border-radius: 10px;
+    background: rgba(8, 32, 58, 0.95);
+    overflow: hidden;
+
+    box-shadow: inset 0 0 12px rgba(0, 150, 255, 0.12);
+}
+
+.team-logo-box img {
+    display: block;
+
+    /* Лого ніколи не збільшує картку — воно автоматично
+       вписується в квадрат зі збереженням пропорцій. */
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+
+    padding: 7px;
+}
+
+.team-logo-placeholder {
+    color: #9bdcff;
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width: 700px) {
+
+    .playoffs {
+        padding: 60px 15px 70px;
+    }
+
+    .playoffs .section-title {
+        text-align: left;
+    }
+
+    .bracket-wrapper {
+        border-radius: 14px;
+        padding: 10px 2px 25px;
+    }
+
+    .teams {
+        padding: 70px 20px 90px;
+    }
+
+    .team-list {
+        grid-template-columns: 1fr;
+    }
+
+    .team-logo-box {
+        width: 64px;
+        height: 64px;
+        flex-basis: 64px;
+    }
+
+    .section-divider {
+        height: 25px;
+    }
+}
+
+/* ================= ADMIN ================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background: rgba(0, 5, 15, 0.85);
+
+    backdrop-filter: blur(10px);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.admin-panel {
+    width: 800px;
+    max-width: 100%;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #071a30;
+
+    border: 1px solid #21638c;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    position: relative;
+}
+
+.close {
+    position: absolute;
+
+    right: 20px;
+    top: 15px;
+
+    background: none;
+    border: none;
+
+    color: white;
+
+    font-size: 30px;
+
+    cursor: pointer;
+}
+
+.admin-panel h2 {
+    margin-top: 0;
+}
+
+.admin-team {
+    display: grid;
+
+    grid-template-columns:
+        50px
+        1fr
+        90px
+        120px;
+
+    gap: 10px;
+
+    align-items: center;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid rgba(100, 190, 255, 0.15);
+}
+
+.admin-team img {
+    width: 45px;
+    height: 45px;
+
+    object-fit: contain;
+
+    background: #0d2946;
+
+    border-radius: 8px;
+}
+
+.admin-team input[type="text"],
+.admin-team input[type="number"] {
+    width: 100%;
+
+    padding: 10px;
+
+    background: #0a233d;
+
+    color: white;
+
+    border: 1px solid #205071;
+
+    border-radius: 7px;
+}
+
+.upload {
+    background: #123454;
+
+    padding: 10px;
+
+    border-radius: 7px;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.upload input {
+    display: none;
+}
+
+.save {
+    margin-top: 25px;
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #25b5fa;
+
+    color: #00101c;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+/* ================= ADMIN MATCHES ================= */
+
+.admin-match-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-game {
+    padding: 12px;
+    background: rgba(5, 30, 55, .65);
+    border: 1px solid rgba(100, 190, 255, .16);
+    border-radius: 10px;
+}
+
+.admin-game > strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.admin-game-teams {
+    display: grid;
+    grid-template-columns: 1fr 60px 20px 60px 1fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.admin-game-teams span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-game-teams input {
+    width: 100%;
+    padding: 9px;
+    background: #0a233d;
+    color: white;
+    border: 1px solid #205071;
+    border-radius: 7px;
+    text-align: center;
+    font-weight: 900;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width: 700px) {
+
+    header {
+        padding: 0 20px;
+    }
+
+    nav a {
+        display: none;
+    }
+
+    .university {
+        left: 25px;
+        top: 30px;
+    }
+
+    .info {
+        left: 25px;
+        bottom: 25px;
+
+        gap: 15px;
+    }
+
+    .info-item strong {
+        font-size: 14px;
+    }
+
+    .prize {
+        right: 25px;
+        bottom: 25px;
+    }
+
+    .prize strong {
+        font-size: 25px;
+    }
+
+    .playoffs,
+    .teams {
+        padding: 70px 20px;
+    }
+
+    .section-title h2 {
+        font-size: 42px;
+    }
+
+    .admin-game-teams {
+        grid-template-columns: 1fr 50px 15px 50px 1fr;
+        gap: 5px;
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="logo">
+        NUWEE <span>×</span> DOTA 2
+    </div>
+
+    <nav>
+        <a href="#home">Головна</a>
+        <a href="#playoffs">Плей-офф</a>
+        <a href="#teams">Команди</a>
+
+        <button
+            class="admin-button"
+            onclick="openAdmin()"
+        >
+            ⚙ Адмін
+        </button>
+    </nav>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section
+    id="home"
+    class="hero"
+>
+
+    <div class="university">
+
+        НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ<br>
+        ВОДНОГО ГОСПОДАРСТВА<br>
+        ТА ПРИРОДОКОРИСТУВАННЯ
+
+    </div>
+
+
+    <div class="hero-content">
+
+        <h1 class="title">
+            Interinstitutional
+        </h1>
+
+        <div class="subtitle">
+            PLAYOFFS • LAN EVENT
+        </div>
+
+    </div>
+
+
+    <div class="info">
+
+        <div class="info-item">
+            <strong>20–20</strong>
+            <span>Вересня 2026</span>
+        </div>
+
+        <div class="info-item">
+            <strong>1 корпус</strong>
+            <span>Актова зала</span>
+        </div>
+
+        <div class="info-item">
+            <strong>5v5</strong>
+            <span>Формат турніру</span>
+        </div>
+
+    </div>
+
+
+    <div class="prize">
+
+        <span>Призовий фонд</span>
+
+        <strong>
+            15 000₴
+        </strong>
+
+        <span>
+            Найкращі команди НУВГП
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PLAYOFF ================= -->
+
+<section
+    id="playoffs"
+    class="playoffs"
+>
+
+    <div class="section-title">
+
+        <small>
+            INTERINSTITUTIONAL
+        </small>
+
+        <h2>
+            ПЛЕЙ-ОФФ
+        </h2>
+
+    </div>
+
+
+    <div class="bracket-wrapper">
+
+        <div
+            id="bracket"
+            class="bracket"
+        ></div>
+
+    </div>
+
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ================= TEAMS ================= -->
+
+<section
+    id="teams"
+    class="teams"
+>
+
+    <div class="section-title">
+
+        <small>
+            PARTICIPANTS
+        </small>
+
+        <h2>
+            КОМАНДИ
+        </h2>
+
+    </div>
+
+
+    <div
+        id="teamList"
+        class="team-list"
+    ></div>
+
+</section>
+
+
+<!-- ================= ADMIN MODAL ================= -->
+
+<div
+    id="adminModal"
+    class="modal"
+>
+
+    <div class="admin-panel">
+
+        <button
+            class="close"
+            onclick="closeAdmin()"
+        >
+            ×
+        </button>
+
+
+        <h2>
+            Редагування турніру
+        </h2>
+
+        <p>
+            Тут ти можеш змінювати назви команд,
+            рахунки та завантажувати логотипи.
+        </p>
+
+
+        <div id="adminTeams"></div>
+
+
+        <button
+            class="save"
+            onclick="saveData()"
+        >
+            ЗБЕРЕГТИ ЗМІНИ
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   ДАНІ КОМАНД
+===================================================== */
+
+let teams = [
+    { name: "Команда 1", logo: "" },
+    { name: "Команда 2", logo: "" },
+    { name: "Команда 3", logo: "" },
+    { name: "Команда 4", logo: "" },
+    { name: "Команда 5", logo: "" },
+    { name: "Команда 6", logo: "" },
+    { name: "Команда 7", logo: "" },
+    { name: "Команда 8", logo: "" }
+];
+
+/*
+   Кожен матч — BO3:
+   переможець = команда, яка першою набрала 2.
+   Після завершення матчу результат автоматично
+   передається в наступну стадію.
+
+   Схема double elimination:
+
+   ВС:
+   U1 U2 U3 U4
+       ↓
+   U5 U6
+       ↓
+      UF
+
+   НС:
+   L1 L2
+      ↓
+   L3 L4
+      ↓
+      L5
+      ↓
+      LF
+
+   GF = UF winner vs LF winner
+*/
+
+let matches = {
+    U1: { a: 0, b: 1, sa: 0, sb: 0 },
+    U2: { a: 2, b: 3, sa: 0, sb: 0 },
+    U3: { a: 4, b: 5, sa: 0, sb: 0 },
+    U4: { a: 6, b: 7, sa: 0, sb: 0 },
+
+    U5: { a: null, b: null, sa: 0, sb: 0 },
+    U6: { a: null, b: null, sa: 0, sb: 0 },
+    UF: { a: null, b: null, sa: 0, sb: 0 },
+
+    L1: { a: null, b: null, sa: 0, sb: 0 },
+    L2: { a: null, b: null, sa: 0, sb: 0 },
+
+    L3: { a: null, b: null, sa: 0, sb: 0 },
+    L4: { a: null, b: null, sa: 0, sb: 0 },
+
+    L5: { a: null, b: null, sa: 0, sb: 0 },
+    LF: { a: null, b: null, sa: 0, sb: 0 },
+
+    GF: { a: null, b: null, sa: 0, sb: 0 }
+};
+
+const saved = localStorage.getItem("interinstitutionalTournament");
+
+if (saved) {
+    try {
+        const data = JSON.parse(saved);
+
+        if (Array.isArray(data.teams) && data.teams.length === 8) {
+            teams = data.teams;
+        }
+
+        if (data.matches) {
+            matches = {
+                ...matches,
+                ...data.matches
+            };
+        }
+    } catch (e) {
+        console.warn("Не вдалося завантажити збережені дані", e);
+    }
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+function getLogo(team) {
+
+    if (!team) return "";
+
+    if (team.logo) {
+        return team.logo;
+    }
+
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='none'/%3E%3C/svg%3E";
+}
+
+/* =====================================================
+   MATCH RESULT
+===================================================== */
+
+function getMatchResult(match, id = null) {
+
+    if (!match || match.a === null || match.b === null) {
+        return null;
+    }
+
+    const winsNeeded = id === "GF" ? 3 : 2;
+
+    if (match.sa >= winsNeeded && match.sb < winsNeeded) {
+        return { winner: match.a, loser: match.b };
+    }
+
+    if (match.sb >= winsNeeded && match.sa < winsNeeded) {
+        return { winner: match.b, loser: match.a };
+    }
+
+    return null;
+}
+
+function isFinished(match) {
+    return !!getMatchResult(match, null);
+}
+
+/* =====================================================
+   АВТОМАТИЧНА ПЕРЕДАЧА КОМАНД
+===================================================== */
+
+function setMatchTeams(id, a, b) {
+
+    const match = matches[id];
+
+    if (match.a !== a || match.b !== b) {
+        match.a = a;
+        match.b = b;
+        match.sa = 0;
+        match.sb = 0;
+    }
+}
+
+function calculateBracket() {
+
+    /* ВС ROUND 1 → ВС ROUND 2 + НС ROUND 1 */
+
+    const u1 = getMatchResult(matches.U1, "U1");
+    const u2 = getMatchResult(matches.U2, "U2");
+    const u3 = getMatchResult(matches.U3, "U3");
+    const u4 = getMatchResult(matches.U4, "U4");
+
+    setMatchTeams("U5", u1 ? u1.winner : null, u2 ? u2.winner : null);
+    setMatchTeams("U6", u3 ? u3.winner : null, u4 ? u4.winner : null);
+
+    setMatchTeams("L1", u1 ? u1.loser : null, u2 ? u2.loser : null);
+    setMatchTeams("L2", u3 ? u3.loser : null, u4 ? u4.loser : null);
+
+
+    /* ВС ROUND 2 → ФІНАЛ ВС + НС ROUND 2 */
+
+    const u5 = getMatchResult(matches.U5, "U5");
+    const u6 = getMatchResult(matches.U6, "U6");
+    const l1 = getMatchResult(matches.L1, "L1");
+    const l2 = getMatchResult(matches.L2, "L2");
+
+    setMatchTeams("UF", u5 ? u5.winner : null, u6 ? u6.winner : null);
+
+    setMatchTeams("L3", u5 ? u5.loser : null, l1 ? l1.winner : null);
+    setMatchTeams("L4", u6 ? u6.loser : null, l2 ? l2.winner : null);
+
+
+    /* НС ROUND 2 → НС ROUND 3 */
+
+    const l3 = getMatchResult(matches.L3, "L3");
+    const l4 = getMatchResult(matches.L4, "L4");
+
+    setMatchTeams("L5", l3 ? l3.winner : null, l4 ? l4.winner : null);
+
+
+    /* НС ROUND 3 → ФІНАЛ НС */
+
+    const l5 = getMatchResult(matches.L5, "L5");
+    const uf = getMatchResult(matches.UF, "UF");
+
+    setMatchTeams("LF", l5 ? l5.winner : null, uf ? uf.loser : null);
+
+
+    /* ФІНАЛ ВС + ФІНАЛ НС → ГРАНДФІНАЛ */
+
+    const lf = getMatchResult(matches.LF, "LF");
+
+    setMatchTeams("GF", uf ? uf.winner : null, lf ? lf.winner : null);
+}
+
+/* =====================================================
+   КОМАНДА В МАТЧІ
+===================================================== */
+
+function teamHTML(teamIndex, score, winner) {
+
+    if (teamIndex === null || teamIndex === undefined) {
+
+        return `
+            <div class="bracket-team">
+                <span class="bracket-logo-box">
+                    <span class="bracket-logo-placeholder">★</span>
+                </span>
+                <span class="bracket-team-name">
+                    Очікуємо...
+                </span>
+
+                <span class="bracket-score">
+                    ${score ?? 0}
+                </span>
+            </div>
+        `;
+    }
+
+    const team = teams[teamIndex];
+
+    return `
+        <div class="bracket-team ${winner ? "winner" : ""}">
+
+            <span class="bracket-logo-box ${team.logo ? "has-logo" : ""}">
+                ${team.logo ? `<img src="${team.logo}" alt="${team.name}">` : `<span class="bracket-logo-placeholder">★</span>`}
+            </span>
+
+            <span class="bracket-team-name">
+                ${team.name}
+            </span>
+
+            <span class="bracket-score">
+                ${score ?? 0}
+            </span>
+
+        </div>
+    `;
+}
+
+/* =====================================================
+   МАТЧ
+===================================================== */
+
+function matchHTML(id) {
+
+    const match = matches[id];
+    const result = getMatchResult(match, id);
+
+    return `
+        <div
+            class="bracket-match ${result ? "finished" : ""}"
+            data-match="${id}"
+        >
+
+            ${teamHTML(
+                match.a,
+                match.sa,
+                result && result.winner === match.a
+            )}
+
+            ${teamHTML(
+                match.b,
+                match.sb,
+                result && result.winner === match.b
+            )}
+
+        </div>
+    `;
+}
+
+/* =====================================================
+   SVG ЛІНІЇ
+===================================================== */
+
+function renderLines() {
+
+    return `
+        <svg
+            class="bracket-lines"
+            viewBox="0 0 1840 900"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+        >
+
+            <!-- ВС R1 → R2 -->
+            <path d="M240 81 H320 V136 H400"/>
+            <path d="M240 183 H320 V136 H400"/>
+            <path d="M240 285 H320 V320 H400"/>
+            <path d="M240 387 H320 V320 H400"/>
+
+            <!-- ВС R2 → ФІНАЛ ВС -->
+            <path d="M620 136 H730 V246 H1180"/>
+            <path d="M620 320 H730 V246"/>
+
+            <!-- НС R1 → R2 -->
+            <path d="M240 626 H320 V591 H400"/>
+            <path d="M240 748 H320 V775 H400"/>
+
+            <!-- НС R2 → R3 -->
+            <path d="M620 591 H700 V627 H790"/>
+            <path d="M620 775 H700 V627 H790"/>
+
+            <!-- R3 → ФІНАЛ НС -->
+            <path d="M1010 627 H1090 V619 H1180"/>
+
+            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
+            <path d="M1400 246 H1480 V369 H1560"/>
+
+            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
+            <path d="M1400 619 H1480 V369 H1560"/>
+
+        </svg>
+    `;
+}
+
+/* =====================================================
+   ПОБУДОВА PLAYOFF
+===================================================== */
+
+function renderBracket() {
+
+    calculateBracket();
+
+    const bracket = document.getElementById("bracket");
+
+    bracket.innerHTML = `
+
+        ${renderLines()}
+
+        <!-- ВС -->
+
+        <div class="bracket-column r1-upper">
+
+            <div class="bracket-round-title">
+                1 РАУНД ВС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("U1")}
+            ${matchHTML("U2")}
+            ${matchHTML("U3")}
+            ${matchHTML("U4")}
+
+        </div>
+
+
+        <div class="bracket-column r2-upper">
+
+            <div class="bracket-round-title">
+                2 РАУНД ВС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("U5")}
+            ${matchHTML("U6")}
+
+        </div>
+
+
+        <div class="bracket-column final-upper">
+
+            <div class="bracket-round-title">
+                ФІНАЛ ВС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("UF")}
+
+        </div>
+
+
+        <!-- НС -->
+
+        <div class="bracket-column r1-lower">
+
+            <div class="bracket-round-title">
+                1 РАУНД НС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("L1")}
+            ${matchHTML("L2")}
+
+        </div>
+
+
+        <div class="bracket-column r2-lower">
+
+            <div class="bracket-round-title">
+                2 РАУНД НС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("L3")}
+            ${matchHTML("L4")}
+
+        </div>
+
+
+        <div class="bracket-column r3-lower">
+
+            <div class="bracket-round-title">
+                3 РАУНД НС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("L5")}
+
+        </div>
+
+
+        <div class="bracket-column final-lower">
+
+            <div class="bracket-round-title">
+                ФІНАЛ НС
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("LF")}
+
+        </div>
+
+
+        <!-- ГРАНДФІНАЛ -->
+
+        <div class="bracket-column grand-final">
+
+            <div class="bracket-round-title">
+                ГРАНДФІНАЛ — BO5
+                <span class="bracket-round-date">
+                    20 вересня
+                </span>
+            </div>
+
+            ${matchHTML("GF")}
+
+        </div>
+    `;
+}
+
+/* =====================================================
+   СПИСОК КОМАНД
+===================================================== */
+
+function renderTeams() {
+
+    const list = document.getElementById("teamList");
+
+    list.innerHTML = teams.map(team => {
+
+        return `
+            <div class="team-card">
+
+                <span class="team-logo-box">
+                    ${team.logo
+                        ? `<img src="${team.logo}" alt="${team.name} logo">`
+                        : `<span class="team-logo-placeholder">★</span>`}
+                </span>
+
+                <strong>
+                    ${team.name}
+                </strong>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+/* =====================================================
+   ADMIN
+===================================================== */
+
+const matchLabels = {
+    U1: "1 раунд ВС — матч 1",
+    U2: "1 раунд ВС — матч 2",
+    U3: "1 раунд ВС — матч 3",
+    U4: "1 раунд ВС — матч 4",
+
+    U5: "2 раунд ВС — матч 1",
+    U6: "2 раунд ВС — матч 2",
+
+    UF: "Фінал ВС",
+
+    L1: "1 раунд НС — матч 1",
+    L2: "1 раунд НС — матч 2",
+
+    L3: "2 раунд НС — матч 1",
+    L4: "2 раунд НС — матч 2",
+
+    L5: "3 раунд НС",
+
+    LF: "Фінал НС",
+
+    GF: "Грандфінал — BO5 (до 3 перемог)"
+};
+
+function openAdmin() {
+
+    const modal = document.getElementById("adminModal");
+    const container = document.getElementById("adminTeams");
+
+    container.innerHTML = `
+
+        <h3>Команди</h3>
+
+        <div class="admin-match-list">
+
+            ${teams.map((team, index) => `
+                <div class="admin-team">
+
+                    <img
+                        id="preview-${index}"
+                        src="${getLogo(team)}"
+                    >
+
+                    <input
+                        id="name-${index}"
+                        type="text"
+                        value="${team.name}"
+                        placeholder="Назва команди"
+                    >
+
+                    <label class="upload">
+                        📁 ЛОГО
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onchange="uploadLogo(event, ${index})"
+                        >
+                    </label>
+
+                </div>
+            `).join("")}
+
+        </div>
+
+        <h3 style="margin-top:30px">
+            Результати матчів — BO3
+        </h3>
+
+        <p style="color:#9edaff">
+            Усі матчі — BO3: перемога при <b>2 виграних картах</b>.<br>Грандфінал — BO5: перемога при <b>3 виграних картах</b>.
+        </p>
+
+        <div class="admin-match-list">
+
+            ${Object.keys(matches).map(id => {
+
+                const match = matches[id];
+
+                const nameA =
+                    match.a !== null && teams[match.a]
+                        ? teams[match.a].name
+                        : "Очікуємо";
+
+                const nameB =
+                    match.b !== null && teams[match.b]
+                        ? teams[match.b].name
+                        : "Очікуємо";
+
+                return `
+                    <div class="admin-game">
+
+                        <strong>
+                            ${matchLabels[id]}
+                        </strong>
+
+                        <div class="admin-game-teams">
+
+                            <span>
+                                ${nameA}
+                            </span>
+
+                            <input
+                                id="sa-${id}"
+                                type="number"
+                                min="0"
+                                max="${id === "GF" ? 3 : 2}"
+                                value="${match.sa}"
+                            >
+
+                            <span>
+                                :
+                            </span>
+
+                            <input
+                                id="sb-${id}"
+                                type="number"
+                                min="0"
+                                max="${id === "GF" ? 3 : 2}"
+                                value="${match.sb}"
+                            >
+
+                            <span>
+                                ${nameB}
+                            </span>
+
+                        </div>
+
+                    </div>
+                `;
+            }).join("")}
+
+        </div>
+    `;
+
+    modal.classList.add("active");
+}
+
+/* =====================================================
+   ЗАКРИТТЯ ADMIN
+===================================================== */
+
+function closeAdmin() {
+
+    document
+        .getElementById("adminModal")
+        .classList.remove("active");
+}
+
+/* =====================================================
+   ЛОГОТИП
+===================================================== */
+
+function uploadLogo(event, index) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        teams[index].logo = e.target.result;
+
+        const preview =
+            document.getElementById(`preview-${index}`);
+
+        if (preview) {
+            preview.src = e.target.result;
+        }
+    };
+
+    reader.readAsDataURL(file);
+}
+
+/* =====================================================
+   ЗБЕРЕЖЕННЯ
+===================================================== */
+
+function saveData() {
+
+    /* Назви команд */
+
+    teams.forEach((team, index) => {
+
+        const nameInput =
+            document.getElementById(`name-${index}`);
+
+        if (nameInput) {
+            team.name =
+                nameInput.value.trim() ||
+                `Команда ${index + 1}`;
+        }
+    });
+
+
+    /* Результати матчів */
+
+    for (const id of Object.keys(matches)) {
+
+        const saInput =
+            document.getElementById(`sa-${id}`);
+
+        const sbInput =
+            document.getElementById(`sb-${id}`);
+
+        if (!saInput || !sbInput) continue;
+
+        let sa = Number(saInput.value);
+        let sb = Number(sbInput.value);
+
+        const maxWins = id === "GF" ? 3 : 2;
+
+        sa = Math.max(0, Math.min(maxWins, sa));
+        sb = Math.max(0, Math.min(maxWins, sb));
+
+        /*
+           Не дозволяємо одночасну максимальну кількість перемог.
+        */
+
+        if (sa === maxWins && sb === maxWins) {
+            alert(
+                `Помилка: ${matchLabels[id]} не може закінчитися 2:2.`
+            );
+            return;
+        }
+
+        /*
+           Якщо матч завершений, переможець має набрати
+           потрібну кількість перемог: 2 у BO3 або 3 у BO5.
+        */
+
+        if (sa > 0 && sb > 0 && sa < maxWins && sb < maxWins) {
+            /*
+               1:1 — ще не завершено.
+               Це нормально.
+            */
+        }
+
+        if (sa === 2 && sb > 2) sb = 0;
+        if (sb === 2 && sa > 2) sa = 0;
+
+        matches[id].sa = sa;
+        matches[id].sb = sb;
+    }
+
+
+    /*
+       Важливий момент:
+       після зміни результату автоматично
+       перераховуємо всю нижню/верхню сітку.
+    */
+
+    calculateBracket();
+
+    localStorage.setItem(
+        "interinstitutionalTournament",
+        JSON.stringify({
+            teams,
+            matches
+        })
+    );
+
+    renderBracket();
+    renderTeams();
+    closeAdmin();
+}
+
+/* =====================================================
+   ЗАПУСК
+===================================================== */
+
+renderBracket();
+renderTeams();
+
+</script>
+
+
+<style>
+/* === АВТОМАСШТАБ ПЛЕЙ-ОФФ: вся сітка поміщається по ширині === */
+.bracket-wrapper{
+    overflow-x:hidden !important;
+    overflow-y:hidden;
+    width:100%;
+    box-sizing:border-box;
+}
+.bracket{
+    width:1840px !important;
+    min-width:1840px !important;
+    height:900px !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    transform-origin:top left !important;
+}
+@media (max-width: 1900px){
+    .bracket-wrapper{padding-bottom:20px !important;}
+}
+</style>
+<script>
+(function(){
+    function fitPlayoffBracket(){
+        const wrapper=document.querySelector('.bracket-wrapper');
+        const bracket=document.querySelector('.bracket');
+        if(!wrapper || !bracket) return;
+        const baseW=1840, baseH=900;
+        const available=Math.max(320, wrapper.clientWidth-4);
+        const scale=Math.min(1, available/baseW);
+        bracket.style.transform='scale('+scale+')';
+        wrapper.style.height=(baseH*scale+30)+'px';
+    }
+    window.fitPlayoffBracket=fitPlayoffBracket;
+    window.addEventListener('resize', fitPlayoffBracket);
+    window.addEventListener('orientationchange', fitPlayoffBracket);
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fitPlayoffBracket);
+    else fitPlayoffBracket();
+    setTimeout(fitPlayoffBracket,100);
+})();
+</script>
+</body>
+</html>
