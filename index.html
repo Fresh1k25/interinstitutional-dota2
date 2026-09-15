@@ -986,6 +986,79 @@ nav a {
     }
 }
 </style>
+
+<style id="mobile-optimization">
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+
+@media (max-width: 700px) {
+    header { height:58px; padding:0 14px; }
+    .logo { font-size:15px; white-space:nowrap; }
+    nav { gap:6px; }
+    nav a { display:none !important; }
+    .admin-button { padding:8px 11px; font-size:11px; border-radius:7px; }
+
+    .hero { min-height:610px; height:610px; background-position:58% center; }
+    .hero-content { width:94%; margin-top:-20px; }
+    .title { font-size:clamp(36px,10vw,52px); line-height:.98; letter-spacing:-2.5px; overflow-wrap:anywhere; }
+    .subtitle { margin-top:12px; font-size:10px; letter-spacing:2.2px; }
+
+    .university { top:22px; left:16px; right:16px; font-size:9px; line-height:1.35; }
+
+    .info {
+        left:16px; right:16px; bottom:18px;
+        display:grid; grid-template-columns:repeat(3,1fr);
+        gap:8px; text-align:left;
+    }
+    .info-item { min-width:0; border-left-width:2px; padding-left:7px; }
+    .info-item strong { font-size:12px; line-height:1.1; }
+    .info-item span { display:block; margin-top:3px; font-size:8px; line-height:1.2; }
+
+    .prize { right:16px; bottom:90px; text-align:right; }
+    .prize span { font-size:9px; }
+    .prize strong { font-size:24px; line-height:1; }
+
+    .playoffs { padding:48px 10px 60px; }
+    .playoffs .section-title { margin-bottom:18px; padding:0 5px; text-align:left; }
+    .playoffs .section-title h2 { font-size:34px; letter-spacing:-1.5px; }
+
+    /* Турнірна сітка: не зменшуємо до нечитабельного розміру — гортається пальцем. */
+    .bracket-wrapper {
+        width:100%; max-width:100%;
+        overflow-x:auto !important; overflow-y:hidden !important;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        padding:10px 4px 20px !important;
+        height:940px !important; min-height:940px !important;
+        border-radius:12px;
+    }
+    .bracket {
+        width:1840px !important; min-width:1840px !important;
+        height:900px !important;
+        transform:none !important;
+        margin-left:0 !important; margin-right:0 !important;
+    }
+
+    .teams { padding:52px 14px 70px; }
+    .teams .section-title { margin-bottom:24px; }
+    .teams .section-title h2 { font-size:34px; letter-spacing:-1.5px; }
+    .teams .section-title small { font-size:10px; letter-spacing:2.5px; }
+    .team-list { grid-template-columns:1fr !important; gap:12px; }
+    .team-card { min-height:82px; padding:12px 14px; gap:12px; border-radius:12px; }
+    .team-logo-box { width:58px !important; height:58px !important; flex-basis:58px !important; border-radius:9px; }
+    .team-card strong { font-size:14px; line-height:1.2; }
+    .section-divider { height:18px; }
+}
+
+@media (max-width:380px) {
+    .hero { min-height:580px; height:580px; }
+    .title { font-size:34px; }
+    .info-item strong { font-size:11px; }
+    .info-item span { font-size:7px; }
+    .prize strong { font-size:21px; }
+}
+</style>
+
 </head>
 
 <body>

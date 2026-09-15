@@ -13,6 +13,60 @@ header{height:70px;padding:0 40px;display:flex;align-items:center;justify-conten
 .game{padding:15px;background:rgba(5,30,55,.65);border:1px solid rgba(100,190,255,.16);border-radius:10px;margin:9px 0}.game.locked{opacity:.6}.game-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.game-head strong{font-size:14px}.format{color:#79cfff;font-size:11px}.game-grid{display:grid;grid-template-columns:1fr 70px 20px 70px 1fr;gap:8px;align-items:center}.game-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.score-input{text-align:center;font-weight:900;font-size:16px}.score-input:disabled{opacity:.5;cursor:not-allowed}.save{width:100%;margin-top:15px;padding:14px}.hidden{display:none}.hint{font-size:13px;color:#8bb8d6;line-height:1.5}
 @media(max-width:700px){header{padding:0 20px}.wrap{margin-top:30px}.card{padding:20px}.team-row{grid-template-columns:58px 1fr}.team-row .upload,.team-row .remove-logo{grid-column:2}.team-preview{width:54px;height:54px}.game-grid{grid-template-columns:1fr 52px 12px 52px 1fr;gap:5px;font-size:11px}.topbar{align-items:flex-start}.topbar .btn{padding:10px 12px}}
 </style>
+
+<style id="mobile-admin-optimization">
+html { -webkit-text-size-adjust:100%; }
+body { overflow-x:hidden; }
+
+@media (max-width:700px) {
+    header { height:58px; padding:0 14px; }
+    header .logo { font-size:15px; white-space:nowrap; }
+    header a { font-size:10px; white-space:nowrap; }
+
+    .wrap { width:100%; max-width:100%; margin:24px auto 50px; padding:0 10px; }
+    .card { padding:16px; margin-bottom:12px; border-radius:14px; }
+    .login { margin:35px auto; max-width:100%; }
+
+    h1 { font-size:25px; line-height:1.1; }
+    h2 { font-size:19px; }
+    .field { margin:11px 0; }
+
+    .field input, .team-row input, .score-input {
+        min-height:46px; font-size:16px;
+    }
+
+    .btn { min-height:46px; padding:11px 14px; font-size:13px; }
+    .topbar { gap:10px; flex-wrap:wrap; }
+    .topbar > div { min-width:0; flex:1 1 100%; }
+    .topbar .btn { width:100%; }
+
+    .team-row {
+        grid-template-columns:54px 1fr !important;
+        gap:9px; padding:12px 0;
+    }
+    .team-preview { width:54px; height:54px; }
+    .team-row input { min-width:0; }
+    .team-row .upload, .team-row .remove-logo { grid-column:1 / -1 !important; }
+    .team-row .upload {
+        min-height:44px; display:flex; align-items:center; justify-content:center;
+    }
+    .team-row .remove-logo { padding:3px 0 5px; }
+
+    .game { padding:11px; border-radius:9px; }
+    .game-head { align-items:flex-start; }
+    .game-head strong { font-size:12px; line-height:1.25; }
+    .format { flex-shrink:0; font-size:10px; }
+    .game-grid {
+        grid-template-columns:minmax(0,1fr) 52px 12px 52px minmax(0,1fr) !important;
+        gap:5px !important; font-size:11px !important;
+    }
+    .game-grid span { min-width:0; }
+    .score-input { min-height:44px; padding:7px; }
+    .hint, .status { font-size:12px; line-height:1.4; }
+    .save { margin-top:15px; min-height:48px; }
+}
+</style>
+
 </head>
 <body>
 <header><div class="logo">NUWEE <span>×</span> DOTA 2</div><a href="index.html">← ПОВЕРНУТИСЯ НА САЙТ</a></header>
