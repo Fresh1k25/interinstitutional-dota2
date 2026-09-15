@@ -1724,12 +1724,11 @@ function renderTeams() {
 
 
 <style>
-/* === АВТОМАСШТАБ ПЛЕЙ-ОФФ: вся сітка поміщається по ширині === */
+/* === ФІНАЛЬНИЙ MOBILE FIX === */
 .bracket-wrapper{
-    overflow-x:hidden !important;
-    overflow-y:hidden;
     width:100%;
     box-sizing:border-box;
+    overflow-y:hidden;
 }
 .bracket{
     width:1840px !important;
@@ -1739,8 +1738,143 @@ function renderTeams() {
     margin-right:0 !important;
     transform-origin:top left !important;
 }
-@media (max-width: 1900px){
-    .bracket-wrapper{padding-bottom:20px !important;}
+
+@media (max-width:700px){
+    /* Hero: нічого не накладається одне на одне */
+    .hero{
+        min-height:620px !important;
+        height:620px !important;
+        background-position:60% center !important;
+    }
+    .hero-content{
+        position:absolute !important;
+        top:155px !important;
+        left:16px !important;
+        right:16px !important;
+        width:auto !important;
+        margin:0 !important;
+        text-align:left !important;
+        z-index:3 !important;
+    }
+    .title{
+        display:block !important;
+        font-size:42px !important;
+        line-height:.98 !important;
+        letter-spacing:-2px !important;
+        margin:0 !important;
+    }
+    .subtitle{
+        margin-top:12px !important;
+        font-size:9px !important;
+        letter-spacing:2px !important;
+    }
+    .university{
+        top:22px !important;
+        left:16px !important;
+        right:16px !important;
+        font-size:8px !important;
+        line-height:1.35 !important;
+        z-index:3 !important;
+    }
+    .prize{
+        left:16px !important;
+        right:auto !important;
+        top:390px !important;
+        bottom:auto !important;
+        text-align:left !important;
+        z-index:3 !important;
+    }
+    .prize span{
+        font-size:10px !important;
+    }
+    .prize strong{
+        font-size:30px !important;
+        line-height:1 !important;
+        margin:4px 0 !important;
+    }
+    .info{
+        left:16px !important;
+        right:16px !important;
+        bottom:20px !important;
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:10px !important;
+        z-index:3 !important;
+    }
+    .info-item{
+        min-width:0 !important;
+        padding-left:8px !important;
+        border-left:2px solid #24baff !important;
+    }
+    .info-item strong{
+        font-size:12px !important;
+        line-height:1.15 !important;
+    }
+    .info-item span{
+        display:block !important;
+        margin-top:4px !important;
+        font-size:8px !important;
+        line-height:1.2 !important;
+    }
+
+    /* Плей-офф: нормальний розмір + горизонтальний свайп */
+    .playoffs{
+        padding:44px 10px 60px !important;
+    }
+    .playoffs .section-title{
+        margin-bottom:18px !important;
+        padding:0 5px !important;
+    }
+    .playoffs .section-title h2{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+    .bracket-wrapper{
+        height:560px !important;
+        min-height:560px !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        -webkit-overflow-scrolling:touch !important;
+        touch-action:pan-x !important;
+        overscroll-behavior-x:contain !important;
+        padding:10px 4px 20px !important;
+        scrollbar-width:none;
+        cursor:grab;
+    }
+    .bracket-wrapper::-webkit-scrollbar{
+        display:none;
+    }
+    .bracket{
+        transform:none !important;
+        width:1840px !important;
+        min-width:1840px !important;
+        height:900px !important;
+        margin:0 !important;
+    }
+    .bracket-wrapper::after{
+        content:"← СВАЙПАЙТЕ →";
+        display:block !important;
+        position:sticky !important;
+        left:0 !important;
+        bottom:4px !important;
+        width:max-content !important;
+        margin:8px auto 0 !important;
+        padding:6px 11px !important;
+        border-radius:999px !important;
+        background:rgba(5,30,55,.92) !important;
+        border:1px solid rgba(100,200,255,.22) !important;
+        color:#9edaff !important;
+        font-size:9px !important;
+        font-weight:800 !important;
+        pointer-events:none !important;
+    }
+}
+
+/* На ПК залишаємо стару логіку масштабу */
+@media (min-width:701px){
+    .bracket-wrapper{
+        overflow-x:hidden !important;
+    }
 }
 </style>
 <script>
@@ -1749,16 +1883,25 @@ function renderTeams() {
         const wrapper=document.querySelector('.bracket-wrapper');
         const bracket=document.querySelector('.bracket');
         if(!wrapper || !bracket) return;
+
+        /* На телефоні НЕ масштабуємо сітку — вона гортається пальцем */
+        if(window.innerWidth <= 700){
+            bracket.style.transform='none';
+            wrapper.style.height='560px';
+            return;
+        }
+
         const baseW=1840, baseH=900;
         const available=Math.max(320, wrapper.clientWidth-4);
         const scale=Math.min(1, available/baseW);
         bracket.style.transform='scale('+scale+')';
         wrapper.style.height=(baseH*scale+30)+'px';
     }
+
     window.fitPlayoffBracket=fitPlayoffBracket;
-    window.addEventListener('resize', fitPlayoffBracket);
-    window.addEventListener('orientationchange', fitPlayoffBracket);
-    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fitPlayoffBracket);
+    window.addEventListener('resize',fitPlayoffBracket);
+    window.addEventListener('orientationchange',fitPlayoffBracket);
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fitPlayoffBracket);
     else fitPlayoffBracket();
     setTimeout(fitPlayoffBracket,100);
 })();
@@ -1770,18 +1913,37 @@ function renderTeams() {
     const w=document.querySelector('.bracket-wrapper');
     if(!w) return;
     let down=false,startX=0,startScroll=0;
+
     w.addEventListener('pointerdown',e=>{
+      if(window.innerWidth>700) return;
       if(e.pointerType==='mouse' && e.button!==0) return;
-      down=true; startX=e.clientX; startScroll=w.scrollLeft; w.style.cursor='grabbing';
+      down=true;
+      startX=e.clientX;
+      startScroll=w.scrollLeft;
+      w.style.cursor='grabbing';
+      w.style.userSelect='none';
     });
+
     w.addEventListener('pointermove',e=>{
       if(!down) return;
-      w.scrollLeft=startScroll-(e.clientX-startX);
-    });
-    const end=()=>{down=false;w.style.cursor='grab';};
-    w.addEventListener('pointerup',end); w.addEventListener('pointercancel',end); w.addEventListener('pointerleave',end);
+      const dx=e.clientX-startX;
+      if(Math.abs(dx)>2) e.preventDefault();
+      w.scrollLeft=startScroll-dx;
+    },{passive:false});
+
+    const end=()=>{
+      down=false;
+      w.style.cursor='grab';
+      w.style.userSelect='';
+    };
+
+    w.addEventListener('pointerup',end);
+    w.addEventListener('pointercancel',end);
+    w.addEventListener('pointerleave',end);
   };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
 })();
 </script>
 </body>
