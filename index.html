@@ -1029,14 +1029,17 @@ body { overflow-x: hidden; }
         -webkit-overflow-scrolling:touch;
         overscroll-behavior-x:contain;
         padding:10px 4px 20px !important;
-        height:940px !important; min-height:940px !important;
+        height:760px !important; min-height:760px !important;
         border-radius:12px;
+        touch-action: pan-x;
+        cursor: grab;
     }
     .bracket {
         width:1840px !important; min-width:1840px !important;
         height:900px !important;
         transform:none !important;
         margin-left:0 !important; margin-right:0 !important;
+        touch-action: pan-x;
     }
 
     .teams { padding:52px 14px 70px; }
@@ -1048,7 +1051,26 @@ body { overflow-x: hidden; }
     .team-logo-box { width:58px !important; height:58px !important; flex-basis:58px !important; border-radius:9px; }
     .team-card strong { font-size:14px; line-height:1.2; }
     .section-divider { height:18px; }
+
+    .bracket-wrapper::after {
+        content: "← СВАЙПАЙТЕ ВЛІВО / ВПРАВО →";
+        display: block;
+        position: sticky;
+        left: 0;
+        bottom: 4px;
+        width: max-content;
+        margin: 8px auto 0;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(5,30,55,.9);
+        border: 1px solid rgba(100,200,255,.18);
+        color: #9edaff;
+        font-size: 9px;
+        font-weight: 800;
+        pointer-events: none;
+    }
 }
+
 
 @media (max-width:380px) {
     .hero { min-height:580px; height:580px; }
@@ -1739,6 +1761,27 @@ function renderTeams() {
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fitPlayoffBracket);
     else fitPlayoffBracket();
     setTimeout(fitPlayoffBracket,100);
+})();
+</script>
+
+<script id="mobile-bracket-swipe">
+(function(){
+  const init=()=>{
+    const w=document.querySelector('.bracket-wrapper');
+    if(!w) return;
+    let down=false,startX=0,startScroll=0;
+    w.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='mouse' && e.button!==0) return;
+      down=true; startX=e.clientX; startScroll=w.scrollLeft; w.style.cursor='grabbing';
+    });
+    w.addEventListener('pointermove',e=>{
+      if(!down) return;
+      w.scrollLeft=startScroll-(e.clientX-startX);
+    });
+    const end=()=>{down=false;w.style.cursor='grab';};
+    w.addEventListener('pointerup',end); w.addEventListener('pointercancel',end); w.addEventListener('pointerleave',end);
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
 </body>
