@@ -1002,16 +1002,108 @@ body{min-height:100vh}.admin-wrap{max-width:1100px;margin:100px auto 60px;paddin
 <div class="card"><button class="btn" id="saveBtn">ЗБЕРЕГТИ ВСІ ЗМІНИ</button><p id="saveMsg" class="status"></p></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
 <script>
-const {createClient}=window.supabase;const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);let teams=[],matches={};
+const {createClient}=window.supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let teams=[],matches={};
 const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5 (до 3 перемог)'};
-function msg(id,t){document.getElementById(id).textContent=t||''}
-async function load(){const [tr,mr]=await Promise.all([db.from('teams').select('id,name,logo').order('id'),db.from('matches').select('id,a,b,sa,sb')]);if(tr.error||mr.error){throw(tr.error||mr.error)}teams=tr.data;matches=Object.fromEntries(mr.data.map(x=>[x.id,x]));render();}
-function render(){document.getElementById('teamsAdmin').innerHTML=teams.map(t=>`<div class="team-row"><img id="preview-${t.id}" src="${t.logo||''}"><input id="name-${t.id}" type="text" value="${esc(t.name)}"><label class="upload">📁 ЛОГО<input type="file" accept="image/*" onchange="uploadLogo(event,${t.id})"></label></div>`).join('');document.getElementById('matchesAdmin').innerHTML=Object.keys(matches).map(id=>{const m=matches[id];const a=m.a!==null&&teams[m.a]?teams[m.a].name:'Очікуємо';const b=m.b!==null&&teams[m.b]?teams[m.b].name:'Очікуємо';const max=id==='GF'?3:2;return `<div class="game"><strong>${labels[id]}</strong><div class="game-grid"><span>${esc(a)}</span><input id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}"><span>:</span><input id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}"><span>${esc(b)}</span></div></div>`}).join('')}
-function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function uploadLogo(e,id){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{teams.find(t=>t.id===id).logo=ev.target.result;document.getElementById('preview-'+id).src=ev.target.result};r.readAsDataURL(f)}
-async function save(){msg('saveMsg','Зберігаю...');for(const t of teams){t.name=document.getElementById('name-'+t.id).value.trim()||`Команда ${t.id+1}`;const {error}=await db.from('teams').update({name:t.name,logo:t.logo||null}).eq('id',t.id);if(error){msg('saveMsg','Помилка: '+error.message);return}}
-for(const id of Object.keys(matches)){let sa=Math.max(0,Math.min(id==='GF'?3:2,Number(document.getElementById('sa-'+id).value)||0));let sb=Math.max(0,Math.min(id==='GF'?3:2,Number(document.getElementById('sb-'+id).value)||0));if(sa===(id==='GF'?3:2)&&sb===(id==='GF'?3:2)){msg('saveMsg',labels[id]+' не може закінчитися з обома максимальними рахунками.');return}const {error}=await db.from('matches').update({sa,sb}).eq('id',id);if(error){msg('saveMsg','Помилка: '+error.message);return}}
-msg('saveMsg','Готово! Результати збережені.');await load();}
-async function start(){const {data:{session}}=await db.auth.getSession();if(session){document.getElementById('loginCard').classList.add('hidden');document.getElementById('adminContent').classList.remove('hidden');document.getElementById('userStatus').textContent='Увійшли як '+(session.user.email||'адміністратор');try{await load()}catch(e){msg('saveMsg','Немає доступу: '+e.message)}}}
-document.getElementById('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const {error}=await db.auth.signInWithPassword({email:document.getElementById('email').value,password:document.getElementById('password').value});if(error){msg('loginMsg',error.message);return}location.reload()};document.getElementById('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};document.getElementById('saveBtn').onclick=save;start();
-</script></body></html>
+
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function msg(id,text){document.getElementById(id).textContent=text||'';}
+function result(id){
+  const m=matches[id]; if(!m||m.a==null||m.b==null) return null;
+  const need=id==='GF'?3:2;
+  if(Number(m.sa)>=need && Number(m.sb)<need) return {winner:m.a,loser:m.b};
+  if(Number(m.sb)>=need && Number(m.sa)<need) return {winner:m.b,loser:m.a};
+  return null;
+}
+function calcParticipants(){
+  const p={};
+  const r1=['U1','U2','U3','U4'];
+  const r1r=r1.map(id=>result(id));
+  p.U5=[r1r[0]?.winner??null,r1r[1]?.winner??null];
+  p.U6=[r1r[2]?.winner??null,r1r[3]?.winner??null];
+  p.L1=[r1r[0]?.loser??null,r1r[1]?.loser??null];
+  p.L2=[r1r[2]?.loser??null,r1r[3]?.loser??null];
+  const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');
+  p.UF=[u5?.winner??null,u6?.winner??null];
+  p.L3=[u5?.loser??null,l1?.winner??null];
+  p.L4=[u6?.loser??null,l2?.winner??null];
+  const l3=result('L3'),l4=result('L4');
+  p.L5=[l3?.winner??null,l4?.winner??null];
+  const l5=result('L5'),uf=result('UF');
+  p.LF=[l5?.winner??null,uf?.loser??null];
+  const lf=result('LF');
+  p.GF=[uf?.winner??null,lf?.winner??null];
+  return p;
+}
+async function load(){
+  const [tr,mr]=await Promise.all([
+    db.from('teams').select('id,name,logo').order('id'),
+    db.from('matches').select('id,a,b,sa,sb')
+  ]);
+  if(tr.error||mr.error) throw(tr.error||mr.error);
+  teams=tr.data.map(t=>({...t,id:Number(t.id)}));
+  matches=Object.fromEntries(mr.data.map(x=>[x.id,{...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}]));
+  render();
+}
+function teamName(id){
+  if(id==null) return 'Очікуємо';
+  const t=teams.find(x=>x.id===id);
+  return t?t.name:'Очікуємо';
+}
+function render(){
+  document.getElementById('teamsAdmin').innerHTML=teams.map(t=>`<div class="team-row"><img id="preview-${t.id}" src="${esc(t.logo||'')}"><input id="name-${t.id}" type="text" value="${esc(t.name)}"><label class="upload">📁 ЛОГО<input type="file" accept="image/*" onchange="uploadLogo(event,${t.id})"></label></div>`).join('');
+  const p=calcParticipants();
+  const ids=Object.keys(labels);
+  document.getElementById('matchesAdmin').innerHTML=ids.map(id=>{
+    const m=matches[id]||{sa:0,sb:0};
+    const participants=p[id]||[m.a,m.b];
+    const a=participants[0],b=participants[1];
+    const max=id==='GF'?3:2;
+    const locked=(a==null||b==null);
+    return `<div class="game ${locked?'game-locked':''}"><strong>${labels[id]}</strong><div class="game-grid"><span>${esc(teamName(a))}</span><input id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>${locked?'<small class="status">Команди з’являться автоматично після завершення попередніх матчів.</small>':''}</div>`;
+  }).join('');
+}
+async function uploadLogo(event,id){
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{const t=teams.find(x=>x.id===id);if(t){t.logo=reader.result;document.getElementById('preview-'+id).src=t.logo;}};
+  reader.readAsDataURL(file);
+}
+async function save(){
+  msg('saveMsg','Зберігаю...');
+  try{
+    for(const t of teams){
+      t.name=document.getElementById('name-'+t.id).value.trim()||`Команда ${t.id}`;
+      const {error}=await db.from('teams').update({name:t.name,logo:t.logo||null}).eq('id',t.id);
+      if(error) throw error;
+    }
+    const p=calcParticipants();
+    for(const id of Object.keys(labels)){
+      const saEl=document.getElementById('sa-'+id),sbEl=document.getElementById('sb-'+id);
+      if(!saEl||!sbEl||saEl.disabled) continue;
+      const max=id==='GF'?3:2;
+      const sa=Math.max(0,Math.min(max,Number(saEl.value)||0));
+      const sb=Math.max(0,Math.min(max,Number(sbEl.value)||0));
+      if(sa===max&&sb===max) throw new Error(labels[id]+' не може закінчитися з обома максимальними рахунками.');
+      const {error}=await db.from('matches').update({sa,sb}).eq('id',id);
+      if(error) throw error;
+    }
+    msg('saveMsg','Готово! Результати збережені. Наступні команди визначаються автоматично.');
+    await load();
+  }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
+}
+async function start(){
+  const {data:{session}}=await db.auth.getSession();
+  if(session){
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('adminContent').classList.remove('hidden');
+    document.getElementById('userStatus').textContent='Увійшли як '+(session.user.email||'адміністратор');
+    try{await load();}catch(e){msg('saveMsg','Немає доступу: '+e.message);}
+  }
+}
+document.getElementById('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const {error}=await db.auth.signInWithPassword({email:document.getElementById('email').value,password:document.getElementById('password').value});if(error){msg('loginMsg',error.message);return}location.reload()};
+document.getElementById('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};
+document.getElementById('saveBtn').onclick=save;
+start();
+</body></html>
