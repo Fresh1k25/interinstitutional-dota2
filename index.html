@@ -1003,12 +1003,7 @@ nav a {
         <a href="#playoffs">Плей-офф</a>
         <a href="#teams">Команди</a>
 
-        <button
-            class="admin-button"
-            onclick="openAdmin()"
-        >
-            ⚙ Адмін
-        </button>
+        <a class="admin-button" href="admin.html">🔐 АДМІНКА</a>
     </nav>
 
 </header>
@@ -1141,132 +1136,74 @@ nav a {
 </section>
 
 
-<!-- ================= ADMIN MODAL ================= -->
 
-<div
-    id="adminModal"
-    class="modal"
->
-
-    <div class="admin-panel">
-
-        <button
-            class="close"
-            onclick="closeAdmin()"
-        >
-            ×
-        </button>
-
-
-        <h2>
-            Редагування турніру
-        </h2>
-
-        <p>
-            Тут ти можеш змінювати назви команд,
-            рахунки та завантажувати логотипи.
-        </p>
-
-
-        <div id="adminTeams"></div>
-
-
-        <button
-            class="save"
-            onclick="saveData()"
-        >
-            ЗБЕРЕГТИ ЗМІНИ
-        </button>
-
-    </div>
-
-</div>
-
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script>
 
 /* =====================================================
-   ДАНІ КОМАНД
+   ДАНІ ТУРНІРУ — SUPABASE
 ===================================================== */
 
 let teams = [
-    { name: "Команда 1", logo: "" },
-    { name: "Команда 2", logo: "" },
-    { name: "Команда 3", logo: "" },
-    { name: "Команда 4", logo: "" },
-    { name: "Команда 5", logo: "" },
-    { name: "Команда 6", logo: "" },
-    { name: "Команда 7", logo: "" },
-    { name: "Команда 8", logo: "" }
+    { id: 1, name: "Команда 1", logo: "" },
+    { id: 2, name: "Команда 2", logo: "" },
+    { id: 3, name: "Команда 3", logo: "" },
+    { id: 4, name: "Команда 4", logo: "" },
+    { id: 5, name: "Команда 5", logo: "" },
+    { id: 6, name: "Команда 6", logo: "" },
+    { id: 7, name: "Команда 7", logo: "" },
+    { id: 8, name: "Команда 8", logo: "" }
 ];
 
-/*
-   Кожен матч — BO3:
-   переможець = команда, яка першою набрала 2.
-   Після завершення матчу результат автоматично
-   передається в наступну стадію.
-
-   Схема double elimination:
-
-   ВС:
-   U1 U2 U3 U4
-       ↓
-   U5 U6
-       ↓
-      UF
-
-   НС:
-   L1 L2
-      ↓
-   L3 L4
-      ↓
-      L5
-      ↓
-      LF
-
-   GF = UF winner vs LF winner
-*/
-
 let matches = {
-    U1: { a: 0, b: 1, sa: 0, sb: 0 },
-    U2: { a: 2, b: 3, sa: 0, sb: 0 },
-    U3: { a: 4, b: 5, sa: 0, sb: 0 },
-    U4: { a: 6, b: 7, sa: 0, sb: 0 },
-
-    U5: { a: null, b: null, sa: 0, sb: 0 },
-    U6: { a: null, b: null, sa: 0, sb: 0 },
-    UF: { a: null, b: null, sa: 0, sb: 0 },
-
-    L1: { a: null, b: null, sa: 0, sb: 0 },
-    L2: { a: null, b: null, sa: 0, sb: 0 },
-
-    L3: { a: null, b: null, sa: 0, sb: 0 },
-    L4: { a: null, b: null, sa: 0, sb: 0 },
-
-    L5: { a: null, b: null, sa: 0, sb: 0 },
-    LF: { a: null, b: null, sa: 0, sb: 0 },
-
-    GF: { a: null, b: null, sa: 0, sb: 0 }
+    U1:{a:0,b:1,sa:0,sb:0}, U2:{a:2,b:3,sa:0,sb:0},
+    U3:{a:4,b:5,sa:0,sb:0}, U4:{a:6,b:7,sa:0,sb:0},
+    U5:{a:null,b:null,sa:0,sb:0}, U6:{a:null,b:null,sa:0,sb:0},
+    UF:{a:null,b:null,sa:0,sb:0},
+    L1:{a:null,b:null,sa:0,sb:0}, L2:{a:null,b:null,sa:0,sb:0},
+    L3:{a:null,b:null,sa:0,sb:0}, L4:{a:null,b:null,sa:0,sb:0},
+    L5:{a:null,b:null,sa:0,sb:0}, LF:{a:null,b:null,sa:0,sb:0},
+    GF:{a:null,b:null,sa:0,sb:0}
 };
 
-const saved = localStorage.getItem("interinstitutionalTournament");
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-if (saved) {
+async function loadTournamentData() {
+    const [teamsResult, matchesResult] = await Promise.all([
+        db.from('teams').select('id,name,logo').order('id'),
+        db.from('matches').select('id,a,b,sa,sb')
+    ]);
+
+    if (teamsResult.error) throw teamsResult.error;
+    if (matchesResult.error) throw matchesResult.error;
+
+    teams = teamsResult.data.map(t => ({
+        id: t.id,
+        name: t.name,
+        logo: t.logo || ''
+    }));
+
+    const freshMatches = {};
+    for (const row of matchesResult.data) {
+        freshMatches[row.id] = {
+            a: row.a == null ? null : Number(row.a) - 1,
+            b: row.b == null ? null : Number(row.b) - 1,
+            sa: Number(row.sa) || 0,
+            sb: Number(row.sb) || 0
+        };
+    }
+
+    matches = { ...matches, ...freshMatches };
+    renderBracket();
+    renderTeams();
+}
+
+async function refreshTournament() {
     try {
-        const data = JSON.parse(saved);
-
-        if (Array.isArray(data.teams) && data.teams.length === 8) {
-            teams = data.teams;
-        }
-
-        if (data.matches) {
-            matches = {
-                ...matches,
-                ...data.matches
-            };
-        }
-    } catch (e) {
-        console.warn("Не вдалося завантажити збережені дані", e);
+        await loadTournamentData();
+    } catch (error) {
+        console.error('Supabase: не вдалося завантажити турнір', error);
     }
 }
 
@@ -1669,284 +1606,24 @@ function renderTeams() {
     }).join("");
 }
 
-/* =====================================================
-   ADMIN
-===================================================== */
 
-const matchLabels = {
-    U1: "1 раунд ВС — матч 1",
-    U2: "1 раунд ВС — матч 2",
-    U3: "1 раунд ВС — матч 3",
-    U4: "1 раунд ВС — матч 4",
-
-    U5: "2 раунд ВС — матч 1",
-    U6: "2 раунд ВС — матч 2",
-
-    UF: "Фінал ВС",
-
-    L1: "1 раунд НС — матч 1",
-    L2: "1 раунд НС — матч 2",
-
-    L3: "2 раунд НС — матч 1",
-    L4: "2 раунд НС — матч 2",
-
-    L5: "3 раунд НС",
-
-    LF: "Фінал НС",
-
-    GF: "Грандфінал — BO5 (до 3 перемог)"
-};
-
-function openAdmin() {
-
-    const modal = document.getElementById("adminModal");
-    const container = document.getElementById("adminTeams");
-
-    container.innerHTML = `
-
-        <h3>Команди</h3>
-
-        <div class="admin-match-list">
-
-            ${teams.map((team, index) => `
-                <div class="admin-team">
-
-                    <img
-                        id="preview-${index}"
-                        src="${getLogo(team)}"
-                    >
-
-                    <input
-                        id="name-${index}"
-                        type="text"
-                        value="${team.name}"
-                        placeholder="Назва команди"
-                    >
-
-                    <label class="upload">
-                        📁 ЛОГО
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onchange="uploadLogo(event, ${index})"
-                        >
-                    </label>
-
-                </div>
-            `).join("")}
-
-        </div>
-
-        <h3 style="margin-top:30px">
-            Результати матчів — BO3
-        </h3>
-
-        <p style="color:#9edaff">
-            Усі матчі — BO3: перемога при <b>2 виграних картах</b>.<br>Грандфінал — BO5: перемога при <b>3 виграних картах</b>.
-        </p>
-
-        <div class="admin-match-list">
-
-            ${Object.keys(matches).map(id => {
-
-                const match = matches[id];
-
-                const nameA =
-                    match.a !== null && teams[match.a]
-                        ? teams[match.a].name
-                        : "Очікуємо";
-
-                const nameB =
-                    match.b !== null && teams[match.b]
-                        ? teams[match.b].name
-                        : "Очікуємо";
-
-                return `
-                    <div class="admin-game">
-
-                        <strong>
-                            ${matchLabels[id]}
-                        </strong>
-
-                        <div class="admin-game-teams">
-
-                            <span>
-                                ${nameA}
-                            </span>
-
-                            <input
-                                id="sa-${id}"
-                                type="number"
-                                min="0"
-                                max="${id === "GF" ? 3 : 2}"
-                                value="${match.sa}"
-                            >
-
-                            <span>
-                                :
-                            </span>
-
-                            <input
-                                id="sb-${id}"
-                                type="number"
-                                min="0"
-                                max="${id === "GF" ? 3 : 2}"
-                                value="${match.sb}"
-                            >
-
-                            <span>
-                                ${nameB}
-                            </span>
-
-                        </div>
-
-                    </div>
-                `;
-            }).join("")}
-
-        </div>
-    `;
-
-    modal.classList.add("active");
-}
-
-/* =====================================================
-   ЗАКРИТТЯ ADMIN
-===================================================== */
-
-function closeAdmin() {
-
-    document
-        .getElementById("adminModal")
-        .classList.remove("active");
-}
-
-/* =====================================================
-   ЛОГОТИП
-===================================================== */
-
-function uploadLogo(event, index) {
-
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-        teams[index].logo = e.target.result;
-
-        const preview =
-            document.getElementById(`preview-${index}`);
-
-        if (preview) {
-            preview.src = e.target.result;
-        }
-    };
-
-    reader.readAsDataURL(file);
-}
-
-/* =====================================================
-   ЗБЕРЕЖЕННЯ
-===================================================== */
-
-function saveData() {
-
-    /* Назви команд */
-
-    teams.forEach((team, index) => {
-
-        const nameInput =
-            document.getElementById(`name-${index}`);
-
-        if (nameInput) {
-            team.name =
-                nameInput.value.trim() ||
-                `Команда ${index + 1}`;
-        }
-    });
-
-
-    /* Результати матчів */
-
-    for (const id of Object.keys(matches)) {
-
-        const saInput =
-            document.getElementById(`sa-${id}`);
-
-        const sbInput =
-            document.getElementById(`sb-${id}`);
-
-        if (!saInput || !sbInput) continue;
-
-        let sa = Number(saInput.value);
-        let sb = Number(sbInput.value);
-
-        const maxWins = id === "GF" ? 3 : 2;
-
-        sa = Math.max(0, Math.min(maxWins, sa));
-        sb = Math.max(0, Math.min(maxWins, sb));
-
-        /*
-           Не дозволяємо одночасну максимальну кількість перемог.
-        */
-
-        if (sa === maxWins && sb === maxWins) {
-            alert(
-                `Помилка: ${matchLabels[id]} не може закінчитися 2:2.`
-            );
-            return;
-        }
-
-        /*
-           Якщо матч завершений, переможець має набрати
-           потрібну кількість перемог: 2 у BO3 або 3 у BO5.
-        */
-
-        if (sa > 0 && sb > 0 && sa < maxWins && sb < maxWins) {
-            /*
-               1:1 — ще не завершено.
-               Це нормально.
-            */
-        }
-
-        if (sa === 2 && sb > 2) sb = 0;
-        if (sb === 2 && sa > 2) sa = 0;
-
-        matches[id].sa = sa;
-        matches[id].sb = sb;
-    }
-
-
-    /*
-       Важливий момент:
-       після зміни результату автоматично
-       перераховуємо всю нижню/верхню сітку.
-    */
-
-    calculateBracket();
-
-    localStorage.setItem(
-        "interinstitutionalTournament",
-        JSON.stringify({
-            teams,
-            matches
-        })
-    );
-
-    renderBracket();
-    renderTeams();
-    closeAdmin();
-}
 
 /* =====================================================
    ЗАПУСК
 ===================================================== */
 
-renderBracket();
-renderTeams();
+(async function(){
+    try {
+        await loadTournamentData();
+    } catch (error) {
+        console.error('Supabase connection error:', error);
+        renderBracket();
+        renderTeams();
+    }
+
+    // Оновлюємо дані кожні 5 секунд, щоб глядачі бачили нові рахунки.
+    setInterval(refreshTournament, 5000);
+})();
 
 </script>
 
