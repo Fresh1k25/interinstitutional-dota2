@@ -1120,12 +1120,33 @@ body { overflow-x: hidden; }
 }
 </style>
 
-<style id="hero-dota-logo-style">
-.hero-dota-logo{display:flex;align-items:center;margin-bottom:14px}
-.hero-dota-logo img{width:64px;height:64px;object-fit:contain;display:block}
+<style id="hero-dota-logo-final">
+.hero-dota-logo{display:flex;align-items:center;margin:0 0 14px 0}
+.hero-dota-logo img{width:64px!important;height:64px!important;object-fit:contain;display:block}
 @media(max-width:700px){
-  .hero-dota-logo{margin-bottom:10px}
-  .hero-dota-logo img{width:46px;height:46px}
+ .hero-dota-logo{margin-bottom:9px}
+ .hero-dota-logo img{width:42px!important;height:42px!important}
+}
+</style>
+
+<style id="desktop-center-hero-logo">
+/* Центруємо Dota 2 логотип над заголовком на ПК */
+.hero-dota-logo {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.hero-dota-logo img {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* На телефоні також залишаємо по центру */
+@media (max-width:700px) {
+    .hero-dota-logo {
+        justify-content: center !important;
+    }
 }
 </style>
 </head>
@@ -1164,6 +1185,11 @@ body { overflow-x: hidden; }
 
 
     <div class="hero-content">
+
+
+        <div class="hero-dota-logo">
+            <img src="data:image/png;base64,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" alt="Dota 2">
+        </div>
 
         <h1 class="title">
             Interinstitutional
