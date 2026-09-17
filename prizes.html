@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Призи — Interinstitutional NUWEE Dota 2</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#f4fbff;
+  background:
+    radial-gradient(700px 420px at 50% -10%,rgba(0,140,255,.14),transparent 68%),
+    #020812;
+}
+a{color:inherit}
+.page{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+.header{
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 42px;
+  background:rgba(2,8,18,.84);
+  border-bottom:1px solid rgba(103,221,255,.12);
+  backdrop-filter:blur(16px);
+}
+.logo{
+  font-size:19px;
+  font-weight:900;
+}
+.logo span{color:#67ddff}
+.back{
+  text-decoration:none;
+  color:#bfeeff;
+  padding:9px 12px;
+  border-radius:9px;
+  border:1px solid rgba(103,221,255,.18);
+  background:rgba(103,221,255,.05);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+.hero{
+  padding:78px 24px 38px;
+  text-align:center;
+}
+.kicker{
+  color:#67ddff;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:4px;
+}
+h1{
+  margin:10px 0 12px;
+  font-size:clamp(52px,8vw,92px);
+  line-height:.9;
+  letter-spacing:-4px;
+}
+.hero p{
+  max-width:680px;
+  margin:0 auto;
+  color:#8da8ba;
+  line-height:1.6;
+  font-size:14px;
+}
+.podium{
+  width:min(1180px,calc(100% - 40px));
+  margin:26px auto 80px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  align-items:end;
+  gap:18px;
+}
+.place{
+  position:relative;
+  padding:28px 22px 24px;
+  border-radius:20px;
+  border:1px solid rgba(103,221,255,.15);
+  background:linear-gradient(145deg,rgba(7,27,47,.88),rgba(2,13,24,.96));
+  box-shadow:0 20px 55px rgba(0,0,0,.28);
+  text-align:center;
+  overflow:hidden;
+}
+.place::before{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  height:3px;
+  background:linear-gradient(90deg,transparent,rgba(103,221,255,.65),transparent);
+}
+.place.first{min-height:390px}
+.place.second{min-height:340px}
+.place.third{min-height:305px}
+.medal{
+  font-size:48px;
+  line-height:1;
+}
+.place-title{
+  margin-top:12px;
+  color:#8fb5c9;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2.5px;
+}
+.place h2{
+  margin:10px 0 8px;
+  font-size:34px;
+  line-height:1;
+}
+.place.first h2{
+  color:#dffaff;
+  text-shadow:0 0 24px rgba(103,221,255,.16);
+}
+.place .team{
+  min-height:44px;
+  margin:18px 0 16px;
+  padding:11px 12px;
+  border-radius:10px;
+  border:1px solid rgba(103,221,255,.12);
+  background:rgba(255,255,255,.025);
+  color:#dcecf5;
+  font-size:12px;
+  font-weight:800;
+}
+.prize-label{
+  color:#7e9aab;
+  font-size:9px;
+  letter-spacing:1.5px;
+  font-weight:900;
+}
+.prize-name{
+  margin-top:7px;
+  color:#aeeeff;
+  font-size:21px;
+  font-weight:900;
+}
+.total{
+  width:min(820px,calc(100% - 40px));
+  margin:-30px auto 90px;
+  padding:22px 26px;
+  border-radius:16px;
+  border:1px solid rgba(103,221,255,.15);
+  background:rgba(3,16,29,.72);
+  text-align:center;
+}
+.total span{
+  color:#8fb5c9;
+  font-size:10px;
+  letter-spacing:2px;
+  font-weight:900;
+}
+.total strong{
+  display:block;
+  margin-top:7px;
+  font-size:38px;
+}
+.note{
+  margin-top:6px;
+  color:#708b9d;
+  font-size:11px;
+}
+.footer{
+  margin-top:auto;
+  padding:26px 20px 35px;
+  text-align:center;
+  color:#557082;
+  font-size:10px;
+  letter-spacing:1px;
+}
+@media(max-width:700px){
+  .header{height:60px;padding:0 14px}
+  .logo{font-size:14px}
+  .back{font-size:9px;padding:8px 10px}
+  .hero{padding:56px 18px 28px}
+  h1{font-size:48px;letter-spacing:-2.5px}
+  .hero p{font-size:12px}
+  .podium{
+    width:calc(100% - 24px);
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-top:20px;
+  }
+  .place,.place.first,.place.second,.place.third{
+    min-height:0;
+    padding:22px 18px;
+  }
+  .medal{font-size:40px}
+  .place h2{font-size:29px}
+  .total{
+    width:calc(100% - 24px);
+    margin:-40px auto 55px;
+  }
+  .total strong{font-size:32px}
+}
+
+.live-status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:16px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(103,221,255,.06);
+  border:1px solid rgba(103,221,255,.12);
+  color:#8fb5c9;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.2px;
+}
+.live-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#67ddff;
+  box-shadow:0 0 12px rgba(103,221,255,.7);
+}
+.live-team{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.live-team .team-logo{
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  object-fit:contain;
+  border-radius:7px;
+  background:rgba(255,255,255,.04);
+}
+.live-team.pending{
+  color:#6f8a9a;
+}
+@media(max-width:700px){
+  .live-team .team-logo{
+    width:26px;
+    height:26px;
+    flex-basis:26px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="logo">NUWEE <span>×</span> DOTA 2</div>
+    <a class="back" href="index.html">← ПОВЕРНУТИСЯ</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="kicker">INTERINSTITUTIONAL • PRIZES</div>
+      <div class="live-status"><span class="live-dot"></span><span id="liveStatus">ОНОВЛЮЄТЬСЯ АВТОМАТИЧНО</span></div>
+      <h1>ПРИЗИ</h1>
+      <p>Окрема сторінка фінальних нагород турніру. Тут можна показати подіум, назви нагород та призи для трьох призових місць.</p>
+    </section>
+
+    <section class="podium">
+      <article class="place second">
+        <div class="medal">🥈</div>
+        <div class="place-title">2 МІСЦЕ</div>
+        <h2>СРІБЛО</h2>
+        <div class="team live-team" id="secondTeam">Ще визначається</div>
+        <div class="prize-label">ПРИЗ</div>
+        <div class="prize-name">Приз 2 місця</div>
+      </article>
+
+      <article class="place first">
+        <div class="medal">🥇</div>
+        <div class="place-title">1 МІСЦЕ</div>
+        <h2>ЧЕМПІОН</h2>
+        <div class="team live-team" id="firstTeam">Ще визначається</div>
+        <div class="prize-label">ГОЛОВНИЙ ПРИЗ</div>
+        <div class="prize-name">Головний приз</div>
+      </article>
+
+      <article class="place third">
+        <div class="medal">🥉</div>
+        <div class="place-title">3 МІСЦЕ</div>
+        <h2>БРОНЗА</h2>
+        <div class="team live-team" id="thirdTeam">Ще визначається</div>
+        <div class="prize-label">ПРИЗ</div>
+        <div class="prize-name">Приз 3 місця</div>
+      </article>
+    </section>
+
+    <section class="total">
+      <span>ЗАГАЛЬНИЙ ПРИЗОВИЙ ФОНД</span>
+      <strong>15 000₴</strong>
+      <div class="note">Розподіл між місцями можна вказати окремо.</div>
+    </section>
+  </main>
+
+  <footer class="footer">INTERINSTITUTIONAL — NUWEE DOTA 2</footer>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ptfehmtfdipdmabpietr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_n87Pmn2qoRCqJ0XIRYiZmw_mrOfPuBB";
+
+const TEAM_URL = `${SUPABASE_URL}/rest/v1/teams?select=id,name,logo&order=id.asc`;
+const MATCH_URL = `${SUPABASE_URL}/rest/v1/matches?select=id,a,b,sa,sb`;
+
+async function supabaseGet(url){
+  const res = await fetch(url, {
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`
+    },
+    cache: "no-store"
+  });
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+function teamById(teams, id){
+  return teams.find(t => Number(t.id) === Number(id)) || null;
+}
+
+function result(matches, id){
+  const m = matches.find(x => x.id === id);
+  if(!m || m.a == null || m.b == null) return null;
+
+  const need = id === "GF" ? 3 : 2;
+
+  if(Number(m.sa) >= need && Number(m.sb) < need){
+    return {winner:Number(m.a), loser:Number(m.b)};
+  }
+  if(Number(m.sb) >= need && Number(m.sa) < need){
+    return {winner:Number(m.b), loser:Number(m.a)};
+  }
+  return null;
+}
+
+function setTeam(el, team){
+  if(!el) return;
+  if(!team){
+    el.classList.add("pending");
+    el.textContent = "Ще визначається";
+    return;
+  }
+
+  el.classList.remove("pending");
+  el.innerHTML = "";
+
+  if(team.logo){
+    const img = document.createElement("img");
+    img.className = "team-logo";
+    img.src = team.logo;
+    img.alt = "";
+    el.appendChild(img);
+  }
+
+  const name = document.createElement("span");
+  name.textContent = team.name || "Команда";
+  el.appendChild(name);
+}
+
+async function updatePrizes(){
+  try{
+    const [teams, matches] = await Promise.all([
+      supabaseGet(TEAM_URL),
+      supabaseGet(MATCH_URL)
+    ]);
+
+    const gf = result(matches, "GF");
+    const lf = result(matches, "LF");
+
+    // У стандартній double-elimination сітці:
+    // 1 місце = переможець GF
+    // 2 місце = програвший GF
+    // 3 місце = програвший LF
+    const first = gf ? teamById(teams, gf.winner) : null;
+    const second = gf ? teamById(teams, gf.loser) : null;
+    const third = lf ? teamById(teams, lf.loser) : null;
+
+    setTeam(document.getElementById("firstTeam"), first);
+    setTeam(document.getElementById("secondTeam"), second);
+    setTeam(document.getElementById("thirdTeam"), third);
+
+    const status = document.getElementById("liveStatus");
+    if(status){
+      const parts = [];
+      if(first) parts.push("1 МІСЦЕ ВИЗНАЧЕНО");
+      if(second) parts.push("2 МІСЦЕ ВИЗНАЧЕНО");
+      if(third) parts.push("3 МІСЦЕ ВИЗНАЧЕНО");
+      status.textContent = parts.length ? parts.join(" • ") : "ОНОВЛЮЄТЬСЯ АВТОМАТИЧНО";
+    }
+  }catch(err){
+    console.error("Не вдалося оновити призи:", err);
+    const status = document.getElementById("liveStatus");
+    if(status) status.textContent = "ОЧІКУЄМО ДАНІ ТУРНІРУ";
+  }
+}
+
+updatePrizes();
+setInterval(updatePrizes, 10000);
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden) updatePrizes();
+});
+</script>
+
+</body>
+</html>
