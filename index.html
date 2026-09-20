@@ -2287,6 +2287,20 @@ body::after{
 }
 </style>
 
+
+<style id="shorter-bracket-lines">
+.bracket-lines path{
+    stroke-dasharray:7 10 !important;
+    stroke-linecap:round !important;
+}
+
+@media(max-width:700px){
+    .bracket-lines path{
+        stroke-dasharray:6 9 !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -2815,46 +2829,20 @@ function drawBracketLines() {
         const column = match.closest(".bracket-column");
         if (!column) return null;
 
-        /*
-         * Усі координати рахуємо в базовій системі координат .bracket.
-         * Це прибирає похибки від transform:scale() і гарантує,
-         * що точка прив'язки буде рівно посередині блоку.
-         */
-        const x = column.offsetLeft + match.offsetLeft;
-        const y = column.offsetTop + match.offsetTop;
-        const centerY = y + match.offsetHeight / 2;
-
-        return {
-            x: side === "right" ? x + match.offsetWidth : x,
-            y: centerY
-        };
-    }
-
-    let markup = "";
-
-    for (const [fromId, toId] of pairs) {
-        const from = getPoint(fromId, "right");
-        const to = getPoint(toId, "left");
-        if (!from || !to) continue;
-
-        /*
-         * Середина між двома блоками — точка зламу.
-         * Таким чином:
-         * 1) лінія виходить із центру джерела;
-         * 2) іде горизонтально;
-         * 3) вертикально доходить до рівня центру цілі;
-         * 4) входить у центр цілі.
-         */
+        const gap = Math.min(42, Math.max(24, (to.x - from.x) * 0.14));
+        const fromX = from.x + gap;
+        const toX = to.x - gap;
         const midX = from.x + (to.x - from.x) / 2;
 
         markup += `
           <path d="
             M ${from.x} ${from.y}
+            H ${fromX}
             H ${midX}
             V ${to.y}
+            H ${toX}
             H ${to.x}
-          "/>
-        `;
+          "/>`;
     }
 
     svg.innerHTML = markup;
