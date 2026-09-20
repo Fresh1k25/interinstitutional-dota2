@@ -6274,4 +6274,41 @@ function renderTeams() {
     margin:4px 0 0 !important;
   }
 }
+
+
+/* FINAL PLAYOFF CONNECTOR FIX — UNIFORM DASHES ON DESKTOP + MOBILE */
+.bracket-lines path {
+  fill: none !important;
+  stroke: #57cfff !important;
+  stroke-width: 2px !important;
+  stroke-linecap: butt !important;
+  stroke-linejoin: round !important;
+  vector-effect: non-scaling-stroke !important;
+  stroke-dasharray: 10px 12px !important;
+  stroke-dashoffset: 0 !important;
+  filter: drop-shadow(0 0 4px rgba(70,200,255,.42)) !important;
+  animation: bracketLineFlowUniform 1.8s linear infinite !important;
+}
+
+@keyframes bracketLineFlowUniform {
+  from { stroke-dashoffset: 0; opacity: .82; }
+  50%  { opacity: 1; }
+  to   { stroke-dashoffset: -44px; opacity: .82; }
+}
+
+@media (max-width:700px) {
+  .bracket-lines path {
+    stroke-width: 2px !important;
+    stroke-dasharray: 9px 11px !important;
+    stroke-linecap: butt !important;
+    animation-duration: 2s !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bracket-lines path {
+    animation: none !important;
+    stroke-dasharray: 10px 12px !important;
+  }
+}
 </style>
