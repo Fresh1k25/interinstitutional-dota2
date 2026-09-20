@@ -2093,6 +2093,20 @@ nav a:hover{color:var(--cyan)!important}
 }
 </style>
 
+
+<style id="centered-bracket-lines">
+.bracket-lines{
+    overflow:visible;
+    pointer-events:none;
+}
+.bracket-lines path{
+    stroke:rgba(120,210,255,.74) !important;
+    stroke-width:2 !important;
+    stroke-linecap:square !important;
+    vector-effect:non-scaling-stroke;
+}
+</style>
+
 </head>
 
 <body>
@@ -2583,37 +2597,71 @@ function renderLines() {
             viewBox="0 0 1840 900"
             preserveAspectRatio="none"
             aria-hidden="true"
-        >
-
-            <!-- ВС R1 → R2 -->
-            <path d="M240 81 H320 V136 H400"/>
-            <path d="M240 183 H320 V136 H400"/>
-            <path d="M240 285 H320 V320 H400"/>
-            <path d="M240 387 H320 V320 H400"/>
-
-            <!-- ВС R2 → ФІНАЛ ВС -->
-            <path d="M620 136 H730 V246 H1180"/>
-            <path d="M620 320 H730 V246"/>
-
-            <!-- НС R1 → R2 -->
-            <path d="M240 626 H320 V591 H400"/>
-            <path d="M240 748 H320 V775 H400"/>
-
-            <!-- НС R2 → R3 -->
-            <path d="M620 591 H700 V627 H790"/>
-            <path d="M620 775 H700 V627 H790"/>
-
-            <!-- R3 → ФІНАЛ НС -->
-            <path d="M1010 627 H1090 V619 H1180"/>
-
-            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
-            <path d="M1400 246 H1480 V369 H1560"/>
-
-            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
-            <path d="M1400 619 H1480 V369 H1560"/>
-
-        </svg>
+        ></svg>
     `;
+}
+
+/* Малюємо конектори точно від центру правого боку
+   кожного матчу до центру лівого боку наступного. */
+function updateBracketLines() {
+
+    const bracket = document.getElementById("bracket");
+    const svg = bracket?.querySelector(".bracket-lines");
+    if (!bracket || !svg) return;
+
+    const pairs = [
+        ["U1", "U5"],
+        ["U2", "U5"],
+        ["U3", "U6"],
+        ["U4", "U6"],
+
+        ["U5", "UF"],
+        ["U6", "UF"],
+
+        ["L1", "L3"],
+        ["L2", "L4"],
+
+        ["L3", "L5"],
+        ["L4", "L5"],
+
+        ["L5", "LF"],
+
+        ["UF", "GF"],
+        ["LF", "GF"]
+    ];
+
+    function centerPoint(id, side) {
+        const match = bracket.querySelector(`[data-match="${id}"]`);
+        if (!match) return null;
+
+        const column = match.closest(".bracket-column");
+        if (!column) return null;
+
+        const x = column.offsetLeft + match.offsetLeft;
+        const y = column.offsetTop + match.offsetTop;
+
+        return {
+            x: side === "right" ? x + match.offsetWidth : x,
+            y: y + match.offsetHeight / 2
+        };
+    }
+
+    const paths = [];
+
+    for (const [fromId, toId] of pairs) {
+        const from = centerPoint(fromId, "right");
+        const to = centerPoint(toId, "left");
+
+        if (!from || !to) continue;
+
+        const midX = Math.round((from.x + to.x) / 2);
+
+        paths.push(
+            `<path d="M ${from.x} ${from.y} H ${midX} V ${to.y} H ${to.x}"/>`
+        );
+    }
+
+    svg.innerHTML = paths.join("");
 }
 
 /* =====================================================
@@ -2785,6 +2833,14 @@ function renderTeams() {
 }
 
 
+
+
+window.addEventListener("resize", () => {
+    requestAnimationFrame(updateBracketLines);
+});
+window.addEventListener("orientationchange", () => {
+    setTimeout(updateBracketLines, 80);
+});
 
 /* =====================================================
    ЗАПУСК
