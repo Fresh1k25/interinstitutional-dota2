@@ -3893,6 +3893,203 @@ a.button:hover {
     transition: none !important;
   }
 }
+
+
+/* =========================================================
+   BLUE EDITION — DEEP NAVY / ELECTRIC BLUE ESPORTS THEME
+   ========================================================= */
+:root {
+  --bg: #06111f;
+  --surface: #0a1b30;
+  --surface-2: #0e2742;
+  --line: rgba(92, 180, 255, .14);
+  --line-strong: rgba(69, 174, 255, .34);
+  --cyan: #56d8ff;
+  --blue: #258cff;
+  --blue-2: #1766d2;
+  --text: #edf8ff;
+  --muted: #8eacc8;
+  --accent: #56d8ff;
+  --accent-2: #328cff;
+}
+
+/* Main atmosphere */
+body {
+  color: var(--text) !important;
+  background:
+    radial-gradient(900px 520px at 50% -5%, rgba(34, 139, 255, .23), transparent 62%),
+    radial-gradient(750px 560px at 100% 18%, rgba(20, 91, 190, .17), transparent 64%),
+    radial-gradient(700px 540px at 0% 78%, rgba(65, 190, 255, .10), transparent 65%),
+    linear-gradient(180deg, #06111f 0%, #071525 48%, #06101d 100%) !important;
+}
+
+body::before {
+  opacity: .16 !important;
+  background-image:
+    linear-gradient(rgba(94, 185, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 185, 255, .045) 1px, transparent 1px) !important;
+  background-size: 44px 44px !important;
+}
+
+/* Soft blue edge glow */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow:
+    inset 0 0 140px rgba(24, 112, 215, .08),
+    inset 0 0 360px rgba(38, 143, 255, .04);
+}
+
+/* Header */
+header {
+  background: rgba(5, 17, 32, .78) !important;
+  border-bottom-color: rgba(77, 180, 255, .13) !important;
+  box-shadow:
+    0 12px 45px rgba(0, 58, 125, .18),
+    inset 0 -1px 0 rgba(88, 198, 255, .035);
+}
+
+header nav a:hover {
+  background: rgba(54, 157, 255, .08) !important;
+  color: #fff !important;
+}
+
+header nav a::after {
+  background: linear-gradient(90deg, #42cfff, #237fff) !important;
+}
+
+/* Hero glow */
+#home::before {
+  background:
+    radial-gradient(circle,
+      rgba(72, 193, 255, .22) 0%,
+      rgba(37, 139, 255, .11) 31%,
+      rgba(21, 89, 181, .04) 50%,
+      transparent 72%) !important;
+}
+
+#home .title,
+#home .hero-title {
+  text-shadow:
+    0 0 18px rgba(66, 192, 255, .20),
+    0 0 52px rgba(35, 127, 255, .12),
+    0 12px 42px rgba(0,0,0,.5) !important;
+}
+
+/* Blue glass cards */
+.card,
+.feature,
+.team-card,
+.match-card,
+.tournament-card,
+.stat-card {
+  background:
+    linear-gradient(145deg,
+      rgba(19, 51, 81, .78),
+      rgba(7, 24, 42, .9)) !important;
+  border-color: rgba(77, 174, 255, .13) !important;
+  box-shadow:
+    0 16px 42px rgba(0, 40, 90, .26),
+    inset 0 1px 0 rgba(127, 213, 255, .045);
+}
+
+.card:hover,
+.feature:hover,
+.team-card:hover,
+.match-card:hover,
+.tournament-card:hover,
+.stat-card:hover {
+  border-color: rgba(77, 190, 255, .34) !important;
+  box-shadow:
+    0 20px 48px rgba(0, 58, 130, .34),
+    0 0 30px rgba(33, 142, 255, .10),
+    inset 0 1px 0 rgba(130, 218, 255, .07);
+}
+
+/* Team image halo */
+#teamList .team-card::before {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(64, 178, 255, .11), transparent 34%),
+    linear-gradient(135deg, rgba(79, 186, 255, .05), transparent 42%, rgba(38, 114, 223, .06)) !important;
+}
+
+#teamList .team-card:hover img {
+  filter:
+    drop-shadow(0 0 22px rgba(58, 180, 255, .25))
+    drop-shadow(0 12px 24px rgba(0,0,0,.42)) !important;
+}
+
+/* Bracket */
+.bracket-wrapper {
+  background:
+    radial-gradient(900px 360px at 50% 40%, rgba(36, 131, 242, .08), transparent 68%),
+    linear-gradient(180deg, rgba(16, 41, 67, .48), rgba(4, 17, 30, .58)) !important;
+  border-color: rgba(77, 180, 255, .16) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(107, 207, 255, .045),
+    0 24px 75px rgba(0, 46, 104, .26) !important;
+}
+
+/* Buttons */
+button,
+.btn,
+.button,
+a.button {
+  background:
+    linear-gradient(135deg, rgba(52, 157, 255, .17), rgba(26, 88, 173, .15)) !important;
+  border-color: rgba(77, 190, 255, .25) !important;
+  box-shadow:
+    0 8px 24px rgba(0, 63, 140, .16),
+    inset 0 1px 0 rgba(124, 219, 255, .06);
+}
+
+button:hover,
+.btn:hover,
+.button:hover,
+a.button:hover {
+  border-color: rgba(91, 205, 255, .48) !important;
+  box-shadow:
+    0 12px 32px rgba(0, 73, 160, .28),
+    0 0 26px rgba(55, 171, 255, .10);
+}
+
+/* Section dividers */
+#tournament::before,
+#playoffs::before,
+#teams::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(80, 192, 255, .30),
+    rgba(44, 124, 255, .12),
+    transparent
+  ) !important;
+}
+
+/* Accent text / utility */
+a {
+  color: var(--cyan);
+}
+
+::selection {
+  background: rgba(67, 174, 255, .28);
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  body {
+    background:
+      radial-gradient(540px 360px at 50% 0%, rgba(34,139,255,.19), transparent 66%),
+      linear-gradient(180deg, #06111f, #071625 52%, #06111e) !important;
+  }
+
+  body::before {
+    opacity: .09 !important;
+  }
+}
 </style></head>
 <body>
 <!-- ================= HEADER ================= -->
