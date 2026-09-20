@@ -1852,6 +1852,98 @@ nav a:hover{color:var(--cyan)!important}
 }
 </style>
 
+
+<style id="hero-centered-mobile-final">
+@media(max-width:700px){
+  /* У центрі весь hero */
+  .hero{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .hero-content{
+    width:94% !important;
+    max-width:620px !important;
+    margin:-18px auto 0 !important;
+    text-align:center !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+  }
+
+  /* Логотип НУВГП — по центру зверху */
+  .university{
+    top:18px !important;
+    left:50% !important;
+    right:auto !important;
+    width:180px !important;
+    max-width:70vw !important;
+    transform:translateX(-50%) !important;
+    text-align:center !important;
+  }
+
+  .nuwgp-logo{
+    width:145px !important;
+    max-width:100% !important;
+    margin:0 auto !important;
+  }
+
+  /* Dota 2 — по центру */
+  .hero-dota-logo{
+    width:100% !important;
+    justify-content:center !important;
+    padding-left:0 !important;
+    margin:0 0 6px !important;
+  }
+
+  .hero-dota-logo img{
+    width:42px !important;
+    height:42px !important;
+    margin:0 auto !important;
+  }
+
+  /* Заголовок і підзаголовок ближче один до одного */
+  .title{
+    width:100% !important;
+    margin:0 !important;
+    text-align:center !important;
+    font-size:clamp(34px,10.5vw,50px) !important;
+    line-height:.9 !important;
+    letter-spacing:-2.5px !important;
+  }
+
+  .subtitle{
+    margin-top:4px !important;
+    text-align:center !important;
+    font-size:9px !important;
+    line-height:1.1 !important;
+    letter-spacing:1.8px !important;
+  }
+
+  /* Нижній інформаційний блок теж відцентрований */
+  .info{
+    left:50% !important;
+    right:auto !important;
+    transform:translateX(-50%) !important;
+    width:calc(100% - 28px) !important;
+    max-width:540px !important;
+    text-align:center !important;
+  }
+
+  .info-item{
+    text-align:center !important;
+    padding-left:5px !important;
+    padding-right:5px !important;
+  }
+
+  .info-item strong,
+  .info-item span{
+    text-align:center !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
