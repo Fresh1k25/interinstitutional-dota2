@@ -2341,6 +2341,45 @@ body::after{
 }
 </style>
 
+
+<style id="result-based-bracket-lines">
+.bracket-lines .bracket-line{
+  fill:none !important;
+  stroke:#57cfff !important;
+  stroke-width:2.1 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  vector-effect:non-scaling-stroke !important;
+  stroke-dasharray:7 10 !important;
+  opacity:.88;
+  filter:drop-shadow(0 0 4px rgba(70,200,255,.42)) !important;
+  animation:bracketLineFlow 1.65s linear infinite;
+}
+
+/* Після завершення матчу: суцільна лінія до наступного матчу. */
+.bracket-lines .bracket-line.solid{
+  stroke-dasharray:none !important;
+  opacity:1 !important;
+  animation:none !important;
+  filter:
+    drop-shadow(0 0 4px rgba(70,200,255,.48))
+    drop-shadow(0 0 10px rgba(0,145,255,.16))
+    !important;
+}
+
+/* На телефоні трохи тонше, але логіка така сама. */
+@media(max-width:700px){
+  .bracket-lines .bracket-line{
+    stroke-width:2 !important;
+    stroke-dasharray:6 9 !important;
+  }
+  .bracket-lines .bracket-line.solid{
+    stroke-dasharray:none !important;
+    animation:none !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -2895,6 +2934,9 @@ function drawBracketLines() {
         const to = getPoint(toId, "left");
         if (!from || !to) continue;
 
+        const sourceFinished = !!getMatchResult(matches[fromId], fromId);
+        const lineClass = sourceFinished ? "bracket-line solid" : "bracket-line";
+
         const startX = from.x;
         const endX = to.x;
 
@@ -2904,7 +2946,7 @@ function drawBracketLines() {
          */
         if (endX - startX <= ARM * 2 + 10) {
             markup += `
-              <path d="
+              <path class="${lineClass}" d="
                 M ${startX} ${from.y}
                 H ${endX}
               "/>
@@ -2922,7 +2964,7 @@ function drawBracketLines() {
         const trunkX = (leftArm + rightArm) / 2;
 
         markup += `
-          <path d="
+          <path class="${lineClass}" d="
             M ${startX} ${from.y}
             H ${leftArm}
             H ${trunkX}
