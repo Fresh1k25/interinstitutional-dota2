@@ -5024,6 +5024,171 @@ nav a:hover{color:#fff!important;}
   .bracket-wrapper{height:430px!important;min-height:430px!important;}
 }
 
+
+/* =========================================================
+   MOBILE 10X — COMPLETE RESPONSIVE REFINEMENT
+   ========================================================= */
+@media (max-width: 700px){
+  :root{--mobile-pad:16px;--mobile-radius:20px;}
+  *{-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth!important;}
+  body{overflow-x:hidden!important;background:#020a13!important;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky!important;top:0!important;z-index:1000!important;
+    height:64px!important;min-height:64px!important;
+    padding:0 var(--mobile-pad)!important;
+    background:rgba(2,9,17,.82)!important;
+    border-bottom:1px solid rgba(122,220,255,.12)!important;
+    backdrop-filter:blur(20px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(140%)!important;
+    box-shadow:0 10px 30px rgba(0,0,0,.22)!important;
+  }
+  .logo{
+    font-size:13px!important;font-weight:900!important;letter-spacing:.4px!important;
+    max-width:calc(100% - 120px)!important;
+  }
+  .logo span{color:#62ddff!important;}
+  nav{margin-left:auto!important;display:flex!important;align-items:center!important;}
+  nav a:not(.admin-button){display:none!important;}
+  .admin-button{
+    min-height:38px!important;padding:9px 13px!important;border-radius:12px!important;
+    font-size:10px!important;font-weight:900!important;letter-spacing:.2px!important;
+    box-shadow:0 8px 22px rgba(39,173,255,.22)!important;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    height:auto!important;min-height:0!important;padding:0 0 22px!important;
+    overflow:hidden!important;display:flex!important;flex-direction:column!important;
+    align-items:center!important;background-position:center top!important;
+    box-shadow:inset 0 -100px 120px rgba(0,0,0,.58)!important;
+  }
+  .university{
+    position:relative!important;inset:auto!important;width:100%!important;height:72px!important;
+    margin:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    padding:8px var(--mobile-pad) 0!important;box-sizing:border-box!important;
+  }
+  .university .nuwgp-logo{width:154px!important;max-width:62vw!important;height:auto!important;}
+  .hero-content{
+    position:relative!important;inset:auto!important;width:100%!important;box-sizing:border-box!important;
+    padding:28px var(--mobile-pad) 0!important;margin:0!important;
+    display:flex!important;align-items:center!important;text-align:center!important;
+  }
+  .hero-dota-logo{margin:0 0 12px!important;}
+  .hero-dota-logo img{width:56px!important;height:56px!important;filter:drop-shadow(0 8px 22px rgba(91,214,255,.2));}
+  .hero .title{
+    width:100%!important;margin:0!important;font-size:clamp(34px,10.4vw,46px)!important;
+    line-height:.98!important;letter-spacing:-1.8px!important;white-space:nowrap!important;
+  }
+  .hero .subtitle{margin:10px 0 0!important;font-size:8px!important;letter-spacing:2.5px!important;}
+
+  .hero .info{
+    position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;
+    width:calc(100% - 32px)!important;height:82px!important;min-height:82px!important;
+    margin:30px 16px 0!important;padding:0!important;box-sizing:border-box!important;
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    border-radius:18px!important;background:linear-gradient(135deg,rgba(16,43,68,.9),rgba(5,19,34,.88))!important;
+    border:1px solid rgba(119,219,255,.2)!important;box-shadow:0 18px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08)!important;
+  }
+  .hero .info-item{
+    height:82px!important;min-width:0!important;padding:8px 5px!important;box-sizing:border-box!important;
+    border-left:1px solid rgba(92,211,255,.26)!important;display:flex!important;justify-content:center!important;
+  }
+  .hero .info-item:first-child{border-left:0!important;}
+  .hero .info-item strong{font-size:12px!important;font-weight:900!important;white-space:nowrap!important;}
+  .hero .info-item span{margin-top:5px!important;font-size:8px!important;color:#91afc4!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
+  .hero .prize{
+    position:relative!important;inset:auto!important;transform:none!important;width:calc(100% - 32px)!important;
+    max-width:none!important;margin:12px 16px 0!important;box-sizing:border-box!important;padding:9px 14px!important;
+    display:flex!important;justify-content:center!important;align-items:center!important;gap:8px!important;
+    border-radius:14px!important;background:rgba(8,24,39,.82)!important;
+  }
+  .hero .prize span:first-child{font-size:8px!important;color:#9bb7c9!important;}
+  .hero .prize strong{font-size:15px!important;}
+  .hero .prize span:last-child{display:none!important;}
+
+  /* ---------- SECTION TITLES ---------- */
+  .section-title{padding:0 16px!important;margin:0 0 18px!important;text-align:left!important;}
+  .section-title small{font-size:8px!important;letter-spacing:2px!important;}
+  .section-title h2{margin:5px 0 0!important;font-size:32px!important;line-height:1!important;letter-spacing:-1px!important;}
+
+  /* ---------- PLAYOFF ---------- */
+  #playoffs{
+    width:100%!important;max-width:100vw!important;overflow:hidden!important;padding:46px 0 56px!important;
+  }
+  #playoffs .section-title{text-align:left!important;}
+  .bracket-wrapper{
+    position:relative!important;width:calc(100% - 20px)!important;height:430px!important;min-height:430px!important;
+    margin:0 10px!important;padding:12px 8px 34px!important;box-sizing:border-box!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    -webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important;scroll-behavior:auto!important;
+    scrollbar-width:none!important;border-radius:20px!important;
+    background:linear-gradient(180deg,rgba(8,27,46,.72),rgba(2,13,24,.55))!important;
+    border:1px solid rgba(102,211,255,.18)!important;
+  }
+  .bracket-wrapper::-webkit-scrollbar{display:none!important;}
+  .bracket{
+    --mobile-scale:.44;
+    width:809.6px!important;min-width:809.6px!important;
+    height:396px!important;min-height:396px!important;
+    margin:0!important;transform-origin:top left!important;
+    transform:scale(.44)!important;
+  }
+  .bracket-wrapper::after{
+    content:'СВАЙПАЙТЕ  •  →'!important;position:absolute!important;left:50%!important;bottom:8px!important;
+    transform:translateX(-50%)!important;z-index:20!important;display:block!important;width:max-content!important;
+    margin:0!important;padding:6px 11px!important;border-radius:999px!important;
+    background:rgba(4,19,32,.92)!important;border:1px solid rgba(96,213,255,.22)!important;
+    color:#aeeaff!important;font-size:8px!important;font-weight:900!important;letter-spacing:.8px!important;
+    pointer-events:none!important;
+  }
+  .bracket-match{border-radius:10px!important;}
+
+  /* ---------- EXPERIENCE ---------- */
+  .tournament-experience{padding:54px 16px 60px!important;overflow:hidden!important;}
+  .te-inner{width:100%!important;max-width:100%!important;}
+  .te-heading h2{font-size:34px!important;line-height:.95!important;}
+  .te-grid{grid-template-columns:1fr!important;gap:14px!important;}
+  .te-main-card{padding:20px!important;border-radius:20px!important;}
+  .te-main-card h3{font-size:23px!important;line-height:1!important;}
+  .te-main-card p{font-size:12px!important;line-height:1.55!important;}
+  .te-flow{gap:6px!important;overflow:hidden!important;}
+  .te-flow-item strong{font-size:16px!important;}
+  .te-flow-item span{font-size:7px!important;}
+  .te-side{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
+  .te-stat{min-width:0!important;padding:14px 8px!important;border-radius:16px!important;}
+  .te-stat span{font-size:7px!important;}
+  .te-stat strong{font-size:19px!important;}
+  .te-stat small{font-size:7px!important;line-height:1.25!important;}
+  .te-prizes-button{width:100%!important;box-sizing:border-box!important;text-align:center!important;}
+
+  /* ---------- TEAMS ---------- */
+  .teams{padding:54px 16px 70px!important;overflow:hidden!important;}
+  .team-list{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;}
+  .team-card{min-height:72px!important;padding:8px!important;border-radius:16px!important;}
+  .team-logo-box{width:52px!important;height:52px!important;flex-basis:52px!important;}
+}
+
+@media (max-width:380px){
+  header{height:60px!important;min-height:60px!important;padding:0 12px!important;}
+  .logo{font-size:12px!important;max-width:calc(100% - 108px)!important;}
+  .admin-button{font-size:9px!important;padding:8px 10px!important;}
+  .university{height:66px!important;}
+  .university .nuwgp-logo{width:140px!important;}
+  .hero-content{padding-top:22px!important;}
+  .hero-dota-logo img{width:50px!important;height:50px!important;}
+  .hero .title{font-size:34px!important;letter-spacing:-1.5px!important;}
+  .hero .info{width:calc(100% - 24px)!important;margin-left:12px!important;margin-right:12px!important;height:76px!important;min-height:76px!important;}
+  .hero .info-item{height:76px!important;}
+  .hero .info-item strong{font-size:11px!important;}
+  .hero .info-item span{font-size:7px!important;}
+  .hero .prize{width:calc(100% - 24px)!important;margin-left:12px!important;margin-right:12px!important;}
+  .bracket-wrapper{width:calc(100% - 16px)!important;margin-left:8px!important;margin-right:8px!important;height:405px!important;min-height:405px!important;}
+  .bracket{width:754px!important;min-width:754px!important;height:369px!important;min-height:369px!important;transform:scale(.41)!important;}
+  .te-side{grid-template-columns:1fr!important;}
+}
 </style></head>
 <body>
 <!-- ================= HEADER ================= -->
@@ -5738,51 +5903,49 @@ function renderTeams() {
   const BASE_WIDTH = 1840;
   const BASE_HEIGHT = 900;
 
-  function fitBracket() {
+  function fitBracket(){
     const wrapper = document.querySelector('.bracket-wrapper');
     const bracket = document.querySelector('.bracket');
-    if (!wrapper || !bracket) return;
+    if(!wrapper || !bracket) return;
 
-    if (window.innerWidth <= BREAKPOINT) {
-      // На телефоні: одна стабільна горизонтальна сітка.
-      // Ніякого JS-drag — iOS/Android самі обробляють свайп нативно.
-      const mobileScale = window.innerWidth <= 380 ? 0.40 : 0.44;
+    if(window.innerWidth <= BREAKPOINT){
+      const scale = window.innerWidth <= 380 ? 0.41 : 0.44;
+      const scaledW = Math.round(BASE_WIDTH * scale * 10) / 10;
+      const scaledH = Math.round(BASE_HEIGHT * scale * 10) / 10;
+      bracket.style.width = scaledW + 'px';
+      bracket.style.minWidth = scaledW + 'px';
+      bracket.style.height = scaledH + 'px';
+      bracket.style.minHeight = scaledH + 'px';
       bracket.style.transformOrigin = 'top left';
-      bracket.style.transform = `scale(${mobileScale})`;
-      bracket.style.width = `${BASE_WIDTH}px`;
-      bracket.style.minWidth = `${BASE_WIDTH}px`;
-      bracket.style.height = `${BASE_HEIGHT}px`;
-      wrapper.style.height = window.innerWidth <= 380 ? '430px' : '465px';
+      bracket.style.transform = `scale(${scale})`;
+      wrapper.style.height = (window.innerWidth <= 380 ? '405px' : '430px');
+      wrapper.style.minHeight = wrapper.style.height;
       wrapper.style.overflowX = 'auto';
       wrapper.style.overflowY = 'hidden';
-      wrapper.scrollTop = 0;
-      return;
+      if(wrapper.scrollLeft < 0) wrapper.scrollLeft = 0;
+    }else{
+      const available = Math.max(320, wrapper.clientWidth - 4);
+      const scale = Math.min(1, available / BASE_WIDTH);
+      bracket.style.width = BASE_WIDTH + 'px';
+      bracket.style.minWidth = BASE_WIDTH + 'px';
+      bracket.style.height = BASE_HEIGHT + 'px';
+      bracket.style.minHeight = BASE_HEIGHT + 'px';
+      bracket.style.transformOrigin = 'top left';
+      bracket.style.transform = `scale(${scale})`;
+      wrapper.style.height = `${BASE_HEIGHT * scale + 30}px`;
+      wrapper.style.overflow = 'hidden';
     }
-
-    const scale = Math.min(1, Math.max(320, wrapper.clientWidth - 4) / BASE_WIDTH);
-    bracket.style.transform = `scale(${scale})`;
-    wrapper.style.height = `${BASE_HEIGHT * scale + 30}px`;
-    wrapper.style.overflow = 'hidden';
   }
 
-  function initBracketDrag() {
-    // Не перехоплюємо touch/pointer на мобільному: це ламало нативний свайп.
-    // На десктопі також не потрібен кастомний drag.
-    return;
-  }
-
-  function refresh() {
+  function refresh(){
     fitBracket();
-    if (typeof window.drawBracketLines === 'function') {
-      requestAnimationFrame(window.drawBracketLines);
-    }
+    if(typeof window.drawBracketLines === 'function') requestAnimationFrame(window.drawBracketLines);
   }
 
-  window.addEventListener('resize', refresh, { passive: true });
-  window.addEventListener('orientationchange', () => setTimeout(refresh, 80));
-  window.addEventListener('load', refresh);
-  initBracketDrag();
-  setTimeout(refresh, 120);
+  window.addEventListener('resize', refresh, {passive:true});
+  window.addEventListener('orientationchange', () => setTimeout(refresh,120), {passive:true});
+  window.addEventListener('load', refresh, {once:true});
+  setTimeout(refresh,80);
 })();
 </script>
 <script>
@@ -5836,5 +5999,279 @@ function renderTeams() {
 })();
 </script>
 
+
+<style id="mobile-final-tight">
+@media (max-width:700px){
+  /* FINAL: compact hero on phones */
+  .hero{padding:0 0 10px!important;min-height:0!important;}
+  .hero .university{height:48px!important;padding:2px 12px 0!important;}
+  .hero .university .nuwgp-logo{width:118px!important;max-width:48vw!important;}
+  .hero .hero-content{padding:8px 12px 0!important;}
+  .hero .hero-dota-logo{margin:0 0 6px!important;}
+  .hero .hero-dota-logo img{width:42px!important;height:42px!important;}
+  .hero .title{font-size:clamp(28px,8.8vw,38px)!important;line-height:.94!important;letter-spacing:-1.4px!important;}
+  .hero .subtitle{margin:5px 0 0!important;font-size:7px!important;letter-spacing:2px!important;}
+
+  /* Info cards: narrower, centered, no inherited translate */
+  .hero .info{
+    position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;
+    transform:none!important;
+    width:calc(100% - 96px)!important;max-width:290px!important;min-width:0!important;
+    height:64px!important;min-height:64px!important;
+    margin:14px auto 0!important;padding:0!important;
+    border-radius:14px!important;
+  }
+  .hero .info-item{height:64px!important;padding:5px 3px!important;}
+  .hero .info-item strong{font-size:10px!important;}
+  .hero .info-item span{font-size:6px!important;margin-top:3px!important;}
+
+  .hero .prize{
+    width:calc(100% - 110px)!important;max-width:300px!important;
+    height:38px!important;min-height:38px!important;
+    margin:8px auto 0!important;padding:5px 10px!important;
+    border-radius:12px!important;gap:6px!important;
+  }
+  .hero .prize span:first-child{font-size:7px!important;}
+  .hero .prize strong{font-size:13px!important;}
+
+  /* Playoff viewport: both-axis native swipe, enough vertical room */
+  #playoffs .bracket-wrapper,.bracket-wrapper{
+    width:calc(100% - 16px)!important;
+    height:min(68vh,520px)!important;min-height:360px!important;max-height:520px!important;
+    margin:0 8px!important;padding:8px!important;
+    overflow-x:auto!important;overflow-y:auto!important;
+    touch-action:pan-x pan-y!important;-webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+  }
+}
+@media (max-width:380px){
+  .hero .university{height:44px!important;}
+  .hero .university .nuwgp-logo{width:108px!important;}
+  .hero .hero-content{padding-top:5px!important;}
+  .hero .hero-dota-logo img{width:38px!important;height:38px!important;}
+  .hero .title{font-size:29px!important;}
+  .hero .info{width:calc(100% - 112px)!important;max-width:268px!important;height:58px!important;min-height:58px!important;margin-top:10px!important;}
+  .hero .info-item{height:58px!important;}
+  .hero .info-item strong{font-size:9px!important;}
+  .hero .info-item span{font-size:5.5px!important;}
+  .hero .prize{width:calc(100% - 126px)!important;max-width:260px!important;height:34px!important;min-height:34px!important;margin-top:6px!important;}
+  .hero .prize strong{font-size:12px!important;}
+}
+</style>
 </body>
 </html>
+<!-- MOBILE 10X FINAL: compact info cards + two-axis playoff scrolling -->
+<style>
+@media (max-width:700px){
+  /* Компактні картки 20-20 / 1 корпус / 5v5 */
+  .hero .info,
+  .info{
+    left:50% !important;
+    right:auto !important;
+    bottom:18px !important;
+    transform:translateX(-50%) !important;
+    width:calc(100% - 72px) !important;
+    max-width:350px !important;
+    min-width:0 !important;
+    padding:7px 6px !important;
+    gap:0 !important;
+    border-radius:13px !important;
+  }
+
+  .info-item{
+    height:62px !important;
+    min-width:0 !important;
+    padding:8px 5px !important;
+    border-left:1px solid rgba(36,186,255,.65) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  .info-item:first-child{border-left:0 !important;}
+  .info-item strong{
+    font-size:12px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+  .info-item span{
+    margin-top:4px !important;
+    font-size:7px !important;
+    line-height:1.1 !important;
+    white-space:nowrap !important;
+  }
+
+  /* Плей-офф: окремий контейнер зі справжнім свайпом ВЛІВО/ВПРАВО + ВГОРУ/ВНИЗ */
+  #playoffs .bracket-wrapper,
+  .bracket-wrapper{
+    width:100% !important;
+    max-width:100% !important;
+    height:min(72vh,700px) !important;
+    min-height:560px !important;
+    max-height:700px !important;
+    overflow-x:auto !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior:contain !important;
+    touch-action:pan-x pan-y !important;
+    scroll-behavior:smooth !important;
+    scrollbar-width:none !important;
+    position:relative !important;
+    padding:10px 6px 24px !important;
+    box-sizing:border-box !important;
+  }
+  #playoffs .bracket-wrapper::-webkit-scrollbar,
+  .bracket-wrapper::-webkit-scrollbar{
+    width:0 !important;
+    height:0 !important;
+    display:none !important;
+  }
+
+  #playoffs .bracket,
+  .bracket{
+    width:1840px !important;
+    min-width:1840px !important;
+    height:1200px !important;
+    min-height:1200px !important;
+    max-height:none !important;
+    transform:none !important;
+    margin:0 !important;
+    flex:none !important;
+    touch-action:pan-x pan-y !important;
+  }
+
+  /* Підказка не перекриває нижню сітку */
+  #playoffs .bracket-wrapper::after,
+  .bracket-wrapper::after{
+    content:"← →  свайп по горизонталі  •  ↑ ↓  свайп вниз" !important;
+    position:sticky !important;
+    left:50% !important;
+    bottom:8px !important;
+    z-index:20 !important;
+    display:block !important;
+    width:max-content !important;
+    max-width:calc(100% - 24px) !important;
+    margin:8px auto 0 !important;
+    padding:6px 10px !important;
+    border-radius:999px !important;
+    background:rgba(3,18,31,.9) !important;
+    border:1px solid rgba(103,221,255,.22) !important;
+    color:#bdefff !important;
+    font-size:8px !important;
+    line-height:1 !important;
+    pointer-events:none !important;
+    white-space:nowrap !important;
+  }
+}
+
+@media (max-width:380px){
+  .hero .info,
+  .info{
+    width:calc(100% - 54px) !important;
+    max-width:330px !important;
+  }
+  .info-item{height:58px !important;padding:7px 3px !important;}
+  .info-item strong{font-size:11px !important;}
+  .info-item span{font-size:6.5px !important;}
+
+  #playoffs .bracket-wrapper,
+  .bracket-wrapper{
+    height:620px !important;
+    min-height:520px !important;
+  }
+}
+</style>
+<style id="mobile-info-final-fix">
+@media (max-width:700px){
+  /* 20–20 / 1 корпус / 5v5 — строго по центру, як призовий фонд */
+  .hero .info,
+  .hero-content .info{
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    top:auto !important;
+    transform:none !important;
+    width:260px !important;
+    max-width:calc(100vw - 80px) !important;
+    height:50px !important;
+    min-height:50px !important;
+    margin:12px auto 0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+    border-radius:12px !important;
+  }
+  .hero .info-item,
+  .hero-content .info-item{
+    height:50px !important;
+    min-height:50px !important;
+    padding:4px 3px !important;
+  }
+  .hero .info-item strong{font-size:9px !important;}
+  .hero .info-item span{font-size:5.5px !important;margin-top:2px !important;}
+
+  /* Ще компактніший hero по висоті */
+  .hero{padding-bottom:6px !important;}
+  .hero .hero-content{padding-top:4px !important;padding-bottom:0 !important;}
+  .hero .hero-dota-logo{margin-bottom:4px !important;}
+  .hero .hero-dota-logo img{width:36px !important;height:36px !important;}
+  .hero .title{font-size:29px !important;line-height:.9 !important;margin-bottom:0 !important;}
+  .hero .subtitle{margin-top:3px !important;font-size:6px !important;}
+
+  .hero .prize{
+    width:260px !important;
+    max-width:calc(100vw - 80px) !important;
+    height:32px !important;
+    min-height:32px !important;
+    margin:6px auto 0 !important;
+    padding:3px 8px !important;
+    border-radius:10px !important;
+  }
+  .hero .prize span:first-child{font-size:6px !important;}
+  .hero .prize strong{font-size:11px !important;}
+}
+@media (max-width:380px){
+  .hero .info,
+  .hero-content .info{width:250px !important;max-width:calc(100vw - 70px) !important;height:46px !important;min-height:46px !important;margin-top:9px !important;}
+  .hero .info-item,.hero-content .info-item{height:46px !important;min-height:46px !important;}
+  .hero .info-item strong{font-size:8.5px !important;}
+  .hero .info-item span{font-size:5px !important;}
+  .hero .hero-dota-logo img{width:34px !important;height:34px !important;}
+  .hero .title{font-size:27px !important;}
+  .hero .prize{width:250px !important;max-width:calc(100vw - 70px) !important;height:30px !important;min-height:30px !important;margin-top:5px !important;}
+}
+</style>
+<style id="mobile-info-blue-final">
+@media (max-width:700px){
+  .hero .info,
+  .hero-content .info{
+    background:linear-gradient(135deg,rgba(18,91,150,.88),rgba(8,52,94,.96)) !important;
+    border:1px solid rgba(78,198,255,.65) !important;
+    box-shadow:0 8px 28px rgba(0,110,210,.18), inset 0 1px 0 rgba(255,255,255,.08) !important;
+    overflow:hidden !important;
+  }
+  .hero .info-item,
+  .hero-content .info-item{
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    gap:0 !important;
+  }
+  .hero .info-item strong,
+  .hero .info-item span{
+    display:block !important;
+    width:100% !important;
+    text-align:center !important;
+  }
+  .hero .info-item strong{
+    color:#fff !important;
+    line-height:1.05 !important;
+    margin:0 !important;
+  }
+  .hero .info-item span{
+    color:#b9eaff !important;
+    line-height:1.05 !important;
+    margin:4px 0 0 !important;
+  }
+}
+</style>
