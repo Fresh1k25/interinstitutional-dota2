@@ -6303,4 +6303,11 @@ function renderTeams() {
     stroke-dasharray:10 10 !important;
   }
 }
+
+/* FINAL PLAYOFF CONNECTORS: solid muted blue-gray, glow only for completed games */
+.playoff svg path, .playoff svg line, .playoff svg polyline, .playoff svg rect { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; stroke-linecap: round !important; stroke-linejoin: round !important; }
+.playoff svg path, .playoff svg line, .playoff svg polyline { stroke: #53677f !important; opacity: .9 !important; }
+.playoff svg .completed, .playoff svg .winner, .playoff svg path.completed, .playoff svg line.completed, .playoff svg polyline.completed { stroke: #63b8ff !important; filter: drop-shadow(0 0 5px rgba(70,170,255,.75)) !important; opacity: 1 !important; }
+.playoff .connector.completed, .playoff .match.completed ~ .connector { border-color: #63b8ff !important; box-shadow: 0 0 7px rgba(70,170,255,.55) !important; }
+@media (max-width: 700px){ .playoff svg path, .playoff svg line, .playoff svg polyline { stroke-width: 2px !important; } }
 </style>
