@@ -4849,6 +4849,181 @@ nav a:hover{color:#fff!important;}
   .bracket-wrapper{height:465px!important;min-height:465px!important;}
 }
 
+
+/* =========================================================
+   MOBILE FINAL FIX — CLEAN HERO + NATIVE BRACKET SWIPE
+   ========================================================= */
+@media (max-width:700px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-x:none!important;
+  }
+
+  header{
+    height:70px!important;
+    min-height:70px!important;
+    padding:8px 14px!important;
+    box-sizing:border-box!important;
+    align-items:center!important;
+    overflow:hidden!important;
+  }
+  .logo{
+    max-width:calc(100% - 115px)!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+  .admin-button{
+    flex:0 0 auto!important;
+    min-height:40px!important;
+  }
+
+  .hero{
+    height:560px!important;
+    min-height:560px!important;
+    overflow:hidden!important;
+  }
+  .university{
+    top:24px!important;
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+  }
+  .university .nuwgp-logo{
+    width:150px!important;
+    max-width:55vw!important;
+  }
+  .hero-content{
+    top:120px!important;
+    left:12px!important;
+    right:12px!important;
+  }
+  .hero-dota-logo{
+    margin-bottom:13px!important;
+  }
+  .hero-dota-logo img{
+    width:54px!important;
+    height:54px!important;
+  }
+  .hero .title{
+    font-size:clamp(35px,10.8vw,48px)!important;
+    letter-spacing:-2px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  .hero .subtitle{
+    margin-top:9px!important;
+    font-size:9px!important;
+    letter-spacing:2.2px!important;
+  }
+
+  /* Три факти — рівний блок без обрізання */
+  .hero .info{
+    left:12px!important;
+    right:12px!important;
+    bottom:70px!important;
+    width:auto!important;
+    height:76px!important;
+    min-height:76px!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    border-radius:16px!important;
+  }
+  .hero .info-item{
+    height:76px!important;
+    padding:8px 4px!important;
+  }
+  .hero .info-item strong{font-size:12px!important;}
+  .hero .info-item span{font-size:8px!important;}
+
+  /* Призовий фонд: не виходить за екран */
+  .hero .prize{
+    left:12px!important;
+    right:12px!important;
+    bottom:16px!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+    justify-content:center!important;
+    box-sizing:border-box!important;
+    padding:7px 12px!important;
+  }
+  .hero .prize span:last-child{display:none!important;}
+  .hero .prize span:first-child{font-size:8px!important;}
+  .hero .prize strong{font-size:14px!important;}
+
+  /* Плей-офф: тільки цей контейнер горизонтально скролиться */
+  #playoffs{
+    width:100%!important;
+    max-width:100vw!important;
+    overflow:hidden!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+  #playoffs .section-title{
+    padding:0 14px!important;
+    box-sizing:border-box!important;
+  }
+  .bracket-wrapper{
+    width:100%!important;
+    max-width:100%!important;
+    height:465px!important;
+    min-height:465px!important;
+    margin:0!important;
+    padding:8px 10px 16px!important;
+    box-sizing:border-box!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x!important;
+    overscroll-behavior-x:contain!important;
+    scroll-behavior:auto!important;
+    scroll-snap-type:none!important;
+    scrollbar-width:none!important;
+  }
+  .bracket-wrapper::-webkit-scrollbar{display:none!important;}
+  .bracket{
+    width:1840px!important;
+    min-width:1840px!important;
+    height:900px!important;
+    min-height:900px!important;
+    margin:0!important;
+    transform-origin:top left!important;
+  }
+  .bracket-wrapper::after{
+    position:sticky!important;
+    left:50%!important;
+    bottom:8px!important;
+    transform:translateX(-50%)!important;
+    z-index:50!important;
+    white-space:nowrap!important;
+  }
+
+  /* Щоб заголовки/картки інших секцій не виїжджали за край */
+  .teams,.tournament-experience{
+    width:100%!important;
+    max-width:100vw!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  .teams .section-title,.tournament-experience .te-inner{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+@media(max-width:380px){
+  .hero{height:535px!important;min-height:535px!important;}
+  .hero-content{top:105px!important;}
+  .hero .title{font-size:38px!important;}
+  .hero .info{bottom:66px!important;}
+  .hero .prize{bottom:12px!important;}
+  .bracket-wrapper{height:430px!important;min-height:430px!important;}
+}
+
 </style></head>
 <body>
 <!-- ================= HEADER ================= -->
@@ -5569,15 +5744,18 @@ function renderTeams() {
     if (!wrapper || !bracket) return;
 
     if (window.innerWidth <= BREAKPOINT) {
-      const mobileScale = Math.min(0.52, Math.max(0.40, (window.innerWidth - 24) / 1840 * 1.95));
+      // На телефоні: одна стабільна горизонтальна сітка.
+      // Ніякого JS-drag — iOS/Android самі обробляють свайп нативно.
+      const mobileScale = window.innerWidth <= 380 ? 0.40 : 0.44;
       bracket.style.transformOrigin = 'top left';
       bracket.style.transform = `scale(${mobileScale})`;
       bracket.style.width = `${BASE_WIDTH}px`;
       bracket.style.minWidth = `${BASE_WIDTH}px`;
       bracket.style.height = `${BASE_HEIGHT}px`;
-      wrapper.style.height = window.innerWidth <= 380 ? '465px' : '500px';
+      wrapper.style.height = window.innerWidth <= 380 ? '430px' : '465px';
       wrapper.style.overflowX = 'auto';
       wrapper.style.overflowY = 'hidden';
+      wrapper.scrollTop = 0;
       return;
     }
 
@@ -5588,42 +5766,9 @@ function renderTeams() {
   }
 
   function initBracketDrag() {
-    const wrapper = document.querySelector('.bracket-wrapper');
-    if (!wrapper || wrapper.dataset.dragReady) return;
-    wrapper.dataset.dragReady = '1';
-
-    let dragging = false;
-    let startX = 0, startY = 0;
-    let startLeft = 0, startTop = 0;
-
-    wrapper.addEventListener('pointerdown', event => {
-      if (window.innerWidth > BREAKPOINT) return;
-      if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-      dragging = true;
-      startX = event.clientX;
-      startY = event.clientY;
-      startLeft = wrapper.scrollLeft;
-      startTop = wrapper.scrollTop;
-      wrapper.setPointerCapture?.(event.pointerId);
-      wrapper.style.cursor = 'grabbing';
-    });
-
-    wrapper.addEventListener('pointermove', event => {
-      if (!dragging) return;
-      event.preventDefault();
-      wrapper.scrollLeft = startLeft - (event.clientX - startX);
-      wrapper.scrollTop = startTop - (event.clientY - startY);
-    }, { passive: false });
-
-    const stop = event => {
-      dragging = false;
-      wrapper.style.cursor = 'grab';
-      try { wrapper.releasePointerCapture?.(event.pointerId); } catch (_) {}
-    };
-
-    wrapper.addEventListener('pointerup', stop);
-    wrapper.addEventListener('pointercancel', stop);
+    // Не перехоплюємо touch/pointer на мобільному: це ламало нативний свайп.
+    // На десктопі також не потрібен кастомний drag.
+    return;
   }
 
   function refresh() {
