@@ -2316,6 +2316,31 @@ body::after{
 }
 </style>
 
+
+<style id="uniform-bracket-lines">
+.bracket-lines{
+  position:absolute !important;
+  inset:0 !important;
+  width:1840px !important;
+  height:900px !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+.bracket-lines path{
+  fill:none !important;
+  stroke:#57cfff !important;
+  stroke-width:2.1 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  vector-effect:non-scaling-stroke !important;
+  stroke-dasharray:7 10 !important;
+  filter:
+    drop-shadow(0 0 4px rgba(70,200,255,.42))
+    !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -2844,44 +2869,66 @@ function drawBracketLines() {
         const column = match.closest(".bracket-column");
         if (!column) return null;
 
-        /*
-         * Усі координати рахуємо в базовій системі координат .bracket.
-         * Це прибирає похибки від transform:scale() і гарантує,
-         * що точка прив'язки буде рівно посередині блоку.
-         */
         const x = column.offsetLeft + match.offsetLeft;
         const y = column.offsetTop + match.offsetTop;
-        const centerY = y + match.offsetHeight / 2;
 
         return {
             x: side === "right" ? x + match.offsetWidth : x,
-            y: centerY
+            y: y + match.offsetHeight / 2
         };
     }
 
     let markup = "";
+
+    /*
+     * Однакова схема для ВСІХ конекторів:
+     *
+     * [центр джерела] -- 36px --> | вертикаль | <-- 36px -- [центр цілі]
+     *
+     * Тобто незалежно від раунду лінія завжди виходить
+     * з одного й того самого місця і входить однаково.
+     */
+    const ARM = 36;
 
     for (const [fromId, toId] of pairs) {
         const from = getPoint(fromId, "right");
         const to = getPoint(toId, "left");
         if (!from || !to) continue;
 
+        const startX = from.x;
+        const endX = to.x;
+
         /*
-         * Середина між двома блоками — точка зламу.
-         * Таким чином:
-         * 1) лінія виходить із центру джерела;
-         * 2) іде горизонтально;
-         * 3) вертикально доходить до рівня центру цілі;
-         * 4) входить у центр цілі.
+         * Якщо два блоки дуже близько — просто з'єднуємо їх
+         * одним горизонтальним сегментом.
          */
-        const midX = from.x + (to.x - from.x) / 2;
+        if (endX - startX <= ARM * 2 + 10) {
+            markup += `
+              <path d="
+                M ${startX} ${from.y}
+                H ${endX}
+              "/>
+            `;
+            continue;
+        }
+
+        const leftArm = startX + ARM;
+        const rightArm = endX - ARM;
+
+        /*
+         * Для різних рівнів вертикаль проходить у спільній
+         * середині між джерелом та ціллю.
+         */
+        const trunkX = (leftArm + rightArm) / 2;
 
         markup += `
           <path d="
-            M ${from.x} ${from.y}
-            H ${midX}
+            M ${startX} ${from.y}
+            H ${leftArm}
+            H ${trunkX}
             V ${to.y}
-            H ${to.x}
+            H ${rightArm}
+            H ${endX}
           "/>
         `;
     }
