@@ -1796,7 +1796,6 @@ nav a:hover{color:var(--cyan)!important}
     </div>
     <div class="team-modal-grid">
       <div class="team-stat"><small>КАПІТАН</small><strong id="teamCaptain">Не вказано</strong></div>
-      <div class="team-stat"><small>ПРАПОР / МІСТО</small><strong id="teamLocation">Не вказано</strong></div>
       <div class="team-stat"><small>ЗІГРАНО МАТЧІВ</small><strong id="teamPlayed">0</strong></div>
       <div class="team-stat"><small>ПЕРЕМОГИ / ПОРАЗКИ</small><strong id="teamRecord">0 / 0</strong></div>
       <div class="team-stat"><small>ПОТОЧНЕ МІСЦЕ</small><strong id="teamPosition">—</strong></div>
@@ -1846,6 +1845,7 @@ let matches = {
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 async function loadTournamentData() {
+    const previousSnapshot = JSON.stringify({ teams, matches });
     const [teamsResult, matchesResult] = await Promise.all([
         db.from('teams').select('*').order('id'),
         db.from('matches').select('id,a,b,sa,sb')
@@ -1861,8 +1861,6 @@ async function loadTournamentData() {
         details: t.details || {
             captain: t.captain || '',
             players: Array.isArray(t.players) ? t.players : [],
-            flag: t.flag || '',
-            city: t.city || '',
             position: t.position || '',
             status: t.status || ''
         }
@@ -1879,8 +1877,14 @@ async function loadTournamentData() {
     }
 
     matches = { ...matches, ...freshMatches };
-    renderBracket();
-    renderTeams();
+
+    /* Не перемальовуємо сторінку кожні 5 секунд, якщо дані не змінилися.
+       Завдяки цьому зникають мікро-стрибки та мерехтіння. */
+    const nextSnapshot = JSON.stringify({ teams, matches });
+    if (previousSnapshot !== nextSnapshot) {
+        renderBracket();
+        renderTeams();
+    }
 }
 
 async function refreshTournament() {
@@ -2290,7 +2294,6 @@ function openTeamModal(teamIndex){
 
     document.getElementById('teamModalName').textContent=team.name || 'Команда';
     document.getElementById('teamCaptain').textContent=details.captain || 'Не вказано';
-    document.getElementById('teamLocation').textContent=[details.flag,details.city].filter(Boolean).join(' ') || 'Не вказано';
     document.getElementById('teamPlayed').textContent=details.played ?? stats.played;
     document.getElementById('teamRecord').textContent=`${details.wins ?? stats.wins} / ${details.losses ?? stats.losses}`;
     document.getElementById('teamPosition').textContent=details.position || '—';
@@ -2697,5 +2700,131 @@ document.readyState==='loading'?addEventListener('DOMContentLoaded',drag):drag()
   else drag();
 })();
 </script>
+
+<style id="smooth-site-final">
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Плавні переходи для основних елементів */
+.team-card, .bracket-match, .section-title, .team-logo-box, .bracket-team {
+    transition: transform .28s cubic-bezier(.22,1,.36,1),
+                opacity .28s ease,
+                border-color .28s ease,
+                box-shadow .28s ease,
+                background-color .28s ease;
+}
+
+.team-card {
+    cursor: pointer;
+    will-change: transform;
+}
+
+.team-card:active {
+    transform: scale(.985);
+}
+
+.team-card:focus-visible {
+    outline: 2px solid #25b5fa;
+    outline-offset: 4px;
+}
+
+.bracket-match:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,150,255,.16);
+}
+
+/* Плавне відкриття профілю команди */
+#teamModal {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .28s ease, visibility .28s ease;
+}
+
+#teamModal.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+#teamModal .team-modal-panel,
+#teamModal .modal-content,
+#teamModal .team-profile,
+#teamModal > div {
+    transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+}
+
+#teamModal:not(.open) .team-modal-panel,
+#teamModal:not(.open) .modal-content,
+#teamModal:not(.open) .team-profile {
+    transform: translateY(16px) scale(.985);
+    opacity: 0;
+}
+
+#teamModal.open .team-modal-panel,
+#teamModal.open .modal-content,
+#teamModal.open .team-profile {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Плавна поява секцій при прокрутці */
+.smooth-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+}
+
+.smooth-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+
+<script id="smooth-site-js">
+(function(){
+    function initSmoothReveal(){
+        const elements = document.querySelectorAll('.playoffs, .teams, .section-divider, .team-card');
+        elements.forEach(el => el.classList.add('smooth-reveal'));
+
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach(el => el.classList.add('is-visible'));
+            return;
+        }
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: .08, rootMargin: '0px 0px -30px 0px' });
+
+        elements.forEach(el => observer.observe(el));
+    }
+
+    if(document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSmoothReveal);
+    } else {
+        initSmoothReveal();
+    }
+})();
+</script>
+
 </body>
 </html>
