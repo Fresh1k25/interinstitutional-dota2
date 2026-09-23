@@ -165,14 +165,36 @@ function renderTeams(){
   </div>`;
  }).join('');
 }
+function matchReadyForScore(id, p){
+ const m=matches[id]||{};
+ const [a,b]=p[id]||[m.a,m.b];
+ return a!=null && b!=null;
+}
+function anyUnfinishedPlayableMatch(p){
+ return Object.keys(labels).some(id=>{
+  const m=matches[id]||{};
+  return matchReadyForScore(id,p) && !result(id);
+ });
+}
+function firstUnfinishedPlayableMatch(p){
+ const order=['U1','U2','U3','U4','U5','U6','L1','L2','UF','L3','L4','L5','LF','GF'];
+ return order.find(id=>{const m=matches[id]||{};return matchReadyForScore(id,p)&&!result(id);})||null;
+}
 function renderMatches(){
  const p=participants();
+ const active=firstUnfinishedPlayableMatch(p);
  $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
-  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2,locked=a==null||b==null;
+  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
+  const noTeams=a==null||b==null;
+  const finished=!!result(id);
+  const locked=noTeams || (!finished && active!==id);
+  const lockText=noTeams
+    ? 'Команди з’являться після завершення попередніх матчів.'
+    : (!finished && active!==id ? 'Зараз завершіть поточний матч. Інші матчі заблоковані.' : '');
   return `<div class="game ${locked?'locked':''}">
-   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}</span></div>
+   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':active===id?' • 🔴 В роботі':''}</span></div>
    <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
-   ${locked?'<p class="status">Команди з’являться після завершення попередніх матчів.</p>':''}
+   ${lockText?`<p class="status">${lockText}</p>`:''}
   </div>`;
  }).join('');
 }
