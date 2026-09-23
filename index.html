@@ -1666,6 +1666,7 @@ nav a:hover{color:var(--cyan)!important}
     <nav>
         <a href="#home">Головна</a>
         <a href="#playoffs">Плей-офф</a>
+        <a href="#matches">Матчі</a>
         <a href="#teams">Команди</a>
 
         <a class="admin-button" href="admin.html">🔐 АДМІНКА</a>
@@ -1778,6 +1779,20 @@ nav a:hover{color:var(--cyan)!important}
 
     </div>
 
+</section>
+
+<section id="matches" class="matches-section">
+  <div class="section-title">
+    <small>LIVE • SCHEDULE</small>
+    <h2>МАТЧІ</h2>
+  </div>
+  <div class="match-filters" id="matchFilters">
+    <button class="match-filter active" data-filter="all">ВСІ</button>
+    <button class="match-filter" data-filter="live">🔴 LIVE</button>
+    <button class="match-filter" data-filter="upcoming">НАЙБЛИЖЧІ</button>
+    <button class="match-filter" data-filter="finished">ЗАВЕРШЕНІ</button>
+  </div>
+  <div id="matchesList" class="matches-list"></div>
 </section>
 
 <div class="section-divider"></div>
@@ -2855,6 +2870,54 @@ body {
 })();
 </script>
 
+
+<style id="v2-enhancements">
+.matches-section{padding:70px 28px 80px;max-width:1500px;margin:0 auto}.match-filters{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}.match-filter{border:1px solid rgba(100,200,255,.2);background:#081c31;color:#8fb8d3;padding:10px 15px;border-radius:9px;font-weight:900;font-size:11px;cursor:pointer}.match-filter.active{background:#24baff;color:#00111e;border-color:#24baff}.matches-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.match-card{border:1px solid rgba(100,200,255,.14);background:linear-gradient(145deg,rgba(8,35,62,.8),rgba(3,18,34,.9));border-radius:14px;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,.16)}.match-top{display:flex;justify-content:space-between;gap:8px;color:#7198b2;font-size:10px;font-weight:900;letter-spacing:.7px}.match-status{padding:4px 7px;border-radius:6px;background:rgba(100,200,255,.08)}.match-status.live{color:#ff5c68;background:rgba(255,70,80,.1)}.match-status.finished{color:#75d7a5}.match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-top:15px}.match-team{display:flex;align-items:center;gap:9px;font-weight:900}.match-team:last-child{justify-content:flex-end;text-align:right}.match-logo{width:36px;height:36px;border-radius:9px;background:#0c2945;display:grid;place-items:center;overflow:hidden;flex:0 0 36px}.match-logo img{width:100%;height:100%;object-fit:contain}.match-score{font-size:22px;font-weight:1000;white-space:nowrap}.match-note{margin-top:12px;color:#63849b;font-size:10px}.empty-matches{padding:28px;text-align:center;border:1px dashed rgba(100,200,255,.16);border-radius:12px;color:#7198b2}
+@media(max-width:700px){.matches-section{padding:52px 14px 62px}.matches-list{grid-template-columns:1fr}.match-filters{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;scrollbar-width:none}.match-filters::-webkit-scrollbar{display:none}.match-filter{white-space:nowrap}.match-teams{gap:7px}.match-team{font-size:12px}.match-score{font-size:20px}}
+/* Mobile scroll safety: the bracket is normal page content; no pointer-drag interception. */
+@media(max-width:700px){html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}body{position:relative!important}.bracket-wrapper{overflow:visible!important;max-height:none!important;height:auto!important;touch-action:pan-y!important}.bracket{touch-action:pan-y!important}.playoffs,.matches-section,.teams{touch-action:pan-y!important}}
+</style>
+<script id="v2-enhancements-js">
+(function(){
+  function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+  function teamName(i){return (teams[i]&&teams[i].name)||'TBD';}
+  function logo(i){return teams[i]&&teams[i].logo ? '<img src="'+esc(teams[i].logo)+'" alt="">' : '<span>★</span>';}
+  function statusFor(m){if(!m||m.a==null||m.b==null)return 'upcoming'; if(m.sa===m.sb)return 'upcoming'; return 'finished';}
+  function renderMatches(filter='all'){
+    const el=document.getElementById('matchesList'); if(!el||typeof matches==='undefined')return;
+    const ids=Object.keys(matches).filter(id=>matches[id]&&matches[id].a!=null&&matches[id].b!=null);
+    const ordered=ids.filter(id=>['U1','U2','U3','U4','U5','U6','L1','L2','L3','L4','L5','UF','LF','GF'].includes(id));
+    const list=ordered.length?ordered:ids;
+    const cards=list.map(id=>{const m=matches[id], st=statusFor(m); if(filter==='finished'&&st!=='finished')return ''; if(filter==='upcoming'&&st!=='upcoming')return ''; if(filter==='live')return ''; const label=id==='GF'?'ГРАНД-ФІНАЛ':id==='UF'?'UPPER FINAL':id==='LF'?'LOWER FINAL':id; return '<article class="match-card"><div class="match-top"><span>'+esc(label)+'</span><span class="match-status '+st+'">'+(st==='finished'?'ЗАВЕРШЕНО':'ЗАПЛАНОВАНО')+'</span></div><div class="match-teams"><div class="match-team"><span class="match-logo">'+logo(m.a)+'</span><span>'+esc(teamName(m.a))+'</span></div><div class="match-score">'+m.sa+' : '+m.sb+'</div><div class="match-team"><span>'+esc(teamName(m.b))+'</span><span class="match-logo">'+logo(m.b)+'</span></div></div><div class="match-note">BO3 · результат синхронізується з турнірною сіткою</div></article>';}).join('');
+    el.innerHTML=cards||'<div class="empty-matches">Немає матчів для цього фільтра.</div>';
+  }
+  function init(){
+    document.querySelectorAll('.match-filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.match-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderMatches(b.dataset.filter)}));
+    renderMatches();
+    const oldRenderBracket=window.renderBracket;
+  }
+  const oldLoad=window.loadTournamentData;
+  // renderMatches after the site's existing render functions run
+  const watch=setInterval(()=>{if(typeof teams!=='undefined'&&typeof matches!=='undefined'){renderMatches();}},5000);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<style id="v2-mobile-final">
+@media(max-width:700px){
+ html,body{overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;min-height:100%!important;position:relative!important;touch-action:pan-y!important}
+ body.mobile-full-bracket{overflow-y:auto!important}
+ .bracket-wrapper{overflow:visible!important;height:auto!important;min-height:0!important;max-height:none!important;touch-action:pan-y!important;cursor:default!important}
+ .bracket{touch-action:pan-y!important;pointer-events:auto!important}
+}
+</style>
+<script>
+/* Disable old custom pointer-drag behavior on phones by removing pointer handlers from the wrapper clone. */
+(function(){
+ function clean(){const w=document.querySelector('.bracket-wrapper');if(!w)return; if(innerWidth<=700){w.style.touchAction='pan-y';w.style.overflow='visible';w.style.height='auto';w.style.maxHeight='none';}}
+ addEventListener('resize',clean);addEventListener('orientationchange',clean);document.readyState==='loading'?addEventListener('DOMContentLoaded',clean):clean();setTimeout(clean,200);setTimeout(clean,1000);
+})();
+</script>
 </body>
 </html>
 
