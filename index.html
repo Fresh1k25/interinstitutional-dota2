@@ -2918,6 +2918,62 @@ body {
  addEventListener('resize',clean);addEventListener('orientationchange',clean);document.readyState==='loading'?addEventListener('DOMContentLoaded',clean):clean();setTimeout(clean,200);setTimeout(clean,1000);
 })();
 </script>
+
+<script id="scheduled-matches-v3">
+(function(){
+  const scheduleState={rows:[], ready:false};
+  const esc2=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  function teamN(i){return (typeof teams!=='undefined'&&teams[i])?teams[i].name:'Очікуємо';}
+  function teamL(i){return (typeof teams!=='undefined'&&teams[i]&&teams[i].logo)?'<img src="'+esc2(teams[i].logo)+'" alt="">':''}
+  function fmt(iso){
+    if(!iso)return '';
+    const d=new Date(iso); if(isNaN(d))return '';
+    return d.toLocaleString('uk-UA',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+  function stateOf(r){
+    const now=Date.now(), start=r.scheduled_at?new Date(r.scheduled_at).getTime():NaN;
+    if(r.status==='finished')return 'finished';
+    if(r.status==='live')return 'live';
+    if(!isNaN(start) && now>=start && now<start+3*60*60*1000)return 'live';
+    return 'upcoming';
+  }
+  async function loadSchedule(){
+    if(typeof db==='undefined')return;
+    const q=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});
+    if(q.error){ console.warn('match_schedule:',q.error.message); return; }
+    scheduleState.rows=q.data||[]; scheduleState.ready=true; renderScheduled();
+  }
+  function renderScheduled(filter='all'){
+    const el=document.getElementById('matchesList'); if(!el)return;
+    const rows=scheduleState.rows||[];
+    if(!rows.length){ el.innerHTML='<div class="empty-matches">Матчі ще не заплановані.</div>'; return; }
+    const filtered=rows.filter(r=>filter==='all'||stateOf(r)===filter);
+    if(!filtered.length){el.innerHTML='<div class="empty-matches">Немає матчів для цього фільтра.</div>';return;}
+    el.innerHTML=filtered.map(r=>{
+      const st=stateOf(r), ai=r.a==null?null:Number(r.a)-1, bi=r.b==null?null:Number(r.b)-1;
+      const score=(r.sa??0)+' : '+(r.sb??0);
+      const label=esc2(r.stage||r.id);
+      const status=st==='live'?'🔴 LIVE':st==='finished'?'ЗАВЕРШЕНО':'ЗАПЛАНОВАНО';
+      return `<article class="match-card scheduled-card">
+        <div class="match-top"><span>${label}</span><span class="match-status ${st}">${status}</span></div>
+        <div class="match-teams">
+          <div class="match-team"><span class="match-logo">${teamL(ai)}</span><span>${esc2(teamN(ai))}</span></div>
+          <div class="match-score">${score}</div>
+          <div class="match-team"><span>${esc2(teamN(bi))}</span><span class="match-logo">${teamL(bi)}</span></div>
+        </div>
+        <div class="match-note">${fmt(r.scheduled_at)} · ${esc2(r.best_of||'BO3')}</div>
+      </article>`;
+    }).join('');
+  }
+  function wireFilters(){
+    document.querySelectorAll('.match-filter').forEach(b=>{
+      b.onclick=()=>{document.querySelectorAll('.match-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderScheduled(b.dataset.filter);}
+    });
+  }
+  function start(){wireFilters();loadSchedule();setInterval(loadSchedule,15000);setInterval(()=>{const b=document.querySelector('.match-filter.active');renderScheduled(b?.dataset.filter||'all')},1000);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
 </body>
 </html>
 
