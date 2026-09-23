@@ -1,110 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interinstitutional — Адмін</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUWEE DOTA 2 — Адмінка команд</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#020b18;color:#fff;font-family:Arial,Helvetica,sans-serif}
-header{height:70px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(2,12,28,.95);border-bottom:1px solid rgba(70,180,255,.2);position:sticky;top:0;z-index:10}.logo{font-size:20px;font-weight:900}.logo span{color:#28b9ff}header a{color:#fff;text-decoration:none}
-.wrap{max-width:1100px;margin:55px auto 80px;padding:0 20px}.card{background:linear-gradient(135deg,rgba(7,26,48,.98),rgba(3,18,34,.98));border:1px solid #21638c;border-radius:18px;padding:28px;margin-bottom:20px;box-shadow:0 15px 45px rgba(0,0,0,.18)}
-.login{max-width:460px;margin:90px auto}.field{margin:14px 0}.field label{display:block;margin-bottom:7px;color:#9edaff;font-weight:700}.field input,.team-row input,.score-input{width:100%;padding:12px;background:#0a233d;color:#fff;border:1px solid #205071;border-radius:8px;outline:none}.field input:focus,.team-row input:focus,.score-input:focus{border-color:#25b5fa}.btn{border:0;border-radius:8px;padding:12px 18px;background:#25b5fa;color:#00101c;font-weight:900;cursor:pointer}.btn.secondary{background:#123454;color:#fff}.btn.danger{background:#6e2530;color:#fff}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px}.status{color:#9edaff;min-height:20px}
-.team-row{display:grid;grid-template-columns:64px 1fr 150px 110px;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(100,190,255,.15)}.team-row:last-child{border-bottom:0}.team-preview{width:60px;height:60px;border-radius:10px;border:1px solid rgba(100,200,255,.25);background:#0d2946;object-fit:contain;padding:5px}.upload{background:#123454;padding:11px 10px;border-radius:8px;text-align:center;font-size:12px;font-weight:800;cursor:pointer}.upload input{display:none}.remove-logo{font-size:12px;color:#9edaff;cursor:pointer;text-align:center}
-.game{padding:15px;background:rgba(5,30,55,.65);border:1px solid rgba(100,190,255,.16);border-radius:10px;margin:9px 0}.game.locked{opacity:.6}.game-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}.game-head strong{font-size:14px}.format{color:#79cfff;font-size:11px}.game-grid{display:grid;grid-template-columns:1fr 70px 20px 70px 1fr;gap:8px;align-items:center}.game-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.score-input{text-align:center;font-weight:900;font-size:16px}.score-input:disabled{opacity:.5;cursor:not-allowed}.save{width:100%;margin-top:15px;padding:14px}.hidden{display:none}.hint{font-size:13px;color:#8bb8d6;line-height:1.5}
-@media(max-width:700px){header{padding:0 20px}.wrap{margin-top:30px}.card{padding:20px}.team-row{grid-template-columns:58px 1fr}.team-row .upload,.team-row .remove-logo{grid-column:2}.team-preview{width:54px;height:54px}.game-grid{grid-template-columns:1fr 52px 12px 52px 1fr;gap:5px;font-size:11px}.topbar{align-items:flex-start}.topbar .btn{padding:10px 12px}}
+*{box-sizing:border-box}body{margin:0;background:#06111d;color:#eaf8ff;font-family:Arial,Helvetica,sans-serif}header{padding:22px 5%;border-bottom:1px solid #1c5870;background:#081a29;position:sticky;top:0;z-index:5}h1{margin:0;font-size:28px}p{color:#8fb6c7}.wrap{max-width:1200px;margin:30px auto;padding:0 18px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}.btn{border:1px solid #22b9ff;background:#0b2435;color:#eaf8ff;border-radius:9px;padding:11px 16px;font-weight:800;cursor:pointer}.btn.primary{background:#12a9ef;color:#00101a}.status{padding:12px;border:1px solid #244a5d;border-radius:10px;background:#081a28;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:#0a1d2c;border:1px solid #1d4b60;border-radius:14px;padding:18px;box-shadow:0 10px 35px #0005}.card h2{margin:0 0 15px;font-size:20px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:11px;color:#7fb6cc;text-transform:uppercase;letter-spacing:1px}input,textarea{width:100%;border:1px solid #29556a;background:#06131f;color:#fff;border-radius:8px;padding:10px;font:inherit}textarea{min-height:80px;resize:vertical}.players{display:grid;gap:8px}.logo-preview{width:70px;height:70px;border-radius:10px;border:1px solid #28556a;object-fit:contain;background:#06131f}.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}.small{font-size:12px;color:#789aaa}@media(max-width:700px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
 </style>
-
-<style id="mobile-admin-optimization">
-html { -webkit-text-size-adjust:100%; }
-body { overflow-x:hidden; }
-
-@media (max-width:700px) {
-    header { height:58px; padding:0 14px; }
-    header .logo { font-size:15px; white-space:nowrap; }
-    header a { font-size:10px; white-space:nowrap; }
-
-    .wrap { width:100%; max-width:100%; margin:24px auto 50px; padding:0 10px; }
-    .card { padding:16px; margin-bottom:12px; border-radius:14px; }
-    .login { margin:35px auto; max-width:100%; }
-
-    h1 { font-size:25px; line-height:1.1; }
-    h2 { font-size:19px; }
-    .field { margin:11px 0; }
-
-    .field input, .team-row input, .score-input {
-        min-height:46px; font-size:16px;
-    }
-
-    .btn { min-height:46px; padding:11px 14px; font-size:13px; }
-    .topbar { gap:10px; flex-wrap:wrap; }
-    .topbar > div { min-width:0; flex:1 1 100%; }
-    .topbar .btn { width:100%; }
-
-    .team-row {
-        grid-template-columns:54px 1fr !important;
-        gap:9px; padding:12px 0;
-    }
-    .team-preview { width:54px; height:54px; }
-    .team-row input { min-width:0; }
-    .team-row .upload, .team-row .remove-logo { grid-column:1 / -1 !important; }
-    .team-row .upload {
-        min-height:44px; display:flex; align-items:center; justify-content:center;
-    }
-    .team-row .remove-logo { padding:3px 0 5px; }
-
-    .game { padding:11px; border-radius:9px; }
-    .game-head { align-items:flex-start; }
-    .game-head strong { font-size:12px; line-height:1.25; }
-    .format { flex-shrink:0; font-size:10px; }
-    .game-grid {
-        grid-template-columns:minmax(0,1fr) 52px 12px 52px minmax(0,1fr) !important;
-        gap:5px !important; font-size:11px !important;
-    }
-    .game-grid span { min-width:0; }
-    .score-input { min-height:44px; padding:7px; }
-    .hint, .status { font-size:12px; line-height:1.4; }
-    .save { margin-top:15px; min-height:48px; }
-}
-</style>
-
 </head>
 <body>
-<header><div class="logo">NUWEE <span>×</span> DOTA 2</div><a href="index.html">← ПОВЕРНУТИСЯ НА САЙТ</a></header>
+<header><h1>NUWEE × DOTA 2 — АДМІНКА КОМАНД</h1><p>Редагування профілю команди: капітан, 5 гравців, місто, прапор, місце та статус.</p></header>
 <div class="wrap">
-<div id="loginCard" class="card login">
-<h1>АДМІН-ПАНЕЛЬ</h1><p class="status">Увійдіть своїм акаунтом адміністратора.</p>
-<div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div>
-<div class="field"><label>Пароль</label><input id="password" type="password" autocomplete="current-password"></div>
-<button class="btn" id="loginBtn">УВІЙТИ</button><p id="loginMsg" class="status"></p>
+<div class="toolbar"><button class="btn" onclick="loadTeams()">↻ Оновити</button><a class="btn" href="index.html">← На сайт</a></div>
+<div id="status" class="status">Завантаження...</div>
+<div id="teams" class="grid"></div>
 </div>
-<div id="adminContent" class="hidden">
-<div class="card"><div class="topbar"><div><h1>АДМІН-ПАНЕЛЬ</h1><p class="status" id="userStatus"></p></div><button class="btn secondary" id="logoutBtn">ВИЙТИ</button></div></div>
-<div class="card"><h2>КОМАНДИ</h2><p class="hint">Змініть назву або виберіть логотип. Зображення автоматично стискається до легкого формату, щоб сайт швидко завантажувався.</p><div id="teamsAdmin"></div><button class="btn save" id="saveTeamsBtn">ЗБЕРЕГТИ КОМАНДИ</button><p id="teamMsg" class="status"></p></div>
-<div class="card"><h2>РЕЗУЛЬТАТИ МАТЧІВ</h2><p class="hint">BO3 — до 2 перемог. Грандфінал BO5 — до 3 перемог. Команди наступних матчів визначаються автоматично.</p><div id="matchesAdmin"></div><button class="btn save" id="saveBtn">ЗБЕРЕГТИ РЕЗУЛЬТАТИ</button><p id="saveMsg" class="status"></p></div>
-</div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
 <script>
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let teams=[],matches={};
-const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
-const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function msg(id,text){document.getElementById(id).textContent=text||'';}
-function result(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
-function calcParticipants(){const p={},r=['U1','U2','U3','U4'].map(result);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];p.L1=[r[0]?.loser??null,r[1]?.loser??null];p.L2=[r[2]?.loser??null,r[3]?.loser??null];const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=result('L3'),l4=result('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=result('L5'),uf=result('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=result('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
-function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
-function renderTeams(){document.getElementById('teamsAdmin').innerHTML=teams.map(t=>`<div class="team-row"><img class="team-preview" id="preview-${t.id}" src="${esc(t.logo||placeholder)}" alt=""><input id="name-${t.id}" type="text" value="${esc(t.name)}" placeholder="Назва команди"><label class="upload">📁 ОБРАТИ ЛОГО<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="uploadLogo(event,${t.id})"></label><span class="remove-logo" onclick="removeLogo(${t.id})">✕ Прибрати лого</span></div>`).join('');}
-function renderMatches(){const p=calcParticipants();document.getElementById('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{const m=matches[id]||{sa:0,sb:0};const [a,b]=p[id]||[m.a,m.b];const max=id==='GF'?3:2;const locked=a==null||b==null;return `<div class="game ${locked?'locked':''}"><div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}</span></div><div class="game-grid"><span>${esc(teamName(a))}</span><input class="score-input" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score-input" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>${locked?'<p class="status">Команди з’являться автоматично після завершення попередніх матчів.</p>':''}</div>`;}).join('');}
-function render(){renderTeams();renderMatches();}
-function compressImage(file){return new Promise((resolve,reject)=>{if(file.type==='image/svg+xml'){const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);return;}const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const max=256,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/webp',.86));};img.onerror=reject;img.src=r.result;};r.onerror=reject;r.readAsDataURL(file);});}
-async function uploadLogo(event,id){const file=event.target.files[0];if(!file)return;if(file.size>8*1024*1024){alert('Файл завеликий. Вибери зображення до 8 МБ.');event.target.value='';return;}try{const data=await compressImage(file);const t=teams.find(x=>x.id===id);if(t){t.logo=data;document.getElementById('preview-'+id).src=data;msg('teamMsg','Логотип підготовлено. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}catch(e){alert('Не вдалося обробити зображення.');}}
-function removeLogo(id){const t=teams.find(x=>x.id===id);if(t){t.logo='';document.getElementById('preview-'+id).src=placeholder;msg('teamMsg','Логотип прибрано. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}
-async function load(){const [tr,mr]=await Promise.all([db.from('teams').select('id,name,logo').order('id'),db.from('matches').select('id,a,b,sa,sb')]);if(tr.error||mr.error)throw(tr.error||mr.error);teams=tr.data.map(t=>({...t,id:Number(t.id),logo:t.logo||''}));matches=Object.fromEntries(mr.data.map(x=>[x.id,{...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}]));render();}
-async function saveTeams(){msg('teamMsg','Зберігаю...');try{for(const t of teams){t.name=document.getElementById('name-'+t.id).value.trim()||`Команда ${t.id}`;const {error}=await db.from('teams').update({name:t.name,logo:t.logo||null}).eq('id',t.id);if(error)throw error;}msg('teamMsg','Готово! Назви та логотипи збережені.');renderMatches();}catch(e){msg('teamMsg','Помилка: '+(e.message||e));}}
-async function saveScores(){msg('saveMsg','Зберігаю...');try{for(const id of Object.keys(labels)){const a=document.getElementById('sa-'+id),b=document.getElementById('sb-'+id);if(!a||!b||a.disabled)continue;const max=id==='GF'?3:2;const sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));if(sa===max&&sb===max)throw new Error(labels[id]+' не може закінчитися з однаковим максимальним рахунком.');const {error}=await db.from('matches').update({sa,sb}).eq('id',id);if(error)throw error;}msg('saveMsg','Готово! Результати збережені.');await load();}catch(e){msg('saveMsg','Помилка: '+(e.message||e));}}
-async function start(){const {data:{session}}=await db.auth.getSession();if(session){document.getElementById('loginCard').classList.add('hidden');document.getElementById('adminContent').classList.remove('hidden');document.getElementById('userStatus').textContent='Увійшли як '+(session.user.email||'адміністратор');try{await load();}catch(e){msg('teamMsg','Немає доступу: '+e.message);}}}
-document.getElementById('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const {error}=await db.auth.signInWithPassword({email:document.getElementById('email').value,password:document.getElementById('password').value});if(error){msg('loginMsg',error.message);return}location.reload()};
-document.getElementById('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};
-document.getElementById('saveTeamsBtn').onclick=saveTeams;document.getElementById('saveBtn').onclick=saveScores;start();
+const statusEl=document.getElementById('status');
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function getDetails(t){const d=t.details||{};return {captain:d.captain||t.captain||'',players:Array.isArray(d.players)?d.players:(Array.isArray(t.players)?t.players:[]),flag:d.flag||t.flag||'',city:d.city||t.city||'',position:d.position||t.position||'',status:d.status||t.status||'У турнірі'};}
+async function loadTeams(){
+ statusEl.textContent='Завантаження команд...';
+ const {data,error}=await db.from('teams').select('*').order('id');
+ if(error){statusEl.textContent='Помилка: '+error.message;return;}
+ document.getElementById('teams').innerHTML=data.map(t=>{const d=getDetails(t),p=[0,1,2,3,4].map(i=>d.players[i]||'').map(esc);return `
+ <article class="card" data-id="${t.id}"><h2>${esc(t.name)}</h2>
+ <div class="row"><div class="field"><label>Логотип URL / data</label><input class="logo" value="${esc(t.logo||'')}"></div><div><label>Поточний логотип</label><br><img class="logo-preview" src="${esc(t.logo||'')}" onerror="this.style.display='none'"></div></div>
+ <div class="row"><div class="field"><label>Капітан</label><input class="captain" value="${esc(d.captain)}"></div><div class="field"><label>Прапор</label><input class="flag" placeholder="🇺🇦" value="${esc(d.flag)}"></div></div>
+ <div class="row"><div class="field"><label>Місто</label><input class="city" value="${esc(d.city)}"></div><div class="field"><label>Поточне місце</label><input class="position" placeholder="1" value="${esc(d.position)}"></div></div>
+ <div class="field full"><label>Статус</label><input class="teamstatus" value="${esc(d.status)}"></div>
+ <div style="margin-top:14px"><label>Склад — 5 гравців</label><div class="players">${p.map((v,i)=>`<input class="player" placeholder="Гравець ${i+1}" value="${v}">`).join('')}</div></div>
+ <div class="actions"><button class="btn primary" onclick="saveTeam(this)">💾 Зберегти</button></div>
+ </article>`}).join('');
+ statusEl.textContent=`Завантажено команд: ${data.length}`;
+}
+async function saveTeam(btn){
+ const card=btn.closest('.card'),id=Number(card.dataset.id),players=[...card.querySelectorAll('.player')].map(x=>x.value.trim()).filter(Boolean);
+ const details={captain:card.querySelector('.captain').value.trim(),players,flag:card.querySelector('.flag').value.trim(),city:card.querySelector('.city').value.trim(),position:card.querySelector('.position').value.trim(),status:card.querySelector('.teamstatus').value.trim()||'У турнірі'};
+ const payload={logo:card.querySelector('.logo').value.trim(),details};
+ btn.disabled=true;btn.textContent='Збереження...';
+ let res=await db.from('teams').update(payload).eq('id',id);
+ if(res.error && /details/i.test(res.error.message)){
+   const fallback={logo:payload.logo,captain:details.captain,players:details.players,flag:details.flag,city:details.city,position:details.position,status:details.status};
+   res=await db.from('teams').update(fallback).eq('id',id);
+ }
+ btn.disabled=false;btn.textContent='💾 Зберегти';
+ if(res.error){statusEl.textContent='Помилка збереження: '+res.error.message;return;}
+ statusEl.textContent=`Команду #${id} збережено.`;
+}
+loadTeams();
 </script>
 </body></html>
