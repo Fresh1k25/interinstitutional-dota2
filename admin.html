@@ -48,6 +48,11 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
  .header-inner{align-items:flex-start;flex-direction:column}
 }
 </style>
+
+
+
+
+
 </head>
 <body>
 <header>
@@ -64,7 +69,6 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
 <div class="wrap">
  <div id="login" class="card">
   <h1>Вхід адміністратора</h1>
-  <p class="hint">Одна адмінка для команд, профілів, результатів і розкладу.</p>
   <div class="grid">
    <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div>
    <div class="field"><label>Пароль</label><input id="password" type="password" autocomplete="current-password"></div>
@@ -116,6 +120,14 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let teams=[],matches={},schedule=[];
 const $=id=>document.getElementById(id);
+function pad2(n){return String(n).padStart(2,'0');}
+function toLocalInput(value){
+  if(!value) return '';
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return '';
+  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes());
+}
+
 const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
 const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -161,7 +173,7 @@ function renderSchedule(){
    <div class="field"><label>Етап</label><input class="m-stage" value="${esc(m.stage||'')}"></div>
    <div class="field"><label>Команда 1</label><select class="m-a"><option value="">—</option>${teamOptions(m.a)}</select></div>
    <div class="field"><label>Команда 2</label><select class="m-b"><option value="">—</option>${teamOptions(m.b)}</select></div>
-   <div class="field"><label>Дата й час</label><input class="m-date" type="datetime-local" value="${m.scheduled_at?new Date(m.scheduled_at).toISOString().slice(0,16):''}"></div>
+   <div class="field"><label>Дата й час</label><input class="m-date" type="datetime-local" value="${m.scheduled_at?toLocalInput(m.scheduled_at):''}"></div>
    <div class="field"><label>Формат</label><select class="m-bo"><option ${m.best_of==='BO3'?'selected':''}>BO3</option><option ${m.best_of==='BO5'?'selected':''}>BO5</option></select></div>
    <div class="field"><label>Статус</label><select class="m-status"><option value="scheduled" ${!['live','finished'].includes(m.status)?'selected':''}>Заплановано</option><option value="live" ${m.status==='live'?'selected':''}>LIVE</option><option value="finished" ${m.status==='finished'?'selected':''}>Завершено</option></select></div>
   </div>
@@ -219,7 +231,7 @@ async function saveScores(){
 async function saveSchedule(){
  msg('scheduleMsg','Зберігаю...');
  try{
-  const rows=[...document.querySelectorAll('.match')].map(x=>{const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value;return{id:old.id,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?new Date(dt).toISOString():null,best_of:x.querySelector('.m-bo').value,status:x.querySelector('.m-status').value};});
+  const rows=[...document.querySelectorAll('.match')].map(x=>{const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value;return{id:old.id,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?localDateTimeToIso(dt):null,best_of:x.querySelector('.m-bo').value,status:x.querySelector('.m-status').value};});
   for(const old of schedule)if(old.id&&!rows.some(x=>x.id===old.id)){const d=await db.from('match_schedule').delete().eq('id',old.id);if(d.error)throw d.error;}
   for(const row of rows){const payload={stage:row.stage,a:row.a,b:row.b,scheduled_at:row.scheduled_at,best_of:row.best_of,status:row.status};const r=row.id?await db.from('match_schedule').update(payload).eq('id',row.id):await db.from('match_schedule').insert(payload);if(r.error)throw r.error;}
   msg('scheduleMsg','Розклад збережено.');await loadSchedule();
