@@ -1630,6 +1630,27 @@ nav a:hover{color:var(--cyan)!important}
 }
 </style>
 
+
+<style id="mobile-scroll-fix">
+@media (max-width:700px){
+  html, body {
+    height:auto !important;
+    min-height:100% !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    touch-action:pan-y !important;
+  }
+  body { position:relative !important; }
+  .bracket-wrapper {
+    overflow:visible !important;
+    touch-action:pan-y !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  .bracket { touch-action:pan-y !important; }
+  .playoffs, .teams, section, main { touch-action:pan-y !important; }
+}
+</style>
 </head>
 
 <body>
