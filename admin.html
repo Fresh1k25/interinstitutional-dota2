@@ -143,8 +143,9 @@ const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — м
 const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function msg(id,t){$(id).textContent=t||'';}
-function result(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
-function participants(){const p={},r=['U1','U2','U3','U4'].map(result);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];p.L1=[r[0]?.loser??null,r[1]?.loser??null];p.L2=[r[2]?.loser??null,r[3]?.loser??null];const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=result('L3'),l4=result('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=result('L5'),uf=result('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=result('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
+function baseResult(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
+function participants(){const p={},r=['U1','U2','U3','U4'].map(baseResult);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];const u5=baseResult('U5'),u6=baseResult('U6'),l1=baseResult('L1'),l2=baseResult('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=baseResult('L3'),l4=baseResult('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=baseResult('L5'),uf=baseResult('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=baseResult('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
+function result(id){const m=matches[id];if(!m)return null;const firstRound=['U1','U2','U3','U4'].includes(id);const [a,b]=firstRound?[m.a,m.b]:(participants()[id]||[null,null]);if(a==null||b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:a,loser:b};if(m.sb>=need&&m.sa<need)return{winner:b,loser:a};return null;}
 function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
 
 function renderTeams(){
@@ -185,20 +186,23 @@ function renderMatches(){
  const p=participants();
  const active=firstUnfinishedPlayableMatch(p);
  $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
-  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
+  const m=matches[id]||{sa:0,sb:0};
+  const [a,b]=p[id]||[m.a,m.b];
+  const max=id==='GF'?3:2;
   const noTeams=a==null||b==null;
   const finished=!!result(id);
   const locked=noTeams || (!finished && active!==id);
-  const lockText=noTeams
-    ? 'Команди з’являться після завершення попередніх матчів.'
-    : (!finished && active!==id ? 'Зараз завершіть поточний матч. Інші матчі заблоковані.' : '');
+  const shownA=(noTeams||locked&&!finished)?0:Number(m.sa)||0;
+  const shownB=(noTeams||locked&&!finished)?0:Number(m.sb)||0;
+  const lockText=noTeams ? 'Команди з’являться після завершення попередніх матчів.' : (!finished && active!==id ? 'Зараз завершіть поточний матч. Інші матчі заблоковані.' : '');
   return `<div class="game ${locked?'locked':''}">
    <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':active===id?' • 🔴 В роботі':''}</span></div>
-   <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
+   <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${shownA}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${shownB}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
    ${lockText?`<p class="status">${lockText}</p>`:''}
   </div>`;
  }).join('');
 }
+
 function teamOptions(v){return teams.map(t=>`<option value="${t.id}" ${String(v)==String(t.id)?'selected':''}>${esc(t.name)}</option>`).join('');}
 function automaticScheduleStatus(m){const need=String(m.best_of||'BO3')==='BO5'?3:2;if((Number(m.sa)>=need&&Number(m.sb)<need)||(Number(m.sb)>=need&&Number(m.sa)<need))return'finished';if(!m.scheduled_at)return'scheduled';return new Date(m.scheduled_at).getTime()<=Date.now()?'live':'scheduled';}
 function renderSchedule(){
@@ -247,7 +251,9 @@ async function saveScores(){
    const a=$('sa-'+id),b=$('sb-'+id);if(!a||!b||a.disabled)continue;
    const max=id==='GF'?3:2,sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));
    if(sa===max&&sb===max)throw new Error(labels[id]+' не може мати однаковий максимальний рахунок.');
-   const r=await db.from('matches').update({sa,sb}).eq('id',id);if(r.error)throw r.error;
+   const p=participants(),[teamA,teamB]=p[id]||[matches[id]?.a??null,matches[id]?.b??null];
+   if(teamA==null||teamB==null)throw new Error(labels[id]+' ще не має двох визначених команд.');
+   const r=await db.from('matches').update({a:teamA,b:teamB,sa,sb}).eq('id',id);if(r.error)throw r.error;
   }
   msg('saveMsg','Результати збережено.');await load();
  }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
