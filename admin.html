@@ -1,50 +1,237 @@
-<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NUWEE × DOTA 2 — Адмінка</title>
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUWEE × DOTA 2 — Єдина адмін-панель</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#06111d;color:#eef8ff;font-family:Arial,sans-serif}header{padding:22px 5%;border-bottom:1px solid #1b3b50;background:#071a2a;position:sticky;top:0;z-index:10}h1{margin:0;font-size:25px}.wrap{max-width:1200px;margin:25px auto;padding:0 16px}.card{background:#0a2032;border:1px solid #1c4963;border-radius:14px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}label{font-size:11px;color:#86b9d2;text-transform:uppercase;letter-spacing:1px}input,select{width:100%;padding:11px;border-radius:8px;border:1px solid #28566e;background:#061522;color:#fff;font:inherit}.btn{border:1px solid #2b6684;background:#123c55;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer}.primary{background:#1597d0}.danger{background:#642c38}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.status{color:#8eb4c8}.hidden{display:none}.team{border-top:1px solid #21455b;padding-top:16px;margin-top:16px}.players{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.match{padding:16px;background:#071a2a;border:1px solid #1c465c;border-radius:12px;margin:10px 0}.match-grid{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1fr 1fr 1fr;gap:8px;align-items:end}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.hint{font-size:13px;color:#7fa6ba}.setup{background:#14283a;border-left:3px solid #25b5fa;padding:12px;border-radius:8px;margin:12px 0;font-size:13px;line-height:1.5}code{background:#061522;padding:2px 5px;border-radius:4px}@media(max-width:700px){.grid,.match-grid{grid-template-columns:1fr}.full{grid-column:auto}.players{grid-template-columns:1fr 1fr}}
-</style></head><body>
-<header><h1>NUWEE × DOTA 2 — АДМІН-ПАНЕЛЬ</h1><div class="status">Команди • матчі • розклад • LIVE</div></header>
-<div class="wrap">
-<div class="toolbar"><a class="btn" href="index.html">← На сайт</a><button class="btn" id="reload">↻ Оновити</button><button class="btn danger" id="logout">Вийти</button></div>
-<div id="login" class="card"><h2>Вхід адміністратора</h2><div class="grid"><div class="field"><label>Email</label><input id="email" type="email"></div><div class="field"><label>Пароль</label><input id="password" type="password"></div></div><div class="actions"><button class="btn primary" id="loginBtn">УВІЙТИ</button></div><p id="loginMsg" class="status"></p></div>
-<div id="app" class="hidden">
-<div class="card"><h2>КОМАНДИ</h2><p class="hint">Назва, логотип, капітан, 5 гравців, місце та статус. Прапор і місто не використовуються.</p><div id="teams"></div><button class="btn primary" id="saveTeams">💾 ЗБЕРЕГТИ КОМАНДИ</button><p id="teamMsg" class="status"></p></div>
-<div class="card"><h2>РОЗКЛАД МАТЧІВ</h2><p class="hint">Додай дату й час. Після настання часу сайт автоматично покаже LIVE.</p>
-<div class="setup">Якщо таблиці <code>match_schedule</code> ще немає у Supabase, виконай SQL із файлу <b>match_schedule_setup.sql</b> один раз.</div>
-<div id="matches"></div><div class="actions"><button class="btn primary" id="addMatch">＋ ДОДАТИ МАТЧ</button><button class="btn" id="saveMatches">💾 ЗБЕРЕГТИ РОЗКЛАД</button></div><p id="matchMsg" class="status"></p></div>
-</div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
-<script>
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);let teams=[],schedule=[];
-const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-async function load(){
- const {data,error}=await db.from('teams').select('*').order('id'); if(error){$('teamMsg').textContent=error.message;return}
- teams=data.map(t=>({...t,details:t.details||{}}));
- renderTeams(); await loadSchedule();
+*{box-sizing:border-box}
+body{margin:0;background:#06111d;color:#eef8ff;font-family:Arial,Helvetica,sans-serif}
+header{padding:18px 5%;border-bottom:1px solid #1b3b50;background:#071a2a;position:sticky;top:0;z-index:20}
+.header-inner{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.logo{font-size:21px;font-weight:900}.logo span{color:#25b5fa}
+.wrap{max-width:1200px;margin:25px auto 60px;padding:0 16px}
+.card{background:#0a2032;border:1px solid #1c4963;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 10px 35px #0003}
+h1,h2{margin-top:0}.hint{font-size:13px;color:#7fa6ba;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}
+label{font-size:11px;color:#86b9d2;text-transform:uppercase;letter-spacing:1px}
+input,select{width:100%;padding:11px;border-radius:8px;border:1px solid #28566e;background:#061522;color:#fff;font:inherit}
+input:focus,select:focus{outline:none;border-color:#25b5fa}
+.btn{border:1px solid #2b6684;background:#123c55;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:#1597d0}.danger{background:#642c38}.secondary{background:#123454}
+.toolbar,.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.actions{justify-content:flex-end;margin-top:12px}
+.status{color:#8eb4c8;min-height:20px}
+.hidden{display:none!important}
+.team{border-top:1px solid #21455b;padding-top:16px;margin-top:16px}
+.players{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.team-logo-row{display:grid;grid-template-columns:70px 1fr 150px 120px;gap:10px;align-items:center}
+.team-preview{width:64px;height:64px;object-fit:contain;border:1px solid #28566e;border-radius:10px;background:#061522;padding:5px}
+.upload{background:#123454;padding:11px;border-radius:8px;text-align:center;font-weight:800;cursor:pointer}
+.upload input{display:none}
+.game,.match{padding:15px;background:#071a2a;border:1px solid #1c465c;border-radius:12px;margin:10px 0}
+.game-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+.format{color:#79cfff;font-size:11px}
+.game-grid{display:grid;grid-template-columns:1fr 65px 20px 65px 1fr;gap:8px;align-items:center}
+.game-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score{text-align:center;font-weight:900;font-size:16px}
+.match-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr 1fr 1fr 1fr;gap:8px;align-items:end}
+.setup{background:#14283a;border-left:3px solid #25b5fa;padding:12px;border-radius:8px;margin:12px 0;font-size:13px;line-height:1.5}
+.badge{font-size:11px;padding:4px 8px;border-radius:99px;background:#123c55}
+@media(max-width:800px){
+ .grid,.match-grid{grid-template-columns:1fr}.full{grid-column:auto}
+ .players{grid-template-columns:1fr 1fr}
+ .team-logo-row{grid-template-columns:60px 1fr}
+ .team-logo-row .upload,.team-logo-row .remove-logo{grid-column:2}
+ .game-grid{grid-template-columns:1fr 52px 12px 52px 1fr;font-size:11px}
+ .header-inner{align-items:flex-start;flex-direction:column}
 }
-function renderTeams(){$('teams').innerHTML=teams.map(t=>{let d=t.details||{},p=Array.isArray(d.players)?d.players:[];return `<div class="team"><div class="grid">
-<div class="field"><label>Назва</label><input class="t-name" data-id="${t.id}" value="${esc(t.name)}"></div>
-<div class="field"><label>Логотип</label><input class="t-logo" data-id="${t.id}" value="${esc(t.logo||'')}"></div>
-<div class="field"><label>Капітан</label><input class="t-cap" data-id="${t.id}" value="${esc(d.captain||'')}"></div>
-<div class="field"><label>Поточне місце</label><input class="t-pos" data-id="${t.id}" value="${esc(d.position||'')}"></div>
-<div class="field full"><label>Статус</label><input class="t-status" data-id="${t.id}" value="${esc(d.status||'У турнірі')}"></div>
-<div class="field full"><label>5 гравців</label><div class="players">${[0,1,2,3,4].map(i=>`<input class="t-player" data-id="${t.id}" data-i="${i}" value="${esc(p[i]||'')}" placeholder="Гравець ${i+1}">`).join('')}</div></div>
-</div></div>`}).join('')}
-async function saveTeams(){for(const t of teams){const d=t.details||{};const players=[...document.querySelectorAll('.t-player[data-id="'+t.id+'"]')].sort((a,b)=>+a.dataset.i-+b.dataset.i).map(x=>x.value.trim()).filter(Boolean);d.captain=$('.t-cap')?.value}
- for(const t of teams){let d={...(t.details||{})};d.captain=document.querySelector(`.t-cap[data-id="${t.id}"]`).value.trim();d.position=document.querySelector(`.t-pos[data-id="${t.id}"]`).value.trim();d.status=document.querySelector(`.t-status[data-id="${t.id}"]`).value.trim();d.players=[...document.querySelectorAll(`.t-player[data-id="${t.id}"]`)].sort((a,b)=>+a.dataset.i-+b.dataset.i).map(x=>x.value.trim()).filter(Boolean);let logo=document.querySelector(`.t-logo[data-id="${t.id}"]`).value.trim();let r=await db.from('teams').update({name:document.querySelector(`.t-name[data-id="${t.id}"]`).value.trim(),logo,details:d}).eq('id',t.id);if(r.error){$('teamMsg').textContent=r.error.message;return}}$('teamMsg').textContent='Команди збережено.';await load()}
-function teamOptions(v){return teams.map(t=>`<option value="${t.id}" ${String(v)==String(t.id)?'selected':''}>${esc(t.name)}</option>`).join('')}
-function renderSchedule(){$('matches').innerHTML=schedule.map((m,i)=>`<div class="match" data-i="${i}"><div class="match-grid">
-<div class="field"><label>Етап</label><input class="m-stage" value="${esc(m.stage||'')}"></div>
-<div class="field"><label>Команда 1</label><select class="m-a"><option value="">—</option>${teamOptions(m.a)}</select></div>
-<div class="field"><label>Команда 2</label><select class="m-b"><option value="">—</option>${teamOptions(m.b)}</select></div>
-<div class="field"><label>Дата й час</label><input class="m-date" type="datetime-local" value="${m.scheduled_at?new Date(m.scheduled_at).toISOString().slice(0,16):''}"></div>
-<div class="field"><label>Формат</label><select class="m-bo"><option ${m.best_of==='BO3'?'selected':''}>BO3</option><option ${m.best_of==='BO5'?'selected':''}>BO5</option></select></div>
-<div class="field"><label>Статус</label><select class="m-status"><option value="scheduled" ${m.status!=='live'&&m.status!=='finished'?'selected':''}>Заплановано</option><option value="live" ${m.status==='live'?'selected':''}>LIVE</option><option value="finished" ${m.status==='finished'?'selected':''}>Завершено</option></select></div>
-</div><div class="actions"><button class="btn danger remove">Видалити</button></div></div>`).join('')}
-async function loadSchedule(){let r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});if(r.error){$('matchMsg').textContent='Таблиця match_schedule не готова. Виконай SQL setup-файл.';schedule=[];renderSchedule();return}schedule=r.data||[];renderSchedule()}
-$('addMatch').onclick=()=>{schedule.push({stage:'',a:null,b:null,scheduled_at:'',best_of:'BO3',status:'scheduled'});renderSchedule()}
-document.addEventListener('click',e=>{if(e.target.classList.contains('remove')){schedule.splice(+e.target.closest('.match').dataset.i,1);renderSchedule()}})
-$('saveMatches').onclick=async()=>{let rows=[...document.querySelectorAll('.match')].map(x=>{let dt=x.querySelector('.m-date').value;return {id:schedule[+x.dataset.i]?.id,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?new Date(dt).toISOString():null,best_of:x.querySelector('.m-bo').value,status:x.querySelector('.m-status').value}});for(const old of schedule){if(old.id&&!rows.find(x=>x.id===old.id))await db.from('match_schedule').delete().eq('id',old.id)}for(const row of rows){let q=row.id?db.from('match_schedule').update(row).eq('id',row.id):db.from('match_schedule').insert(row);let r=await q;if(r.error){$('matchMsg').textContent=r.error.message;return}}$('matchMsg').textContent='Розклад збережено.';await loadSchedule()}
-$('loginBtn').onclick=async()=>{let r=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(r.error){$('loginMsg').textContent=r.error.message;return}show()}
-$('logout').onclick=()=>db.auth.signOut().then(()=>location.reload());$('reload').onclick=load;$('saveTeams').onclick=saveTeams;
-async function show(){let {data}=await db.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');load()}}show();
-</script></body></html>
+</style>
+</head>
+<body>
+<header>
+ <div class="header-inner">
+  <div class="logo">NUWEE <span>×</span> DOTA 2 — АДМІН-ПАНЕЛЬ</div>
+  <div class="toolbar">
+   <a class="btn" href="index.html">← На сайт</a>
+   <button class="btn" id="reload">↻ Оновити</button>
+   <button class="btn danger" id="logout">Вийти</button>
+  </div>
+ </div>
+</header>
+
+<div class="wrap">
+ <div id="login" class="card">
+  <h1>Вхід адміністратора</h1>
+  <p class="hint">Одна адмінка для команд, профілів, результатів і розкладу.</p>
+  <div class="grid">
+   <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div>
+   <div class="field"><label>Пароль</label><input id="password" type="password" autocomplete="current-password"></div>
+  </div>
+  <div class="actions"><button class="btn primary" id="loginBtn">УВІЙТИ</button></div>
+  <p id="loginMsg" class="status"></p>
+ </div>
+
+ <div id="app" class="hidden">
+  <div class="card">
+   <h1>ЄДИНА АДМІН-ПАНЕЛЬ</h1>
+   <p id="userStatus" class="status"></p>
+   <p class="hint">Тут зібрані всі функції двох попередніх адмінок: команди, капітан, 5 гравців, місце, статус, логотипи, результати плей-офф і календар матчів.</p>
+  </div>
+
+  <div class="card">
+   <h2>1. КОМАНДИ ТА ПРОФІЛІ</h2>
+   <p class="hint">Прапор і місто не використовуються. Логотип можна завантажити з комп'ютера; він стискається автоматично.</p>
+   <div id="teams"></div>
+   <div class="actions"><button class="btn primary" id="saveTeams">💾 ЗБЕРЕГТИ КОМАНДИ</button></div>
+   <p id="teamMsg" class="status"></p>
+  </div>
+
+  <div class="card">
+   <h2>2. РЕЗУЛЬТАТИ ПЛЕЙ-ОФФ</h2>
+   <p class="hint">BO3 — до 2 перемог. Грандфінал BO5 — до 3 перемог. Учасники наступних матчів визначаються автоматично.</p>
+   <div id="matchesAdmin"></div>
+   <div class="actions"><button class="btn primary" id="saveScores">💾 ЗБЕРЕГТИ РЕЗУЛЬТАТИ</button></div>
+   <p id="saveMsg" class="status"></p>
+  </div>
+
+  <div class="card">
+   <h2>3. РОЗКЛАД МАТЧІВ</h2>
+   <p class="hint">Додавай команду 1, команду 2, етап, дату, час і формат. Статус можна встановити вручну на LIVE або Завершено.</p>
+   <div class="setup">Для цього блоку потрібна таблиця <b>match_schedule</b> у Supabase. Якщо її ще немає — виконай SQL для створення таблиці.</div>
+   <div id="schedule"></div>
+   <div class="actions">
+    <button class="btn primary" id="addMatch">＋ ДОДАТИ МАТЧ</button>
+    <button class="btn" id="saveSchedule">💾 ЗБЕРЕГТИ РОЗКЛАД</button>
+   </div>
+   <p id="scheduleMsg" class="status"></p>
+  </div>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let teams=[],matches={},schedule=[];
+const $=id=>document.getElementById(id);
+const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
+const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function msg(id,t){$(id).textContent=t||'';}
+function result(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
+function participants(){const p={},r=['U1','U2','U3','U4'].map(result);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];p.L1=[r[0]?.loser??null,r[1]?.loser??null];p.L2=[r[2]?.loser??null,r[3]?.loser??null];const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=result('L3'),l4=result('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=result('L5'),uf=result('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=result('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
+function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
+
+function renderTeams(){
+ $('teams').innerHTML=teams.map(t=>{
+  const d=t.details||{},p=Array.isArray(d.players)?d.players:[];
+  return `<div class="team">
+   <div class="team-logo-row">
+    <img class="team-preview" id="preview-${t.id}" src="${esc(t.logo||placeholder)}" alt="">
+    <div class="field"><label>Назва</label><input id="name-${t.id}" value="${esc(t.name)}"></div>
+    <label class="upload">📁 ОБРАТИ ЛОГО<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="uploadLogo(event,${t.id})"></label>
+    <span class="remove-logo" onclick="removeLogo(${t.id})">✕ Прибрати лого</span>
+   </div>
+   <div class="grid" style="margin-top:12px">
+    <div class="field"><label>Капітан</label><input id="cap-${t.id}" value="${esc(d.captain||'')}"></div>
+    <div class="field"><label>Поточне місце</label><input id="pos-${t.id}" value="${esc(d.position||'')}"></div>
+    <div class="field full"><label>Статус</label><input id="status-${t.id}" value="${esc(d.status||'У турнірі')}"></div>
+    <div class="field full"><label>5 гравців</label><div class="players">${[0,1,2,3,4].map(i=>`<input id="player-${t.id}-${i}" value="${esc(p[i]||'')}" placeholder="Гравець ${i+1}">`).join('')}</div></div>
+   </div>
+  </div>`;
+ }).join('');
+}
+function renderMatches(){
+ const p=participants();
+ $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
+  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2,locked=a==null||b==null;
+  return `<div class="game ${locked?'locked':''}">
+   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}</span></div>
+   <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
+   ${locked?'<p class="status">Команди з’являться після завершення попередніх матчів.</p>':''}
+  </div>`;
+ }).join('');
+}
+function teamOptions(v){return teams.map(t=>`<option value="${t.id}" ${String(v)==String(t.id)?'selected':''}>${esc(t.name)}</option>`).join('');}
+function renderSchedule(){
+ $('schedule').innerHTML=schedule.map((m,i)=>`<div class="match" data-i="${i}">
+  <div class="match-grid">
+   <div class="field"><label>Етап</label><input class="m-stage" value="${esc(m.stage||'')}"></div>
+   <div class="field"><label>Команда 1</label><select class="m-a"><option value="">—</option>${teamOptions(m.a)}</select></div>
+   <div class="field"><label>Команда 2</label><select class="m-b"><option value="">—</option>${teamOptions(m.b)}</select></div>
+   <div class="field"><label>Дата й час</label><input class="m-date" type="datetime-local" value="${m.scheduled_at?new Date(m.scheduled_at).toISOString().slice(0,16):''}"></div>
+   <div class="field"><label>Формат</label><select class="m-bo"><option ${m.best_of==='BO3'?'selected':''}>BO3</option><option ${m.best_of==='BO5'?'selected':''}>BO5</option></select></div>
+   <div class="field"><label>Статус</label><select class="m-status"><option value="scheduled" ${!['live','finished'].includes(m.status)?'selected':''}>Заплановано</option><option value="live" ${m.status==='live'?'selected':''}>LIVE</option><option value="finished" ${m.status==='finished'?'selected':''}>Завершено</option></select></div>
+  </div>
+  <div class="actions"><button class="btn danger remove-match">Видалити</button></div>
+ </div>`).join('');
+}
+
+async function compressImage(file){
+ return new Promise((resolve,reject)=>{
+  if(file.type==='image/svg+xml'){const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);return;}
+  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const max=256,s=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*s)),h=Math.max(1,Math.round(img.height*s)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/webp',.86));};img.onerror=reject;img.src=r.result;};r.onerror=reject;r.readAsDataURL(file);
+ });
+}
+async function uploadLogo(e,id){const f=e.target.files[0];if(!f)return;if(f.size>8*1024*1024){alert('Файл завеликий. Максимум 8 МБ.');return;}try{const data=await compressImage(f),t=teams.find(x=>x.id===id);if(t){t.logo=data;$('preview-'+id).src=data;msg('teamMsg','Логотип підготовлено. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}catch(_){alert('Не вдалося обробити зображення.');}}
+function removeLogo(id){const t=teams.find(x=>x.id===id);if(t){t.logo='';$('preview-'+id).src=placeholder;msg('teamMsg','Логотип прибрано. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}
+
+async function load(){
+ const tr=await db.from('teams').select('*').order('id');
+ if(tr.error)throw tr.error;
+ teams=(tr.data||[]).map(t=>({...t,id:Number(t.id),details:t.details||{},logo:t.logo||''}));
+ const mr=await db.from('matches').select('id,a,b,sa,sb');
+ if(mr.error)throw mr.error;
+ matches=Object.fromEntries((mr.data||[]).map(x=>[x.id,{...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}]));
+ renderTeams();renderMatches();await loadSchedule();
+}
+async function loadSchedule(){
+ const r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});
+ if(r.error){schedule=[];renderSchedule();msg('scheduleMsg','Таблиця match_schedule не доступна: '+r.error.message);return;}
+ schedule=r.data||[];renderSchedule();
+}
+async function saveTeams(){
+ msg('teamMsg','Зберігаю...');
+ try{
+  for(const t of teams){
+   const d={...(t.details||{}),captain:$('cap-'+t.id).value.trim(),position:$('pos-'+t.id).value.trim(),status:$('status-'+t.id).value.trim(),players:[0,1,2,3,4].map(i=>$('player-'+t.id+'-'+i).value.trim()).filter(Boolean)};
+   const name=$('name-'+t.id).value.trim()||('Команда '+t.id);
+   const r=await db.from('teams').update({name,logo:t.logo||null,details:d}).eq('id',t.id);
+   if(r.error)throw r.error;
+  }
+  msg('teamMsg','Команди та профілі збережено.');await load();
+ }catch(e){msg('teamMsg','Помилка: '+(e.message||e));}
+}
+async function saveScores(){
+ msg('saveMsg','Зберігаю...');
+ try{
+  for(const id of Object.keys(labels)){
+   const a=$('sa-'+id),b=$('sb-'+id);if(!a||!b||a.disabled)continue;
+   const max=id==='GF'?3:2,sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));
+   if(sa===max&&sb===max)throw new Error(labels[id]+' не може мати однаковий максимальний рахунок.');
+   const r=await db.from('matches').update({sa,sb}).eq('id',id);if(r.error)throw r.error;
+  }
+  msg('saveMsg','Результати збережено.');await load();
+ }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
+}
+async function saveSchedule(){
+ msg('scheduleMsg','Зберігаю...');
+ try{
+  const rows=[...document.querySelectorAll('.match')].map(x=>{const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value;return{id:old.id,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?new Date(dt).toISOString():null,best_of:x.querySelector('.m-bo').value,status:x.querySelector('.m-status').value};});
+  for(const old of schedule)if(old.id&&!rows.some(x=>x.id===old.id)){const d=await db.from('match_schedule').delete().eq('id',old.id);if(d.error)throw d.error;}
+  for(const row of rows){const payload={stage:row.stage,a:row.a,b:row.b,scheduled_at:row.scheduled_at,best_of:row.best_of,status:row.status};const r=row.id?await db.from('match_schedule').update(payload).eq('id',row.id):await db.from('match_schedule').insert(payload);if(r.error)throw r.error;}
+  msg('scheduleMsg','Розклад збережено.');await loadSchedule();
+ }catch(e){msg('scheduleMsg','Помилка: '+(e.message||e));}
+}
+$('addMatch').onclick=()=>{schedule.push({stage:'',a:null,b:null,scheduled_at:null,best_of:'BO3',status:'scheduled'});renderSchedule();};
+document.addEventListener('click',e=>{if(e.target.classList.contains('remove-match')){schedule.splice(+e.target.closest('.match').dataset.i,1);renderSchedule();}});
+$('saveTeams').onclick=saveTeams;$('saveScores').onclick=saveScores;$('saveSchedule').onclick=saveSchedule;$('reload').onclick=async()=>{try{await load();}catch(e){msg('teamMsg','Помилка: '+e.message);}};
+$('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const r=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(r.error){msg('loginMsg',r.error.message);return;}await show();};
+$('logout').onclick=async()=>{await db.auth.signOut();location.reload();};
+async function show(){const {data}=await db.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('userStatus').textContent='Увійшли як '+(data.session.user.email||'адміністратор');try{await load();}catch(e){msg('teamMsg','Помилка завантаження: '+e.message);}}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');}}
+show();
+</script>
+</body>
+</html>
