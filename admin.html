@@ -84,7 +84,7 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
    
   </div>
 
-  <div class="admin-tabs"><button class="admin-tab active" data-tab="tab-teams">Команди</button><button class="admin-tab" data-tab="tab-matches">Матчі</button><button class="admin-tab" data-tab="tab-schedule">Розклад</button><button class="admin-tab" data-tab="tab-matches">Плей-офф</button></div>
+  <div class="admin-tabs"><button class="admin-tab active" data-tab="tab-teams">Команди</button><button class="admin-tab" data-tab="tab-matches">Матчі</button><button class="admin-tab" data-tab="tab-schedule">Розклад</button></div>
 
 <div class="card admin-tab-panel" id="tab-teams">
    <h2>1. КОМАНДИ ТА ПРОФІЛІ</h2>
@@ -121,6 +121,7 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
 <script>
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let teams=[],matches={},schedule=[];
+let scheduleSaving=false;
 const $=id=>document.getElementById(id);
 function pad2(n){return String(n).padStart(2,'0');}
 function toLocalInput(value){
@@ -225,7 +226,7 @@ async function load(){
 async function loadSchedule(){
  const r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});
  if(r.error){schedule=[];renderSchedule();msg('scheduleMsg','Таблиця match_schedule не доступна: '+r.error.message);return;}
- schedule=r.data||[];renderSchedule();
+ schedule=Array.from(new Map((r.data||[]).map(x=>[String(x.id),x])).values());renderSchedule();
 }
 async function saveTeams(){
  msg('teamMsg','Зберігаю...');
@@ -251,9 +252,50 @@ async function saveScores(){
   msg('saveMsg','Результати збережено.');await load();
  }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
 }
-async function saveSchedule(){msg('scheduleMsg','Зберігаю...');try{const rows=[...document.querySelectorAll('.match')].map(x=>{const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value,row={id:old.id,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?localDateTimeToIso(dt):null,best_of:x.querySelector('.m-bo').value,sa:Math.max(0,Number(x.querySelector('.m-sa').value)||0),sb:Math.max(0,Number(x.querySelector('.m-sb').value)||0)};row.status=automaticScheduleStatus(row);return row;});for(const old of schedule)if(old.id&&!rows.some(x=>x.id===old.id)){const d=await db.from('match_schedule').delete().eq('id',old.id);if(d.error)throw d.error;}for(const row of rows){const payload={stage:row.stage,a:row.a,b:row.b,scheduled_at:row.scheduled_at,best_of:row.best_of,status:row.status,sa:row.sa,sb:row.sb};const r=row.id?await db.from('match_schedule').update(payload).eq('id',row.id):await db.from('match_schedule').insert(payload);if(r.error)throw r.error;}msg('scheduleMsg','Розклад збережено.');await loadSchedule();}catch(e){msg('scheduleMsg','Помилка: '+(e.message||e));}}
+async function saveSchedule(){
+ if(scheduleSaving)return;
+ scheduleSaving=true;
+ const btn=$('saveSchedule');
+ if(btn)btn.disabled=true;
+ msg('scheduleMsg','Зберігаю...');
+ try{
+  const rows=[...document.querySelectorAll('#schedule .match')].map(x=>{
+   const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value;
+   const row={id:old.id||null,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?localDateTimeToIso(dt):null,best_of:x.querySelector('.m-bo').value,sa:Math.max(0,Number(x.querySelector('.m-sa').value)||0),sb:Math.max(0,Number(x.querySelector('.m-sb').value)||0)};
+   row.status=automaticScheduleStatus(row);
+   return row;
+  });
 
-$('addMatch').onclick=()=>{schedule.push({stage:'',a:null,b:null,scheduled_at:null,best_of:'BO3',status:'scheduled',sa:0,sb:0});renderSchedule();};
+  // Видаляємо записи, які прибрали з адмінки.
+  for(const old of schedule){
+   if(old.id && !rows.some(x=>String(x.id)===String(old.id))){
+    const d=await db.from('match_schedule').delete().eq('id',old.id);
+    if(d.error)throw d.error;
+   }
+  }
+
+  // Оновлюємо існуючі та створюємо нові записи рівно по одному разу.
+  for(const row of rows){
+   const payload={stage:row.stage,a:row.a,b:row.b,scheduled_at:row.scheduled_at,best_of:row.best_of,status:row.status,sa:row.sa,sb:row.sb};
+   let r;
+   if(row.id){
+    r=await db.from('match_schedule').update(payload).eq('id',row.id);
+   }else{
+    r=await db.from('match_schedule').insert(payload).select('*').single();
+   }
+   if(r.error)throw r.error;
+  }
+  msg('scheduleMsg','Розклад збережено.');
+  await loadSchedule();
+ }catch(e){
+  msg('scheduleMsg','Помилка: '+(e.message||e));
+ }finally{
+  scheduleSaving=false;
+  if(btn)btn.disabled=false;
+ }
+}
+
+$('addMatch').onclick=()=>{if(scheduleSaving)return; schedule.push({id:null,_new:true,stage:'',a:null,b:null,scheduled_at:null,best_of:'BO3',status:'scheduled',sa:0,sb:0});renderSchedule();};
 document.addEventListener('click',e=>{if(e.target.classList.contains('remove-match')){schedule.splice(+e.target.closest('.match').dataset.i,1);renderSchedule();}});
 $('saveTeams').onclick=saveTeams;$('saveScores').onclick=saveScores;$('saveSchedule').onclick=saveSchedule;$('reload').onclick=async()=>{try{await load();}catch(e){msg('teamMsg','Помилка: '+e.message);}};
 $('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const r=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(r.error){msg('loginMsg',r.error.message);return;}await show();};
