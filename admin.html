@@ -1014,7 +1014,7 @@ body{min-height:100vh}.admin-wrap{max-width:1100px;margin:100px auto 60px;paddin
 <div class="admin-wrap">
 <div id="loginCard" class="card login"><h1>АДМІН-ПАНЕЛЬ</h1><p class="status">Увійдіть своїм акаунтом адміністратора.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><div class="field"><label>Пароль</label><input id="password" type="password" autocomplete="current-password"></div><button class="btn" id="loginBtn">УВІЙТИ</button><p id="loginMsg" class="status"></p></div>
 <div id="adminContent" class="hidden"><div class="card"><div class="topbar"><div><h1>АДМІН-ПАНЕЛЬ</h1><p class="status" id="userStatus"></p></div><button class="btn secondary" id="logoutBtn">ВИЙТИ</button></div></div>
-<div class="card"><h2>КОМАНДИ</h2><p class="status">Тут редагуються назва, логотип, капітан, 5 гравців, прапор, місто, місце та профільна статистика команди.</p><div id="teamsAdmin"></div></div>
+<div class="card"><h2>КОМАНДИ</h2><p class="status">Тут редагуються назва, логотип, капітан, 5 гравців, місце та профільна статистика команди.</p><div id="teamsAdmin"></div></div>
 <div class="card"><h2>РЕЗУЛЬТАТИ МАТЧІВ</h2><p class="status">BO3 — до 2 перемог. Грандфінал BO5 — до 3 перемог.</p><div id="matchesAdmin"></div></div>
 <div class="card"><button class="btn" id="saveBtn">ЗБЕРЕГТИ ВСІ ЗМІНИ</button><p id="saveMsg" class="status"></p></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
@@ -1046,8 +1046,6 @@ document.getElementById('teamsAdmin').innerHTML=teams.map(t=>{
       <div class="profile-title">ПРОФІЛЬ КОМАНДИ</div>
       <div class="profile-grid">
         <div class="profile-field"><label>Капітан</label><input id="captain-${t.id}" value="${esc(d.captain||'')}" placeholder="Ім'я / нік капітана"></div>
-        <div class="profile-field"><label>Прапор</label><input id="flag-${t.id}" value="${esc(d.flag||'🇺🇦')}" placeholder="🇺🇦"></div>
-        <div class="profile-field"><label>Місто</label><input id="city-${t.id}" value="${esc(d.city||'')}" placeholder="Рівне"></div>
         <div class="profile-field"><label>Поточне місце</label><input id="position-${t.id}" value="${esc(d.position||'')}" placeholder="1"></div>
         <div class="profile-field"><label>Статус</label><input id="status-${t.id}" value="${esc(d.status||'')}" placeholder="У турнірі"></div>
         <div class="profile-field"><label>Зіграно матчів (необов'язково)</label><input id="played-${t.id}" type="number" min="0" value="${d.played??''}" placeholder="Автоматично"></div>
@@ -1085,8 +1083,6 @@ for(const t of teams){
   t.details={
     captain:document.getElementById('captain-'+t.id).value.trim(),
     players,
-    flag:document.getElementById('flag-'+t.id).value.trim(),
-    city:document.getElementById('city-'+t.id).value.trim(),
     position:document.getElementById('position-'+t.id).value.trim(),
     status:document.getElementById('status-'+t.id).value.trim(),
     played:numOrNull('played-'+t.id),
