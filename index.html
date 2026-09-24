@@ -423,6 +423,13 @@ nav a {
     vector-effect: non-scaling-stroke;
 }
 
+.bracket-lines .bracket-junction {
+    fill:none;
+    stroke:rgba(120, 210, 255, .72);
+    stroke-width:2;
+    vector-effect:non-scaling-stroke;
+}
+
 /* =========================================================
    PLAYOFFS — ОКРЕМИЙ БЛОК
    ========================================================= */
@@ -2075,30 +2082,73 @@ function updateBracketLines(){
         };
     };
 
-    svg.querySelectorAll('path[data-from][data-to]').forEach(path=>{
-        const from=centerPoint(path.dataset.from,'right');
-        const to=centerPoint(path.dataset.to,'left');
-        if(!from || !to){
-            path.setAttribute('d','');
+    /*
+      Сітка як на референсі:
+      - кожна лінія виходить строго з центру картки;
+      - якщо дві команди йдуть в один наступний матч —
+        вони сходяться в одну вертикальну перемичку;
+      - від перемички йде одна горизонтальна лінія в центр наступного матчу;
+      - без діагоналей та без кривих.
+    */
+    const links = [...svg.querySelectorAll('path[data-from][data-to]')];
+    const groups = new Map();
+
+    links.forEach(path=>{
+        const to=path.dataset.to;
+        if(!groups.has(to)) groups.set(to,[]);
+        groups.get(to).push(path);
+    });
+
+    groups.forEach(group=>{
+        const valid=group.map(path=>({
+            path,
+            from:centerPoint(path.dataset.from,'right'),
+            to:centerPoint(path.dataset.to,'left')
+        })).filter(x=>x.from && x.to);
+
+        if(!valid.length) return;
+
+        const target=valid[0].to;
+
+        if(valid.length===1){
+            const from=valid[0].from;
+            const gap=Math.max(40, target.x-from.x);
+            const midX=from.x + gap*0.58;
+            const d=`M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${midX.toFixed(1)} H ${target.x.toFixed(1)}`;
+            valid[0].path.setAttribute('d',d);
             return;
         }
 
-        /*
-          Конектор виходить строго з центру правої сторони
-          та заходить у центр лівої сторони наступного матчу.
-          Без вертикальних "перемичок" між парами — саме їх
-          прибираємо, щоб сітка виглядала чистіше.
-        */
-        // Плавний конектор без вертикальних перемичок і різких кутів.
-        // Вихід — рівно з центру правої сторони, вхід — у центр лівої.
-        const dx=Math.max(70, to.x-from.x);
-        const bend=Math.min(180, Math.max(70, dx*0.42));
-        const c1x=from.x+bend;
-        const c2x=to.x-bend;
-        const d=`M ${from.x.toFixed(1)} ${from.y.toFixed(1)} C ${c1x.toFixed(1)} ${from.y.toFixed(1)}, ${c2x.toFixed(1)} ${to.y.toFixed(1)}, ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
-        path.setAttribute('d',d);
+        /* Для двох входів робимо класичну турнірну "драбинку". */
+        const maxFromX=Math.max(...valid.map(x=>x.from.x));
+        const gap=Math.max(55, target.x-maxFromX);
+        const junctionX=maxFromX + Math.min(95, gap*0.48);
+
+        valid.sort((a,b)=>a.from.y-b.from.y);
+
+        valid.forEach(item=>{
+            const from=item.from;
+            const d=`M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${junctionX.toFixed(1)}`;
+            item.path.setAttribute('d',d);
+        });
+
+        const minY=Math.min(...valid.map(x=>x.from.y));
+        const maxY=Math.max(...valid.map(x=>x.from.y));
+        const midY=(minY+maxY)/2;
+
+        /* Окрема прихована/додаткова вертикаль через SVG, щоб не ламати
+           існуючі data-from/data-to зв'язки. */
+        let junction=svg.querySelector(`[data-junction-to="${group[0].dataset.to}"]`);
+        if(!junction){
+            junction=document.createElementNS('http://www.w3.org/2000/svg','path');
+            junction.setAttribute('class','bracket-junction');
+            junction.setAttribute('data-junction-to',group[0].dataset.to);
+            svg.appendChild(junction);
+        }
+        junction.setAttribute('d',`M ${junctionX.toFixed(1)} ${minY.toFixed(1)} V ${maxY.toFixed(1)} M ${junctionX.toFixed(1)} ${target.y.toFixed(1)} H ${target.x.toFixed(1)}`);
     });
 }
+
 
 
 /* =====================================================
