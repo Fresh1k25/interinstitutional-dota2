@@ -2128,10 +2128,15 @@ function updateBracketLines(){
 
         // Перемичка залишається в проміжку між раундами,
         // як на референсі, а не біля самої картки наступного раунду.
+        // Перемичка ставиться майже одразу після правого краю
+        // вихідних матчів — саме так, як на референсі.
+        // Спочатку короткі горизонталі від кожної гри,
+        // потім одна вертикаль, потім горизонталь до наступної гри.
         const gap = Math.max(0, target.x - maxFromX);
+        const junctionOffset = Math.min(16, Math.max(8, gap * 0.08));
         const junctionX = Math.min(
-            target.x - 35,
-            maxFromX + Math.min(90, gap * 0.55)
+            target.x - 12,
+            maxFromX + junctionOffset
         );
 
         items.forEach(item => {
