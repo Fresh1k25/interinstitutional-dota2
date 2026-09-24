@@ -1588,48 +1588,9 @@ nav a:hover{color:var(--cyan)!important}
 }
 </style>
 
-
-<style id="team-details-modal">
-.team-card{cursor:pointer;position:relative;overflow:hidden}
-.team-card::after{content:'ПЕРЕГЛЯНУТИ';position:absolute;right:12px;bottom:10px;font-size:9px;letter-spacing:1.4px;color:rgba(103,221,255,.7);opacity:0;transform:translateY(4px);transition:.22s}
-.team-card:hover::after{opacity:1;transform:translateY(0)}
-.team-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,4,10,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.team-modal.open{display:flex}
-.team-modal-box{width:min(720px,94vw);max-height:90vh;overflow:auto;position:relative;border:1px solid rgba(103,221,255,.25);border-radius:22px;background:linear-gradient(145deg,rgba(8,20,32,.98),rgba(2,9,17,.98));box-shadow:0 30px 100px rgba(0,0,0,.65),0 0 50px rgba(0,145,255,.08);padding:28px}
-.team-modal-close{position:absolute;top:12px;right:14px;width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:22px;cursor:pointer;line-height:1}
-.team-modal-head{display:flex;align-items:center;gap:18px;padding-right:42px;margin-bottom:24px}
-.team-modal-logo{width:92px;height:92px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(103,221,255,.2);border-radius:18px;background:rgba(255,255,255,.04);overflow:hidden;flex:none}
-.team-modal-logo img{width:100%;height:100%;object-fit:contain}
-.team-modal-logo span{font-size:34px;color:rgba(103,221,255,.7)}
-.team-modal-kicker{font-size:10px;letter-spacing:2px;color:#67ddff;margin-bottom:6px}
-.team-modal-name{font-size:clamp(26px,5vw,42px);line-height:1;font-weight:800;letter-spacing:-1.5px;color:#fff}
-.team-modal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
-.team-stat{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(255,255,255,.035)}
-.team-stat small{display:block;font-size:9px;letter-spacing:1.4px;color:rgba(255,255,255,.45);margin-bottom:5px}
-.team-stat strong{font-size:18px;color:#fff}
-.team-modal-section{margin-top:20px}
-.team-modal-section h3{font-size:11px;letter-spacing:2px;color:#67ddff;margin:0 0 10px}
-.team-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.team-player{padding:11px 12px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);color:#ddd;font-size:13px}
-.team-results{display:grid;gap:8px}
-.team-result{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);font-size:13px}
-.team-result.win{border-color:rgba(52,211,153,.25)}
-.team-result.loss{border-color:rgba(248,113,113,.22)}
-.team-result .result-label{font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.45)}
-.team-empty{color:rgba(255,255,255,.48);font-size:12px;padding:12px;border:1px dashed rgba(255,255,255,.1);border-radius:10px}
-@media(max-width:700px){
- .team-card::after{display:none}
- .team-modal{padding:10px}
- .team-modal-box{padding:20px 16px;border-radius:18px;max-height:92vh}
- .team-modal-head{gap:12px;margin-bottom:18px}
- .team-modal-logo{width:70px;height:70px;border-radius:14px}
- .team-modal-grid{grid-template-columns:1fr 1fr;gap:7px}
- .team-stat{padding:11px}
- .team-stat strong{font-size:15px}
- .team-roster{grid-template-columns:1fr}
-}
+<style id="max-live-ui">
+.team-mini-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:9px;letter-spacing:.5px;color:#8fb7ce}.team-mini-stats span{padding:5px 7px;border:1px solid rgba(80,180,240,.16);border-radius:7px}.team-mini-stats b{color:#d9f4ff}.team-players{margin-top:9px;color:#6f9db7;font-size:10px;line-height:1.5}.public-schedule{padding:55px 24px}.schedule-list{max-width:1180px;margin:0 auto;display:grid;gap:10px}.public-schedule-card{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:16px 18px;border:1px solid rgba(74,180,235,.15);background:rgba(5,19,32,.72);border-radius:14px}.public-schedule-card strong{display:block;margin-top:6px;color:#eaf8ff}.public-schedule-card strong b{color:#4bc7ff;padding:0 8px}.public-schedule-card small{color:#69a8c5}.schedule-meta{display:flex;gap:12px;flex-wrap:wrap;color:#9cc5d9;font-size:11px}.public-schedule-card.live{border-color:rgba(255,70,70,.5);box-shadow:0 0 24px rgba(255,40,40,.08)}.empty-schedule{padding:30px;text-align:center;color:#7599aa;border:1px dashed rgba(100,180,220,.2);border-radius:14px}@media(max-width:700px){.public-schedule{padding:40px 12px}.public-schedule-card{display:block}.schedule-meta{margin-top:10px}.team-mini-stats{font-size:8px}}
 </style>
-
 </head>
 
 <body>
@@ -1645,7 +1606,7 @@ nav a:hover{color:var(--cyan)!important}
     <nav>
         <a href="#home">Головна</a>
         <a href="#playoffs">Плей-офф</a>
-        <a href="#recent-matches">Матчі</a>
+        <a href="#schedule">Розклад</a>
         <a href="#teams">Команди</a>
 
         <a class="admin-button" href="admin.html">🔐 АДМІНКА</a>
@@ -1721,11 +1682,6 @@ nav a:hover{color:var(--cyan)!important}
 </section>
 
 
-<!-- ================= RECENT MATCHES / FINAL ================= -->
-<section id="recent-matches" class="recent-matches-section"><div class="section-title"><small>LIVE • SCHEDULE</small><h2>МАТЧІ</h2></div><div class="recent-filters"><button class="recent-filter active" data-filter="all">ВСІ</button><button class="recent-filter" data-filter="live">🔴 LIVE</button><button class="recent-filter" data-filter="upcoming">НАЙБЛИЖЧІ</button><button class="recent-filter" data-filter="finished">ЗАВЕРШЕНІ</button></div><div id="recentMatchesList" class="recent-matches-list"></div></section>
-<section id="tournament-final" class="tournament-final-section"><div class="section-title"><small>TOURNAMENT RESULTS</small><h2>ФІНАЛЬНІ МІСЦЯ</h2></div><div id="finalStandings" class="final-standings"></div></section>
-<div class="section-divider"></div>
-
 <!-- ================= PLAYOFF ================= -->
 
 <section
@@ -1759,6 +1715,14 @@ nav a:hover{color:var(--cyan)!important}
 
 <div class="section-divider"></div>
 
+<!-- ================= SCHEDULE ================= -->
+<section id="schedule" class="public-schedule">
+  <div class="section-title"><small>MATCH CENTER</small><h2>РОЗКЛАД</h2></div>
+  <div id="scheduleList" class="schedule-list"></div>
+</section>
+
+<div class="section-divider"></div>
+
 <!-- ================= TEAMS ================= -->
 
 <section
@@ -1788,37 +1752,6 @@ nav a:hover{color:var(--cyan)!important}
 
 
 
-
-<!-- ================= TEAM DETAILS MODAL ================= -->
-<div id="teamModal" class="team-modal" aria-hidden="true">
-  <div class="team-modal-box" role="dialog" aria-modal="true" aria-labelledby="teamModalName">
-    <button class="team-modal-close" id="teamModalClose" aria-label="Закрити">×</button>
-    <div class="team-modal-head">
-      <div class="team-modal-logo" id="teamModalLogo"></div>
-      <div>
-        <div class="team-modal-kicker">NUWEE DOTA 2 • TEAM PROFILE</div>
-        <div class="team-modal-name" id="teamModalName">Команда</div>
-      </div>
-    </div>
-    <div class="team-modal-grid">
-      <div class="team-stat"><small>КАПІТАН</small><strong id="teamCaptain">Не вказано</strong></div>
-      <div class="team-stat"><small>ЗІГРАНО МАТЧІВ</small><strong id="teamPlayed">0</strong></div>
-      <div class="team-stat"><small>ПЕРЕМОГИ / ПОРАЗКИ</small><strong id="teamRecord">0 / 0</strong></div>
-      <div class="team-stat"><small>WINRATE</small><strong id="teamWinrate">0%</strong></div>
-      <div class="team-stat"><small>ПОТОЧНЕ МІСЦЕ</small><strong id="teamPosition">—</strong></div>
-      <div class="team-stat"><small>СТАТУС</small><strong id="teamStatus">У турнірі</strong></div>
-    </div>
-    <div class="team-modal-section">
-      <h3>СКЛАД — 5 ГРАВЦІВ</h3>
-      <div class="team-roster" id="teamRoster"></div>
-    </div>
-    <div class="team-modal-section">
-      <h3>ОСТАННІ РЕЗУЛЬТАТИ</h3>
-      <div class="team-results" id="teamResults"></div>
-    </div>
-  </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
@@ -1828,87 +1761,64 @@ nav a:hover{color:var(--cyan)!important}
 ===================================================== */
 
 let teams = [
-    { id: 1, name: "Команда 1", logo: "" },
-    { id: 2, name: "Команда 2", logo: "" },
-    { id: 3, name: "Команда 3", logo: "" },
-    { id: 4, name: "Команда 4", logo: "" },
-    { id: 5, name: "Команда 5", logo: "" },
-    { id: 6, name: "Команда 6", logo: "" },
-    { id: 7, name: "Команда 7", logo: "" },
-    { id: 8, name: "Команда 8", logo: "" }
+    { id: 1, name: "Команда 1", logo: "" }, { id: 2, name: "Команда 2", logo: "" },
+    { id: 3, name: "Команда 3", logo: "" }, { id: 4, name: "Команда 4", logo: "" },
+    { id: 5, name: "Команда 5", logo: "" }, { id: 6, name: "Команда 6", logo: "" },
+    { id: 7, name: "Команда 7", logo: "" }, { id: 8, name: "Команда 8", logo: "" }
 ];
 
-let scheduleMatches = [];
-
-let matches = {
-    U1:{a:0,b:1,sa:0,sb:0}, U2:{a:2,b:3,sa:0,sb:0},
-    U3:{a:4,b:5,sa:0,sb:0}, U4:{a:6,b:7,sa:0,sb:0},
-    U5:{a:null,b:null,sa:0,sb:0}, U6:{a:null,b:null,sa:0,sb:0},
-    UF:{a:null,b:null,sa:0,sb:0},
-    L1:{a:null,b:null,sa:0,sb:0}, L2:{a:null,b:null,sa:0,sb:0},
-    L3:{a:null,b:null,sa:0,sb:0}, L4:{a:null,b:null,sa:0,sb:0},
-    L5:{a:null,b:null,sa:0,sb:0}, LF:{a:null,b:null,sa:0,sb:0},
-    GF:{a:null,b:null,sa:0,sb:0}
-};
+const MATCH_IDS=["U1","U2","U3","U4","L1","L2","U5","U6","L3","L4","UF","L5","LF","GF"];
+const MATCH_LABELS={U1:"1 раунд ВС — матч 1",U2:"1 раунд ВС — матч 2",U3:"1 раунд ВС — матч 3",U4:"1 раунд ВС — матч 4",L1:"1 раунд НС — матч 1",L2:"1 раунд НС — матч 2",U5:"2 раунд ВС — матч 1",U6:"2 раунд ВС — матч 2",L3:"2 раунд НС — матч 1",L4:"2 раунд НС — матч 2",UF:"Фінал ВС",L5:"3 раунд НС",LF:"Фінал НС",GF:"Грандфінал"};
+let matches = Object.fromEntries(MATCH_IDS.map(id=>[id,{a:null,b:null,sa:0,sb:0}]));
+Object.assign(matches,{U1:{a:1,b:2,sa:0,sb:0},U2:{a:3,b:4,sa:0,sb:0},U3:{a:5,b:6,sa:0,sb:0},U4:{a:7,b:8,sa:0,sb:0}});
+let schedule=[];
+let realtimeChannel=null;
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const escHTML=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-async function loadTournamentData() {
-    const previousSnapshot = JSON.stringify({ teams, matches });
-    const [teamsResult, matchesResult, scheduleResult] = await Promise.all([
-        db.from('teams').select('*').order('id'),
+function normalizeMatch(row){return {a:row?.a==null?null:Number(row.a),b:row?.b==null?null:Number(row.b),sa:Math.max(0,Number(row?.sa)||0),sb:Math.max(0,Number(row?.sb)||0)};}
+function teamById(id){return id==null?null:teams.find(t=>Number(t.id)===Number(id))||null;}
+function winsNeeded(id){return id==='GF'?3:2;}
+function getMatchResult(match,id){
+    if(!match||match.a==null||match.b==null)return null;
+    const need=winsNeeded(id);
+    if(match.sa>=need&&match.sb<need)return {winner:match.a,loser:match.b};
+    if(match.sb>=need&&match.sa<need)return {winner:match.b,loser:match.a};
+    return null;
+}
+function setMatchTeams(id,a,b){
+    const m=matches[id]||{sa:0,sb:0};
+    if(m.a!==a||m.b!==b){m.a=a;m.b=b;m.sa=0;m.sb=0;}
+    matches[id]=m;
+}
+function calculateBracket(){
+    const u1=getMatchResult(matches.U1,'U1'),u2=getMatchResult(matches.U2,'U2'),u3=getMatchResult(matches.U3,'U3'),u4=getMatchResult(matches.U4,'U4');
+    setMatchTeams('U5',u1?.winner??null,u2?.winner??null); setMatchTeams('U6',u3?.winner??null,u4?.winner??null);
+    setMatchTeams('L1',u1?.loser??null,u2?.loser??null); setMatchTeams('L2',u3?.loser??null,u4?.loser??null);
+    const u5=getMatchResult(matches.U5,'U5'),u6=getMatchResult(matches.U6,'U6'),l1=getMatchResult(matches.L1,'L1'),l2=getMatchResult(matches.L2,'L2');
+    setMatchTeams('UF',u5?.winner??null,u6?.winner??null); setMatchTeams('L3',u5?.loser??null,l1?.winner??null); setMatchTeams('L4',u6?.loser??null,l2?.winner??null);
+    const l3=getMatchResult(matches.L3,'L3'),l4=getMatchResult(matches.L4,'L4'); setMatchTeams('L5',l3?.winner??null,l4?.winner??null);
+    const l5=getMatchResult(matches.L5,'L5'),uf=getMatchResult(matches.UF,'UF'); setMatchTeams('LF',l5?.winner??null,uf?.loser??null);
+    const lf=getMatchResult(matches.LF,'LF'); setMatchTeams('GF',uf?.winner??null,lf?.winner??null);
+}
+function scheduleStatus(m){const need=String(m.best_of||'BO3')==='BO5'?3:2;if((Number(m.sa)>=need&&Number(m.sb)<need)||(Number(m.sb)>=need&&Number(m.sa)<need))return'finished';if(!m.scheduled_at)return'scheduled';return new Date(m.scheduled_at).getTime()<=Date.now()?'live':'scheduled';}
+function formatDate(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return '';return new Intl.DateTimeFormat('uk-UA',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(d);}
+
+async function loadTournamentData(){
+    const [tr,mr,sr]=await Promise.all([
+        db.from('teams').select('id,name,logo,details').order('id'),
         db.from('matches').select('id,a,b,sa,sb'),
-        db.from('match_schedule').select('*').order('scheduled_at', { ascending: false }).limit(30)
+        db.from('match_schedule').select('id,stage,a,b,scheduled_at,best_of,status,sa,sb').order('scheduled_at',{ascending:true})
     ]);
-
-    if (teamsResult.error) throw teamsResult.error;
-    if (matchesResult.error) throw matchesResult.error;
-
-    teams = teamsResult.data.map(t => ({
-        id: t.id,
-        name: t.name,
-        logo: t.logo || '',
-        details: t.details || {
-            captain: t.captain || '',
-            players: Array.isArray(t.players) ? t.players : [],
-            position: t.position || '',
-            status: t.status || ''
-        }
-    }));
-
-    const freshMatches = {};
-    for (const row of matchesResult.data) {
-        freshMatches[row.id] = {
-            a: row.a == null ? null : Number(row.a) - 1,
-            b: row.b == null ? null : Number(row.b) - 1,
-            sa: Number(row.sa) || 0,
-            sb: Number(row.sb) || 0
-        };
-    }
-
-    matches = { ...matches, ...freshMatches };
-    scheduleMatches = scheduleResult.error ? [] : (scheduleResult.data || []).map(row => ({...row, a: row.a == null ? null : Number(row.a)-1, b: row.b == null ? null : Number(row.b)-1, sa:Number(row.sa)||0, sb:Number(row.sb)||0}));
-    updateAutomaticScheduleStatuses();
-    renderRecentMatches();
-    renderFinalStandings();
-    initRecentMatchFilters();
-
-    /* Не перемальовуємо сторінку кожні 5 секунд, якщо дані не змінилися.
-       Завдяки цьому зникають мікро-стрибки та мерехтіння. */
-    const nextSnapshot = JSON.stringify({ teams, matches });
-    if (previousSnapshot !== nextSnapshot) {
-        renderBracket();
-        renderTeams();
-    }
+    if(tr.error)throw tr.error;if(mr.error)throw mr.error;
+    teams=(tr.data||[]).map(t=>({id:Number(t.id),name:t.name||('Команда '+t.id),logo:t.logo||'',details:t.details||{}}));
+    for(const id of MATCH_IDS) if(!matches[id])matches[id]={a:null,b:null,sa:0,sb:0};
+    for(const row of mr.data||[]) if(MATCH_IDS.includes(row.id))matches[row.id]=normalizeMatch(row);
+    schedule=sr.error?[]:(sr.data||[]).map(x=>({...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}));
+    renderBracket();renderTeams();renderSchedule();
 }
-
-async function refreshTournament() {
-    try {
-        await loadTournamentData();
-    } catch (error) {
-        console.error('Supabase: не вдалося завантажити турнір', error);
-    }
-}
+async function refreshTournament(){try{await loadTournamentData();}catch(error){console.error('Supabase:',error);}}
 
 /* =====================================================
    LOGO
@@ -1948,8 +1858,8 @@ function getMatchResult(match, id = null) {
     return null;
 }
 
-function isFinished(match, id = null) {
-    return !!getMatchResult(match, id);
+function isFinished(match) {
+    return !!getMatchResult(match, null);
 }
 
 /* =====================================================
@@ -1963,10 +1873,6 @@ function setMatchTeams(id, a, b) {
     if (match.a !== a || match.b !== b) {
         match.a = a;
         match.b = b;
-        match.sa = 0;
-        match.sb = 0;
-    } else if (a === null && b === null && (Number(match.sa) !== 0 || Number(match.sb) !== 0)) {
-        // Якщо наступний матч ще не має учасників, старий рахунок не повинен залишатися.
         match.sa = 0;
         match.sb = 0;
     }
@@ -2028,45 +1934,10 @@ function calculateBracket() {
    КОМАНДА В МАТЧІ
 ===================================================== */
 
-function teamHTML(teamIndex, score, winner) {
-
-    if (teamIndex === null || teamIndex === undefined) {
-
-        return `
-            <div class="bracket-team">
-                <span class="bracket-logo-box">
-                    <span class="bracket-logo-placeholder">★</span>
-                </span>
-                <span class="bracket-team-name">
-                    Очікуємо...
-                </span>
-
-                <span class="bracket-score">
-                    ${score ?? 0}
-                </span>
-            </div>
-        `;
-    }
-
-    const team = teams[teamIndex];
-
-    return `
-        <div class="bracket-team ${winner ? "winner" : ""}">
-
-            <span class="bracket-logo-box ${team.logo ? "has-logo" : ""}">
-                ${team.logo ? `<img src="${team.logo}" alt="${team.name}">` : `<span class="bracket-logo-placeholder">★</span>`}
-            </span>
-
-            <span class="bracket-team-name">
-                ${team.name}
-            </span>
-
-            <span class="bracket-score">
-                ${score ?? 0}
-            </span>
-
-        </div>
-    `;
+function teamHTML(teamId,score,winner){
+    const team=teamById(teamId);
+    if(!team)return `<div class="bracket-team"><span class="bracket-logo-box"><span class="bracket-logo-placeholder">★</span></span><span class="bracket-team-name">Очікуємо...</span><span class="bracket-score">${score??0}</span></div>`;
+    return `<div class="bracket-team ${winner?'winner':''}"><span class="bracket-logo-box ${team.logo?'has-logo':''}">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)}" loading="lazy">`:`<span class="bracket-logo-placeholder">★</span>`}</span><span class="bracket-team-name">${escHTML(team.name)}</span><span class="bracket-score">${score??0}</span></div>`;
 }
 
 /* =====================================================
@@ -2288,101 +2159,45 @@ function renderBracket() {
    СПИСОК КОМАНД
 ===================================================== */
 
-function teamMatches(teamIndex){
-    return Object.entries(matches).filter(([id,m]) => m && (m.a === teamIndex || m.b === teamIndex) && m.a !== null && m.b !== null);
+function teamStats(id){
+    let played=0,wins=0,losses=0;
+    for(const mid of MATCH_IDS){const m=matches[mid],r=getMatchResult(m,mid);if(!r)continue;if(Number(m.a)===Number(id)||Number(m.b)===Number(id)){played++;if(Number(r.winner)===Number(id))wins++;else losses++;}}
+    return {played,wins,losses};
+}
+function renderTeams(){
+    const list=document.getElementById('teamList');
+    list.innerHTML=teams.map(team=>{const st=teamStats(team.id);const players=Array.isArray(team.details?.players)?team.details.players.filter(Boolean):[];return `
+      <article class="team-card">
+        <span class="team-logo-box">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)} logo" loading="lazy">`:`<span class="team-logo-placeholder">★</span>`}</span>
+        <strong>${escHTML(team.name)}</strong>
+        <div class="team-mini-stats"><span>МАТЧІ <b>${st.played}</b></span><span>ПЕРЕМОГИ <b>${st.wins}</b></span><span>ПОРАЗКИ <b>${st.losses}</b></span></div>
+        ${players.length?`<div class="team-players">${players.slice(0,5).map(escHTML).join(' • ')}</div>`:''}
+      </article>`;}).join('');
+}
+function renderSchedule(){
+    const root=document.getElementById('scheduleList');if(!root)return;
+    const rows=[...schedule].sort((a,b)=>(new Date(a.scheduled_at||0))-(new Date(b.scheduled_at||0)));
+    root.innerHTML=rows.length?rows.map(m=>{const st=scheduleStatus(m),a=teamById(m.a),b=teamById(m.b);return `<article class="public-schedule-card ${st}"><div><small>${escHTML(m.stage||'МАТЧ')} • ${escHTML(m.best_of||'BO3')}</small><strong>${escHTML(a?.name||'Очікуємо')} <b>vs</b> ${escHTML(b?.name||'Очікуємо')}</strong></div><div class="schedule-meta"><span>${formatDate(m.scheduled_at)||'Час не вказано'}</span><span>${st==='live'?'🔴 LIVE':st==='finished'?'ЗАВЕРШЕНО':'ЗАПЛАНОВАНО'}</span></div></article>`;}).join(''):`<div class="empty-schedule">Розклад поки порожній.</div>`;
 }
 
-function teamStats(teamIndex){
-    const list=teamMatches(teamIndex); let wins=0,losses=0,played=0;
-    list.forEach(([id,m])=>{ if(!isFinished(m,id)) return; played++; const a=m.a===teamIndex?m.sa:m.sb, b=m.a===teamIndex?m.sb:m.sa; if(a>b)wins++; else if(a<b)losses++; });
-    return {played,wins,losses,winrate:played?Math.round(wins/played*100):0};
-}
-function finalPlaces(){
-    const p={}; const set=(t,v)=>{if(t!=null&&p[t]==null)p[t]=v;};
-    const r=id=>getMatchResult(matches[id],id);
-    const u1=r('U1'),u2=r('U2'),u3=r('U3'),u4=r('U4'),u5=r('U5'),u6=r('U6'),l1=r('L1'),l2=r('L2'),l3=r('L3'),l4=r('L4'),l5=r('L5'),uf=r('UF'),lf=r('LF'),gf=r('GF');
-    if(gf){set(gf.winner,'1');set(gf.loser,'2');} if(lf)set(lf.loser,'3'); if(l5)set(l5.loser,'4'); if(l3)set(l3.loser,'5–6'); if(l4)set(l4.loser,'5–6'); if(l1)set(l1.loser,'7–8'); if(l2)set(l2.loser,'7–8'); return p;
-}
-function openTeamModal(teamIndex){
-    const team=teams[teamIndex]; if(!team)return; const modal=document.getElementById('teamModal'),stats=teamStats(teamIndex),details=team.details||{},places=finalPlaces();
-    document.getElementById('teamModalName').textContent=team.name||'Команда'; document.getElementById('teamCaptain').textContent=details.captain||'Не вказано'; document.getElementById('teamPlayed').textContent=stats.played; document.getElementById('teamRecord').textContent=`${stats.wins} / ${stats.losses}`; document.getElementById('teamPosition').textContent=places[teamIndex]||details.position||'—'; document.getElementById('teamStatus').textContent=details.status||'У турнірі'; document.getElementById('teamWinrate').textContent=stats.winrate+'%';
-    const logo=document.getElementById('teamModalLogo'); logo.innerHTML=team.logo?`<img src="${team.logo}" alt="${team.name} logo">`:'<span>★</span>';
-    const roster=document.getElementById('teamRoster'),players=Array.isArray(details.players)?details.players:[]; roster.innerHTML=players.length?players.slice(0,5).map((x,i)=>`<div class="team-player"><b>${i+1}.</b> ${x}</div>`).join(''):'<div class="team-empty" style="grid-column:1/-1">Склад команди ще не додано.</div>';
-    const results=document.getElementById('teamResults'),recent=teamMatches(teamIndex).filter(([id,m])=>isFinished(m,id)).slice(-5).reverse();
-    results.innerHTML=recent.length?recent.map(([,m])=>{const oi=m.a===teamIndex?m.b:m.a,o=teams[oi],ts=m.a===teamIndex?m.sa:m.sb,os=m.a===teamIndex?m.sb:m.sa,w=ts>os;return `<div class="team-result ${w?'win':'loss'}"><span><b>${w?'ПЕРЕМОГА':'ПОРАЗКА'}</b> · ${o?.name||'Суперник'}</span><strong>${ts} : ${os}</strong></div>`;}).join(''):'<div class="team-empty">Останніх зіграних матчів ще немає.</div>';
-    modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
-}
-
-function closeTeamModal(){
-    const modal=document.getElementById('teamModal');
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden','true');
-    document.body.style.overflow='';
-}
-
-function renderTeams() {
-    const list = document.getElementById("teamList");
-    list.innerHTML = teams.map((team,index) => `
-        <div class="team-card" role="button" tabindex="0" data-team-index="${index}" aria-label="Відкрити інформацію про ${team.name}">
-            <span class="team-logo-box">
-                ${team.logo
-                    ? `<img src="${team.logo}" alt="${team.name} logo">`
-                    : `<span class="team-logo-placeholder">★</span>`}
-            </span>
-            <strong>${team.name}</strong>
-        </div>
-    `).join("");
-
-    list.querySelectorAll('.team-card').forEach(card=>{
-        const index=Number(card.dataset.teamIndex);
-        card.addEventListener('click',()=>openTeamModal(index));
-        card.addEventListener('keydown',e=>{
-            if(e.key==='Enter'||e.key===' '){e.preventDefault();openTeamModal(index);}
-        });
-    });
-}
-
-(function initTeamModal(){
-    document.getElementById('teamModalClose')?.addEventListener('click',closeTeamModal);
-    document.getElementById('teamModal')?.addEventListener('click',e=>{
-        if(e.target.id==='teamModal') closeTeamModal();
-    });
-    document.addEventListener('keydown',e=>{
-        if(e.key==='Escape') closeTeamModal();
-    });
-})();
-
-
-
-function automaticScheduleStatus(m){const need=String(m.best_of||'BO3')==='BO5'?3:2;if((m.sa>=need&&m.sb<need)||(m.sb>=need&&m.sa<need))return'finished';if(!m.scheduled_at)return'scheduled';return new Date(m.scheduled_at).getTime()<=Date.now()?'live':'scheduled';}
-function updateAutomaticScheduleStatuses(){scheduleMatches=scheduleMatches.map(m=>({...m,autoStatus:automaticScheduleStatus(m)}));}
-function scheduleTeamName(id){return teams[id]?.name||'Очікуємо';}
-const PLAYOFF_LABELS={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал'};
-function matchStageLabel(stage){const raw=String(stage||'').trim();return PLAYOFF_LABELS[raw]||raw||'Матч';}
-function renderRecentMatches(filter='all'){const box=document.getElementById('recentMatchesList');if(!box)return;const rows=[];scheduleMatches.forEach((m,i)=>{if(m.a==null&&m.b==null)return;const status=m.autoStatus||automaticScheduleStatus(m);rows.push({key:'s'+(m.id??i),date:m.scheduled_at?new Date(m.scheduled_at).getTime():0,a:m.a,b:m.b,sa:Number(m.sa)||0,sb:Number(m.sb)||0,status,best:m.best_of||'BO3',stage:matchStageLabel(m.stage),source:'schedule'});});Object.entries(matches).forEach(([id,m])=>{if(!isFinished(m,id)||m.a==null||m.b==null)return;const exists=rows.some(x=>x.a===m.a&&x.b===m.b&&x.sa===m.sa&&x.sb===m.sb);if(!exists)rows.push({key:'p'+id,date:0,a:m.a,b:m.b,sa:m.sa,sb:m.sb,status:'finished',best:id==='GF'?'BO5':'BO3',stage:PLAYOFF_LABELS[id]||id,source:'playoff'});});rows.sort((a,b)=>b.date-a.date);const filtered=rows.filter(m=>filter==='all'||(filter==='live'&&m.status==='live')||(filter==='upcoming'&&m.status==='scheduled')||(filter==='finished'&&m.status==='finished')).slice(0,12);box.innerHTML=filtered.length?filtered.map(m=>{const live=m.status==='live',done=m.status==='finished',left=scheduleTeamName(m.a),right=scheduleTeamName(m.b),date=m.date?new Date(m.date).toLocaleString('uk-UA',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';return `<article class="recent-match-card ${live?'is-live':''} ${done?'is-finished':''}"><div class="recent-match-top"><span>${m.stage}</span><b class="recent-status ${live?'live':done?'done':''}">${live?'🔴 LIVE':done?'ЗАВЕРШЕНО':'ЗАПЛАНОВАНО'}</b></div><div class="recent-match-main"><div class="recent-team"><span class="recent-logo">${m.a!=null&&teams[m.a]?.logo?`<img src="${teams[m.a].logo}" alt="">`:'★'}</span><strong>${left}</strong></div><div class="recent-score"><b>${m.sa} : ${m.sb}</b><small>${m.best}${date?' · '+date:''}</small></div><div class="recent-team right"><strong>${right}</strong><span class="recent-logo">${m.b!=null&&teams[m.b]?.logo?`<img src="${teams[m.b].logo}" alt="">`:'★'}</span></div></div></article>`;}).join(''):'<div class="recent-empty">Матчів у цій категорії немає.</div>';}
-function initRecentMatchFilters(){document.querySelectorAll('.recent-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.recent-filter').forEach(x=>x.classList.toggle('active',x===btn));renderRecentMatches(btn.dataset.filter||'all');}));}
-function renderFinalStandings(){const box=document.getElementById('finalStandings');if(!box)return;const places=finalPlaces();const order=['1','2','3','4','5–6','7–8'];const rows=[];order.forEach(place=>teams.forEach((t,i)=>{if(places[i]===place)rows.push({place,team:i});}));teams.forEach((t,i)=>{if(!places[i])rows.push({place:'—',team:i});});const medal=p=>p==='1'?'🏆':p==='2'?'🥈':p==='3'?'🥉':'';box.innerHTML=rows.map(x=>`<div class="final-place"><span class="final-medal">${medal(x.place)}</span><span><small>${x.place==='1'?'ЧЕМПІОН':x.place==='—'?'МІСЦЕ НЕ ВИЗНАЧЕНО':x.place+' МІСЦЕ'}</small><strong>${teams[x.team]?.name||'Команда'}</strong></span></div>`).join('');}
 /* =====================================================
    ЗАПУСК
 ===================================================== */
-
 (async function(){
-    try {
-        await loadTournamentData();
-    } catch (error) {
-        console.error('Supabase connection error:', error);
-        renderBracket();
-        renderTeams();
+    try{await loadTournamentData();}catch(error){console.error('Supabase connection error:',error);renderBracket();renderTeams();renderSchedule();}
+    if(db.channel){
+      realtimeChannel=db.channel('nuwgp-public-live')
+        .on('postgres_changes',{event:'*',schema:'public',table:'teams'},()=>refreshTournament())
+        .on('postgres_changes',{event:'*',schema:'public',table:'matches'},()=>refreshTournament())
+        .on('postgres_changes',{event:'*',schema:'public',table:'match_schedule'},()=>refreshTournament())
+        .subscribe();
     }
-
-    // Оновлюємо дані кожні 5 секунд, щоб глядачі бачили нові рахунки.
-    setInterval(async()=>{await refreshTournament();updateAutomaticScheduleStatuses();renderRecentMatches();renderFinalStandings();},5000);
+    setInterval(()=>{renderSchedule();},30000);
 })();
-
 </script>
 
 
-<style id="tournament-features">.recent-matches-section,.tournament-final-section{padding:52px 7%;background:#020d19;color:#fff}.recent-filters{max-width:1180px;margin:0 auto 16px;display:flex;gap:8px;flex-wrap:wrap}.recent-filter{border:1px solid rgba(44,187,247,.18);background:#0a2741;color:#7fb6d0;border-radius:9px;padding:9px 14px;font-size:10px;font-weight:900;letter-spacing:.6px;cursor:pointer}.recent-filter.active{background:#1aa9e8;color:#00111d;border-color:#1aa9e8}.recent-matches-list{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.recent-match-card{background:linear-gradient(180deg,rgba(9,31,50,.98),rgba(5,20,34,.98));border:1px solid rgba(44,187,247,.22);border-radius:14px;padding:14px 16px;min-height:94px}.recent-match-card.is-live{border-color:rgba(255,70,70,.65)}.recent-match-card.is-finished{border-color:rgba(44,187,247,.18)}.recent-match-top{display:flex;justify-content:space-between;gap:12px;color:#83b9d2;font-size:10px;letter-spacing:1px;text-transform:uppercase}.recent-status.live{color:#ff6b6b}.recent-status.done{color:#6bd9ff}.recent-match-main{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;margin-top:12px}.recent-team{display:flex;align-items:center;gap:8px;min-width:0}.recent-team.right{justify-content:flex-end}.recent-team strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.recent-logo{width:28px;height:28px;border-radius:7px;background:#0d2946;display:grid;place-items:center;flex:none;color:#78c9ed;font-size:12px;overflow:hidden}.recent-logo img{width:100%;height:100%;object-fit:contain}.recent-score{text-align:center;min-width:86px}.recent-score b{display:block;font-size:22px;color:#fff}.recent-score small{display:block;margin-top:3px;color:#5f91a9;font-size:8px;white-space:nowrap}.recent-empty{grid-column:1/-1;padding:22px;border:1px dashed rgba(44,187,247,.25);border-radius:14px;color:#86b9d2;text-align:center}.final-standings{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.final-place{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid rgba(44,187,247,.2);border-radius:14px;background:#071a2a}.final-medal{font-size:25px;min-width:30px}.final-place small{display:block;color:#7fa6ba;font-size:10px;letter-spacing:1.5px}.final-place strong{display:block;margin-top:4px;font-size:17px}@media(max-width:700px){.recent-matches-section,.tournament-final-section{padding:42px 14px}.recent-matches-list{grid-template-columns:1fr}.recent-match-main{gap:6px}.recent-team strong{font-size:12px}.recent-score b{font-size:19px}.recent-score small{font-size:7px}.final-standings{grid-template-columns:1fr}}</style><style>
+<style>
 /* === ФІНАЛЬНИЙ MOBILE FIX === */
 .bracket-wrapper{
     width:100%;
@@ -2696,131 +2511,5 @@ document.readyState==='loading'?addEventListener('DOMContentLoaded',drag):drag()
   else drag();
 })();
 </script>
-
-<style id="smooth-site-final">
-html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-}
-
-body {
-    overflow-x: hidden;
-}
-
-/* Плавні переходи для основних елементів */
-.team-card, .bracket-match, .section-title, .team-logo-box, .bracket-team {
-    transition: transform .28s cubic-bezier(.22,1,.36,1),
-                opacity .28s ease,
-                border-color .28s ease,
-                box-shadow .28s ease,
-                background-color .28s ease;
-}
-
-.team-card {
-    cursor: pointer;
-    will-change: transform;
-}
-
-.team-card:active {
-    transform: scale(.985);
-}
-
-.team-card:focus-visible {
-    outline: 2px solid #25b5fa;
-    outline-offset: 4px;
-}
-
-.bracket-match:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0,150,255,.16);
-}
-
-/* Плавне відкриття профілю команди */
-#teamModal {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .28s ease, visibility .28s ease;
-}
-
-#teamModal.open {
-    opacity: 1;
-    visibility: visible;
-}
-
-#teamModal .team-modal-panel,
-#teamModal .modal-content,
-#teamModal .team-profile,
-#teamModal > div {
-    transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .25s ease;
-}
-
-#teamModal:not(.open) .team-modal-panel,
-#teamModal:not(.open) .modal-content,
-#teamModal:not(.open) .team-profile {
-    transform: translateY(16px) scale(.985);
-    opacity: 0;
-}
-
-#teamModal.open .team-modal-panel,
-#teamModal.open .modal-content,
-#teamModal.open .team-profile {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-}
-
-/* Плавна поява секцій при прокрутці */
-.smooth-reveal {
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
-}
-
-.smooth-reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-    }
-}
-</style>
-
-<script id="smooth-site-js">
-(function(){
-    function initSmoothReveal(){
-        const elements = document.querySelectorAll('.playoffs, .teams, .section-divider, .team-card');
-        elements.forEach(el => el.classList.add('smooth-reveal'));
-
-        if (!('IntersectionObserver' in window)) {
-            elements.forEach(el => el.classList.add('is-visible'));
-            return;
-        }
-
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting){
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: .08, rootMargin: '0px 0px -30px 0px' });
-
-        elements.forEach(el => observer.observe(el));
-    }
-
-    if(document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSmoothReveal);
-    } else {
-        initSmoothReveal();
-    }
-})();
-</script>
-
 </body>
 </html>

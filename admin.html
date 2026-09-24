@@ -121,31 +121,36 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
 <script>
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let teams=[],matches={},schedule=[];
-let scheduleSaving=false;
+let scheduleSaving=false,saveScoresSaving=false,realtimeChannel=null;
 const $=id=>document.getElementById(id);
 function pad2(n){return String(n).padStart(2,'0');}
-function toLocalInput(value){
-  if(!value) return '';
-  const d=new Date(value);
-  if(Number.isNaN(d.getTime())) return '';
-  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes());
-}
-function localDateTimeToIso(value){
-  if(!value) return null;
-  const m=value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
-  if(!m) return null;
-  const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]),Number(m[5]),0,0);
-  if(Number.isNaN(d.getTime())) return null;
-  return d.toISOString();
-}
-
-const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
+function toLocalInput(value){if(!value)return '';const d=new Date(value);if(Number.isNaN(d.getTime()))return '';return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes());}
+function localDateTimeToIso(value){if(!value)return null;const m=value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);if(!m)return null;const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]),Number(m[5]),0,0);return Number.isNaN(d.getTime())?null:d.toISOString();}
+const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',UF:'Фінал ВС',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
+const ids=Object.keys(labels);
 const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function msg(id,t){$(id).textContent=t||'';}
-function result(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
-function participants(){const p={},r=['U1','U2','U3','U4'].map(result);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];p.L1=[r[0]?.loser??null,r[1]?.loser??null];p.L2=[r[2]?.loser??null,r[3]?.loser??null];const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=result('L3'),l4=result('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=result('L5'),uf=result('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=result('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
-function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
+function needWins(id){return id==='GF'?3:2;}
+function rawMatch(id){return matches[id]||{a:null,b:null,sa:0,sb:0};}
+function matchResult(id,p){const m=rawMatch(id),pair=p?.[id]||[m.a,m.b];if(pair[0]==null||pair[1]==null)return null;if(m.a!==pair[0]||m.b!==pair[1])return null;const need=needWins(id);if(m.sa>=need&&m.sb<need)return{winner:pair[0],loser:pair[1]};if(m.sb>=need&&m.sa<need)return{winner:pair[1],loser:pair[0]};return null;}
+function deriveBracket(){
+ const p={};
+ for(const id of ['U1','U2','U3','U4']){const m=rawMatch(id);p[id]=[m.a==null?null:Number(m.a),m.b==null?null:Number(m.b)];}
+ const u1=matchResult('U1',p),u2=matchResult('U2',p),u3=matchResult('U3',p),u4=matchResult('U4',p);
+ p.U5=[u1?.winner??null,u2?.winner??null];p.U6=[u3?.winner??null,u4?.winner??null];p.L1=[u1?.loser??null,u2?.loser??null];p.L2=[u3?.loser??null,u4?.loser??null];
+ const u5=matchResult('U5',p),u6=matchResult('U6',p),l1=matchResult('L1',p),l2=matchResult('L2',p);
+ p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];
+ const l3=matchResult('L3',p),l4=matchResult('L4',p);p.L5=[l3?.winner??null,l4?.winner??null];
+ const l5=matchResult('L5',p),uf=matchResult('UF',p);p.LF=[l5?.winner??null,uf?.loser??null];const lf=matchResult('LF',p);p.GF=[uf?.winner??null,lf?.winner??null];
+ return p;
+}
+function result(id){const p=deriveBracket();return matchResult(id,p);}
+function participants(){return deriveBracket();}
+function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>Number(x.id)===Number(id));return t?t.name:'Очікуємо';}
+function matchStage(id){return {U1:1,U2:1,U3:1,U4:1,L1:2,L2:2,U5:3,U6:3,L3:4,L4:4,UF:5,L5:6,LF:7,GF:8}[id]??999;}
+function currentPlayoffStage(p){const playable=ids.filter(id=>p[id]?.[0]!=null&&p[id]?.[1]!=null);const unfinished=playable.filter(id=>!matchResult(id,p));if(!unfinished.length)return null;const first=unfinished.some(id=>matchStage(id)===1||matchStage(id)===2);if(first)return 1;return Math.min(...unfinished.map(matchStage));}
+function syncDerivedMatchMemory(p){for(const id of ids){const m=rawMatch(id),pair=p[id]||[m.a,m.b];if(m.a!==pair[0]||m.b!==pair[1]){m.a=pair[0];m.b=pair[1];m.sa=0;m.sb=0;}matches[id]=m;}}
 
 function renderTeams(){
  $('teams').innerHTML=teams.map(t=>{
@@ -198,25 +203,14 @@ function anyUnfinishedPlayableMatch(p){
  return stage!=null && Object.keys(labels).some(id=>matchStage(id)===stage && matchReadyForScore(id,p) && !result(id));
 }
 function renderMatches(){
- const p=participants();
+ const p=deriveBracket();
  const stage=currentPlayoffStage(p);
- $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
-  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
-  const noTeams=a==null||b==null;
-  const finished=!!result(id);
-  const isCurrentStage=(stage===1 && (matchStage(id)===1 || matchStage(id)===2)) || stage===matchStage(id);
-  const locked=noTeams || (!finished && !isCurrentStage);
-  let lockText='';
-  if(noTeams){
-   lockText='Команди з’являться після завершення попередніх матчів.';
-  }else if(!finished && !isCurrentStage){
-   lockText='Цей раунд заблокований. Спочатку завершіть попередні матчі.';
-  }
-  return `<div class="game ${locked?'locked':''}">
-   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Заблоковано')}</span></div>
-   <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
-   ${lockText?`<p class="status">${lockText}</p>`:''}
-  </div>`;
+ $('matchesAdmin').innerHTML=ids.map(id=>{
+  const m=rawMatch(id),pair=p[id]||[m.a,m.b],a=pair[0],b=pair[1],max=id==='GF'?3:2,finished=!!matchResult(id,p),noTeams=a==null||b==null;
+  const isCurrentStage=(stage===1&&(matchStage(id)===1||matchStage(id)===2))||stage===matchStage(id);
+  const locked=noTeams||(!finished&&!isCurrentStage);
+  let text=noTeams?'Команди з’являться після завершення попередніх матчів.':(!finished&&!isCurrentStage?'Цей раунд заблокований. Спочатку завершіть попередні матчі.':'');
+  return `<div class="game ${locked?'locked':''}" data-match="${id}"><div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Заблоковано')}</span></div><div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${Number(m.sa)||0}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${Number(m.sb)||0}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>${text?`<p class="status">${text}</p>`:''}</div>`;
  }).join('');
 }
 
@@ -236,43 +230,31 @@ async function uploadLogo(e,id){const f=e.target.files[0];if(!f)return;if(f.size
 function removeLogo(id){const t=teams.find(x=>x.id===id);if(t){t.logo='';$('preview-'+id).src=placeholder;msg('teamMsg','Логотип прибрано. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}
 
 async function load(){
- const tr=await db.from('teams').select('*').order('id');
- if(tr.error)throw tr.error;
+ const tr=await db.from('teams').select('*').order('id');if(tr.error)throw tr.error;
  teams=(tr.data||[]).map(t=>({...t,id:Number(t.id),details:t.details||{},logo:t.logo||''}));
- const mr=await db.from('matches').select('id,a,b,sa,sb');
- if(mr.error)throw mr.error;
- matches=Object.fromEntries((mr.data||[]).map(x=>[x.id,{...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}]));
+ const mr=await db.from('matches').select('id,a,b,sa,sb');if(mr.error)throw mr.error;
+ matches=Object.fromEntries(ids.map(id=>[id,{a:null,b:null,sa:0,sb:0}]));
+ for(const x of mr.data||[])if(ids.includes(x.id))matches[x.id]={...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0};
  renderTeams();renderMatches();await loadSchedule();
 }
-async function loadSchedule(){
- const r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});
- if(r.error){schedule=[];renderSchedule();msg('scheduleMsg','Таблиця match_schedule не доступна: '+r.error.message);return;}
- schedule=Array.from(new Map((r.data||[]).map(x=>[String(x.id),x])).values());renderSchedule();
-}
-async function saveTeams(){
- msg('teamMsg','Зберігаю...');
- try{
-  for(const t of teams){
-   const d={...(t.details||{}),captain:$('cap-'+t.id).value.trim(),position:$('pos-'+t.id).value.trim(),status:$('status-'+t.id).value.trim(),players:[0,1,2,3,4].map(i=>$('player-'+t.id+'-'+i).value.trim()).filter(Boolean)};
-   const name=$('name-'+t.id).value.trim()||('Команда '+t.id);
-   const r=await db.from('teams').update({name,logo:t.logo||null,details:d}).eq('id',t.id);
-   if(r.error)throw r.error;
-  }
-  msg('teamMsg','Команди та профілі збережено.');await load();
- }catch(e){msg('teamMsg','Помилка: '+(e.message||e));}
-}
+async function loadSchedule(){const r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});if(r.error){schedule=[];renderSchedule();msg('scheduleMsg','Таблиця match_schedule не доступна: '+r.error.message);return;}schedule=Array.from(new Map((r.data||[]).map(x=>[String(x.id),x])).values());renderSchedule();}
 async function saveScores(){
- msg('saveMsg','Зберігаю...');
+ if(saveScoresSaving)return;saveScoresSaving=true;const btn=$('saveScores');if(btn)btn.disabled=true;msg('saveMsg','Перевіряю сітку та зберігаю...');
  try{
-  for(const id of Object.keys(labels)){
-   const a=$('sa-'+id),b=$('sb-'+id);if(!a||!b||a.disabled)continue;
-   const max=id==='GF'?3:2,sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));
+  const p=deriveBracket();
+  for(const id of ids){
+   const pair=p[id]||[null,null],a=$('sa-'+id),b=$('sb-'+id);if(!a||!b||a.disabled)continue;
+   if(pair[0]==null||pair[1]==null)throw new Error(labels[id]+': команди ще не визначені.');
+   const max=needWins(id),sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));
    if(sa===max&&sb===max)throw new Error(labels[id]+' не може мати однаковий максимальний рахунок.');
-   const r=await db.from('matches').update({sa,sb}).eq('id',id);if(r.error)throw r.error;
+   if(sa===max||sb===max){/* valid */}else if(sa>0||sb>0){if(Math.max(sa,sb)>=max)throw new Error('Некоректний рахунок у '+labels[id]+'.');}
+   const r=await db.from('matches').update({a:pair[0],b:pair[1],sa,sb}).eq('id',id);if(r.error)throw r.error;
   }
-  msg('saveMsg','Результати збережено.');await load();
- }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
+  // Синхронізуємо всі похідні учасники; це прибирає старі команди/рахунки після зміни попереднього матчу.
+  await load();msg('saveMsg','Результати збережено. Сітку синхронізовано.');
+ }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}finally{saveScoresSaving=false;if(btn)btn.disabled=false;}
 }
+
 async function saveSchedule(){
  if(scheduleSaving)return;
  scheduleSaving=true;
@@ -319,9 +301,10 @@ async function saveSchedule(){
 $('addMatch').onclick=()=>{if(scheduleSaving)return; schedule.push({id:null,_new:true,stage:'',a:null,b:null,scheduled_at:null,best_of:'BO3',status:'scheduled',sa:0,sb:0});renderSchedule();};
 document.addEventListener('click',e=>{if(e.target.classList.contains('remove-match')){schedule.splice(+e.target.closest('.match').dataset.i,1);renderSchedule();}});
 $('saveTeams').onclick=saveTeams;$('saveScores').onclick=saveScores;$('saveSchedule').onclick=saveSchedule;$('reload').onclick=async()=>{try{await load();}catch(e){msg('teamMsg','Помилка: '+e.message);}};
+function initRealtime(){if(!db.channel)return;realtimeChannel=db.channel('nuwgp-admin-live').on('postgres_changes',{event:'*',schema:'public',table:'teams'},()=>load().catch(e=>msg('teamMsg','Помилка: '+e.message))).on('postgres_changes',{event:'*',schema:'public',table:'matches'},()=>load().catch(e=>msg('saveMsg','Помилка: '+e.message))).on('postgres_changes',{event:'*',schema:'public',table:'match_schedule'},()=>loadSchedule().catch(e=>msg('scheduleMsg','Помилка: '+e.message))).subscribe();}
 $('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const r=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(r.error){msg('loginMsg',r.error.message);return;}await show();};
 $('logout').onclick=async()=>{await db.auth.signOut();location.reload();};
-async function show(){const {data}=await db.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('userStatus').textContent='Увійшли як '+(data.session.user.email||'адміністратор');try{await load();}catch(e){msg('teamMsg','Помилка завантаження: '+e.message);}}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');}}
+async function show(){const {data}=await db.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('userStatus').textContent='Увійшли як '+(data.session.user.email||'адміністратор');try{await load();initRealtime();}catch(e){msg('teamMsg','Помилка завантаження: '+e.message);}}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');}}
 function initAdminTabs(){document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.admin-tab').forEach(x=>x.classList.toggle('active',x===btn));document.querySelectorAll('.admin-tab-panel').forEach(x=>x.classList.toggle('active',x.id===btn.dataset.tab));}));document.querySelectorAll('.admin-tab-panel').forEach((x,i)=>x.classList.toggle('active',i===0));}
 setInterval(()=>{if(!document.getElementById('app').classList.contains('hidden')){schedule=schedule.map(m=>({...m,status:automaticScheduleStatus(m)}));renderSchedule();}},30000);
 initAdminTabs();
