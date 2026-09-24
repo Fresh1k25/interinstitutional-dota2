@@ -2638,5 +2638,40 @@ document.readyState==='loading'?addEventListener('DOMContentLoaded',drag):drag()
 body.team-modal-open{overflow:hidden}
 @media(max-width:700px){.team-profile-modal{padding:10px}.team-profile-panel{max-height:92vh;padding:20px 14px}.team-profile-head{gap:12px}.team-profile-logo{width:64px;height:64px;flex-basis:64px}.team-profile-head h2{font-size:25px}.team-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.team-profile-roster{grid-template-columns:1fr 1fr}.team-result-row{grid-template-columns:78px 1fr 50px;gap:7px}.team-result-row small{grid-column:2 / -1}.team-profile-kicker{font-size:8px}}
 </style>
+
+<style id="nuw-pro-polish">
+:root{--nuw-cyan:#25b5fa;--nuw-blue:#1597d0;--nuw-bg:#030a12;--nuw-panel:rgba(7,24,39,.78);--nuw-border:rgba(91,202,255,.18);--nuw-text:#effaff;--nuw-muted:#83a9bd}
+html{scroll-behavior:smooth}body{background:radial-gradient(circle at 50% -10%,rgba(22,129,187,.14),transparent 38%),var(--nuw-bg)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(rgba(37,181,250,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(37,181,250,.018) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+header{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);background:rgba(3,12,21,.76)!important;border-bottom-color:rgba(76,193,245,.16)!important;box-shadow:0 8px 35px rgba(0,0,0,.22)}
+header nav a{transition:color .2s ease,background .2s ease,transform .2s ease}header nav a:hover{transform:translateY(-1px)}header nav a.active{color:#fff!important;background:rgba(37,181,250,.11);border-radius:10px;box-shadow:inset 0 0 0 1px rgba(37,181,250,.1)}
+.hero{position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:420px;height:420px;right:-180px;top:40px;border-radius:50%;background:radial-gradient(circle,rgba(37,181,250,.12),transparent 68%);filter:blur(4px);pointer-events:none}
+.section-title h2{letter-spacing:.04em;text-shadow:0 0 24px rgba(37,181,250,.12)}
+.team-card,.team,.public-schedule-card,.team-profile-panel{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.team-card:hover,.team:hover,.public-schedule-card:hover{transform:translateY(-3px);border-color:rgba(37,181,250,.38)!important;box-shadow:0 16px 42px rgba(0,0,0,.28),0 0 28px rgba(37,181,250,.06)}
+.team-clickable{cursor:pointer}.team-clickable:focus-visible{outline:2px solid var(--nuw-cyan);outline-offset:3px}
+.bracket-wrapper{border-radius:18px;box-shadow:inset 0 0 0 1px rgba(90,200,255,.06),0 18px 55px rgba(0,0,0,.2)}
+.team-profile-modal{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.team-profile-panel{box-shadow:0 30px 100px rgba(0,0,0,.58),0 0 50px rgba(37,181,250,.08);border-color:rgba(37,181,250,.28)!important}
+.scroll-progress{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,#1597d0,#62d7ff);z-index:99999;box-shadow:0 0 14px rgba(37,181,250,.55)}
+.back-top{position:fixed;right:20px;bottom:20px;width:42px;height:42px;border:1px solid rgba(37,181,250,.25);border-radius:50%;background:rgba(5,18,29,.86);color:#dff7ff;cursor:pointer;z-index:1000;opacity:0;pointer-events:none;transform:translateY(8px);transition:.2s;backdrop-filter:blur(12px)}.back-top.show{opacity:1;pointer-events:auto;transform:none}.back-top:hover{border-color:#25b5fa;color:#25b5fa}
+[data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}.reveal-in{opacity:1;transform:none}
+@media(max-width:700px){header{position:sticky;top:0;z-index:1000}.back-top{right:12px;bottom:12px;width:38px;height:38px}.team-card:hover,.team:hover,.public-schedule-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
+<script id="nuw-pro-polish-js">
+(function(){
+ const progress=document.createElement('div');progress.className='scroll-progress';document.body.appendChild(progress);
+ const top=document.createElement('button');top.className='back-top';top.type='button';top.setAttribute('aria-label','Вгору');top.textContent='↑';document.body.appendChild(top);
+ function onScroll(){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h>0?(scrollY/h)*100:0)+'%';top.classList.toggle('show',scrollY>650)}
+ addEventListener('scroll',onScroll,{passive:true});top.onclick=()=>scrollTo({top:0,behavior:'smooth'});onScroll();
+ document.querySelectorAll('section[id]').forEach(x=>x.setAttribute('data-reveal',''));
+ const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('reveal-in')}),{threshold:.06,rootMargin:'0px 0px -35px'}):null;
+ if(io)document.querySelectorAll('[data-reveal]').forEach(x=>io.observe(x));else document.querySelectorAll('[data-reveal]').forEach(x=>x.classList.add('reveal-in'));
+ const links=[...document.querySelectorAll('header nav a[href^="#"]')],sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+ if('IntersectionObserver' in window){const navio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-30% 0px -55%'});sections.forEach(s=>navio.observe(s));}
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('teamProfileModal');if(m&&m.getAttribute('aria-hidden')==='false'&&typeof closeTeamProfile==='function')closeTeamProfile();}});
+})();
+</script>
 </body>
 </html>

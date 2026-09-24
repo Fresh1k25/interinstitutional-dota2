@@ -351,5 +351,41 @@ setInterval(()=>{if(!document.getElementById('app').classList.contains('hidden')
 initAdminTabs();
 show();
 </script>
+
+<style id="admin-pro-polish">
+:root{--ap-cyan:#25b5fa;--ap-bg:#04101a;--ap-panel:rgba(10,31,48,.82);--ap-line:rgba(72,181,235,.18)}
+body{background:radial-gradient(circle at 50% -20%,rgba(21,151,208,.14),transparent 42%),#04101a}.card{background:var(--ap-panel);border-color:var(--ap-line);box-shadow:0 18px 55px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.02);backdrop-filter:blur(14px)}
+header{background:rgba(4,16,26,.82)!important;backdrop-filter:blur(16px);box-shadow:0 8px 35px rgba(0,0,0,.22)}
+.admin-tabs{position:sticky!important;top:76px;z-index:30;padding:8px!important;border:1px solid rgba(72,181,235,.12);border-radius:14px;background:rgba(4,16,26,.82)!important;backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.admin-tab{transition:.2s}.admin-tab:hover{transform:translateY(-1px);border-color:rgba(37,181,250,.5)}
+.game,.match,.team{transition:border-color .2s,box-shadow .2s,transform .2s}.game:hover,.match:hover,.team:hover{border-color:rgba(37,181,250,.34);box-shadow:0 12px 32px rgba(0,0,0,.2)}
+.game.locked{opacity:.58;filter:saturate(.75)}.game:not(.locked){box-shadow:inset 3px 0 0 #25b5fa,0 12px 32px rgba(0,0,0,.16)}
+.score{min-width:64px!important;font-size:20px!important;font-weight:900!important;text-align:center!important;border-color:rgba(37,181,250,.28)!important}.score:focus{box-shadow:0 0 0 3px rgba(37,181,250,.12)}
+.quick-score{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.quick-score button{border:1px solid rgba(37,181,250,.22);background:#0b2a40;color:#ccefff;border-radius:8px;padding:7px 10px;font-weight:900;cursor:pointer}.quick-score button:hover{background:#125174;border-color:#25b5fa}.quick-score button.primary-q{background:#116f9d;color:#fff}
+.admin-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.admin-kpi>div{padding:12px;border:1px solid rgba(72,181,235,.14);border-radius:11px;background:rgba(3,15,25,.45)}.admin-kpi b{display:block;font-size:22px;color:#eafaff}.admin-kpi span{font-size:10px;color:#78a6bb;text-transform:uppercase;letter-spacing:1px}
+@media(max-width:800px){.admin-kpi{grid-template-columns:repeat(2,1fr)}.admin-tabs{top:62px}.quick-score button{flex:1 1 calc(33% - 6px);min-height:40px}.game-grid{grid-template-columns:minmax(0,1fr) 58px 12px 58px minmax(0,1fr)!important}}
+</style>
+<script id="admin-pro-polish-js">
+(function(){
+ function decorateScores(){
+  document.querySelectorAll('#matchesAdmin .game').forEach(card=>{
+   if(card.querySelector('.quick-score'))return;
+   const head=card.querySelector('.game-head strong'); if(!head)return;
+   const id=Object.keys(window.labels||{}).find(k=>window.labels[k]===head.textContent);
+   const inputs=card.querySelectorAll('.score'); if(inputs.length!==2||inputs[0].disabled)return;
+   const max=(id==='GF')?3:2;
+   const box=document.createElement('div');box.className='quick-score';
+   const sets=[];for(let a=0;a<=max;a++)for(let b=0;b<=max;b++)if((a===max&&b<max)||(b===max&&a<max))sets.push([a,b]);
+   sets.forEach(([a,b])=>{const bt=document.createElement('button');bt.type='button';bt.textContent=a+' : '+b;bt.className=(Number(inputs[0].value)===a&&Number(inputs[1].value)===b)?'primary-q':'';bt.onclick=()=>{inputs[0].value=a;inputs[1].value=b;box.querySelectorAll('button').forEach(x=>x.classList.remove('primary-q'));bt.classList.add('primary-q')};box.appendChild(bt)});
+   card.appendChild(box);
+  });
+ }
+ const oldRender=window.renderMatches;
+ if(typeof oldRender==='function'){window.renderMatches=function(){oldRender();decorateScores()};setTimeout(decorateScores,0)}
+ const app=document.getElementById('app');
+ if(app){const k=document.createElement('div');k.className='admin-kpi';k.innerHTML='<div><b id="kTeams">—</b><span>Команд</span></div><div><b id="kPlayed">—</b><span>Завершених матчів</span></div><div><b id="kOpen">—</b><span>Доступних матчів</span></div><div><b id="kSchedule">—</b><span>У розкладі</span></div>';const first=app.querySelector('.card');if(first)first.appendChild(k);
+  const update=()=>{const ts=window.teams||[],ms=window.matches||{},sc=window.schedule||[];let played=0,open=0;Object.keys(ms).forEach(id=>{const m=ms[id];const need=id==='GF'?3:2;if(Math.max(Number(m.sa)||0,Number(m.sb)||0)>=need&&Math.min(Number(m.sa)||0,Number(m.sb)||0)<need)played++});document.getElementById('kTeams').textContent=ts.length;document.getElementById('kPlayed').textContent=played;document.getElementById('kOpen').textContent=document.querySelectorAll('#matchesAdmin .game:not(.locked)').length;document.getElementById('kSchedule').textContent=sc.length};setInterval(update,1200);setTimeout(update,500)}
+})();
+</script>
 </body>
 </html>
