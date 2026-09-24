@@ -2084,12 +2084,13 @@ function updateBracketLines(){
         }
 
         /*
-          Для кожного переходу робимо акуратну "ступінчасту" лінію:
-          середина правої сторони -> вертикальний сегмент ->
-          середина лівої сторони наступного матчу.
+          Конектор виходить строго з центру правої сторони
+          та заходить у центр лівої сторони наступного матчу.
+          Без вертикальних "перемичок" між парами — саме їх
+          прибираємо, щоб сітка виглядала чистіше.
         */
-        const midX=from.x + Math.max(38,(to.x-from.x)/2);
-        const d=`M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${midX.toFixed(1)} V ${to.y.toFixed(1)} H ${to.x.toFixed(1)}`;
+        const midX=from.x + Math.max(38,(to.x-from.x)*0.55);
+        const d=`M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${midX.toFixed(1)} L ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
         path.setAttribute('d',d);
     });
 }
