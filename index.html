@@ -406,10 +406,13 @@ nav a {
 
 .bracket-lines {
     position: absolute;
-    inset: 0;
+    left: 0;
+    top: 0;
     width: 1840px;
     height: 900px;
     z-index: 1;
+    display: block;
+    overflow: visible;
     pointer-events: none;
 }
 
@@ -2229,10 +2232,11 @@ function renderBracket() {
 
         </div>
     `;
-}
 
+    // Після побудови карток одразу малюємо конектори з центру сторони.
     requestAnimationFrame(updateBracketLines);
     setTimeout(updateBracketLines, 80);
+}
 
 /* =====================================================
    АВТОМАТИЧНІ 1 / 2 / 3 МІСЦЯ
