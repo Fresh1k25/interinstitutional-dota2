@@ -241,13 +241,13 @@ nav a {
 
 /* Нижня сітка спеціально опущена від верхньої */
 .bracket-column.r1-lower { left: 20px; top: 545px; }
-.bracket-column.r2-lower { left: 400px; top: 510px; }
-.bracket-column.r3-lower { left: 790px; top: 555px; }
-.bracket-column.final-lower { left: 1180px; top: 535px; }
+.bracket-column.r2-lower { left: 400px; top: 545px; }
+.bracket-column.r3-lower { left: 790px; top: 664px; }
+.bracket-column.final-lower { left: 1180px; top: 415px; }
 
 .bracket-column.grand-final {
     left: 1560px;
-    top: 285px;
+    top: 290px;
 }
 
 /* ================= ROUND TITLE ================= */
@@ -391,15 +391,15 @@ nav a {
 }
 
 .r2-upper .bracket-match + .bracket-match {
-    margin-top: 100px;
+    margin-top: 138px;
 }
 
 .r1-lower .bracket-match + .bracket-match {
-    margin-top: 38px;
+    margin-top: 138px;
 }
 
 .r2-lower .bracket-match + .bracket-match {
-    margin-top: 100px;
+    margin-top: 138px;
 }
 
 /* ================= CONNECTORS ================= */
@@ -2041,7 +2041,7 @@ function renderLines() {
         ['L1','L3'],
         ['L2','L4'],
         ['L3','L5'], ['L4','L5'],
-        ['L5','LF'],
+        ['L5','LF'], ['UF','LF'],
         ['UF','GF'], ['LF','GF']
     ];
 
@@ -2081,16 +2081,15 @@ function updateBracketLines(){
         };
     };
 
-    // Очищаємо старі junction-и, щоб при повторному оновленні
-    // ніколи не залишались зайві вертикальні шматки.
     svg.querySelectorAll('.bracket-junction').forEach(el=>el.remove());
+    const paths=[...svg.querySelectorAll('path[data-from][data-to]')];
+    paths.forEach(p=>p.setAttribute('d',''));
 
     const groups=new Map();
-    svg.querySelectorAll('path[data-from][data-to]').forEach(path=>{
+    paths.forEach(path=>{
         const to=path.dataset.to;
         if(!groups.has(to)) groups.set(to,[]);
         groups.get(to).push(path);
-        path.setAttribute('d','');
     });
 
     groups.forEach(group=>{
@@ -2103,39 +2102,43 @@ function updateBracketLines(){
 
         const target=items[0].to;
 
-        // Один вхід — тільки пряма горизонтальна лінія.
         if(items.length===1){
             const from=items[0].from;
-            const midX=from.x + Math.max(45,(target.x-from.x)*0.55);
+            const targetX=target.x;
+            const dx=targetX-from.x;
+            // Прямий перехід, якщо матчі на одній висоті.
+            if(Math.abs(from.y-target.y)<1.5){
+                items[0].path.setAttribute('d',`M ${from.x} ${from.y} H ${targetX}`);
+                return;
+            }
+            // Для переходів між різними раундами — акуратний Г-подібний конектор.
+            const junctionX=from.x+Math.max(35,Math.min(90,dx*0.55));
             items[0].path.setAttribute('d',
-                `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${midX.toFixed(1)} H ${target.x.toFixed(1)}`
+                `M ${from.x} ${from.y} H ${junctionX} V ${target.y} H ${targetX}`
             );
             return;
         }
 
-        // Два входи — КЛАСИЧНА сітка:
-        // картка -> горизонталь -> одна вертикальна перемичка -> горизонталь -> картка.
+        // Класичний bracket connector:
+        // обидва матчі -> горизонтально -> одна вертикальна перемичка -> горизонтально -> ціль.
         items.sort((a,b)=>a.from.y-b.from.y);
         const minY=items[0].from.y;
         const maxY=items[items.length-1].from.y;
         const midY=(minY+maxY)/2;
         const maxFromX=Math.max(...items.map(x=>x.from.x));
-        const gap=Math.max(50,target.x-maxFromX);
-        const junctionX=Math.min(target.x-35,maxFromX+Math.min(90,gap*0.55));
+        const gap=Math.max(40,target.x-maxFromX);
+        const junctionX=Math.min(target.x-30,maxFromX+Math.min(90,gap*0.55));
 
-        // Кожна гілка доходить до однієї й тієї самої вертикалі,
-        // але сама вертикаль створюється ОДНИМ path нижче.
         items.forEach(item=>{
             item.path.setAttribute('d',
-                `M ${item.from.x.toFixed(1)} ${item.from.y.toFixed(1)} H ${junctionX.toFixed(1)}`
+                `M ${item.from.x} ${item.from.y} H ${junctionX}`
             );
         });
 
         const junction=document.createElementNS('http://www.w3.org/2000/svg','path');
         junction.setAttribute('class','bracket-junction');
         junction.setAttribute('d',
-            `M ${junctionX.toFixed(1)} ${minY.toFixed(1)} V ${maxY.toFixed(1)} `+
-            `M ${junctionX.toFixed(1)} ${midY.toFixed(1)} H ${target.x.toFixed(1)}`
+            `M ${junctionX} ${minY} V ${maxY} M ${junctionX} ${midY} H ${target.x}`
         );
         svg.appendChild(junction);
     });
