@@ -189,14 +189,31 @@ function matchStage(id){
  };
  return stages[id]??999;
 }
+// Кожен матч відкривається одразу після виконання саме своїх залежностей.
+// Тому 1 раунд ВС і 1 раунд НС можуть бути відкритими паралельно.
+const bracketDeps={
+ U1:[],U2:[],U3:[],U4:[],
+ L1:['U1','U2'],
+ L2:['U3','U4'],
+ U5:['U1','U2'],
+ U6:['U3','U4'],
+ L3:['U5','L1'],
+ L4:['U6','L2'],
+ UF:['U5','U6'],
+ L5:['L3','L4'],
+ LF:['L5','UF'],
+ GF:['UF','LF']
+};
+function matchCanEdit(id,p){
+ const pair=p[id]||[null,null];
+ if(pair[0]==null||pair[1]==null)return false;
+ const m=rawMatch(id);
+ if(matchResult(id,p))return false;
+ return (bracketDeps[id]||[]).every(dep=>!!matchResult(dep,p));
+}
 function currentPlayoffStage(p){
- const playable=Object.keys(labels).filter(id=>matchReadyForScore(id,p));
- const unfinished=playable.filter(id=>!result(id));
- if(!unfinished.length)return null;
- // Перший раунд ВС і перший раунд НС відкриті одночасно.
- const firstRoundOpen=unfinished.some(id=>matchStage(id)===1||matchStage(id)===2);
- if(firstRoundOpen)return 1;
- return Math.min(...unfinished.map(matchStage));
+ const open=ids.filter(id=>matchCanEdit(id,p));
+ return open.length?Math.min(...open.map(matchStage)):null;
 }
 function anyUnfinishedPlayableMatch(p){
  const stage=currentPlayoffStage(p);
@@ -207,9 +224,9 @@ function renderMatches(){
  const stage=currentPlayoffStage(p);
  $('matchesAdmin').innerHTML=ids.map(id=>{
   const m=rawMatch(id),pair=p[id]||[m.a,m.b],a=pair[0],b=pair[1],max=id==='GF'?3:2,finished=!!matchResult(id,p),noTeams=a==null||b==null;
-  const isCurrentStage=(stage===1&&(matchStage(id)===1||matchStage(id)===2))||stage===matchStage(id);
-  const locked=noTeams||(!finished&&!isCurrentStage);
-  let text=noTeams?'Команди з’являться після завершення попередніх матчів.':(!finished&&!isCurrentStage?'Цей раунд заблокований. Спочатку завершіть попередні матчі.':'');
+  const canEdit=matchCanEdit(id,p);
+  const locked=noTeams||(!finished&&!canEdit);
+  let text=noTeams?'Команди з’являться після завершення попередніх матчів.':(!finished&&!canEdit?'Цей матч заблокований до завершення його попередніх матчів.':'');
   return `<div class="game ${locked?'locked':''}" data-match="${id}"><div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Заблоковано')}</span></div><div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${Number(m.sa)||0}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${Number(m.sb)||0}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>${text?`<p class="status">${text}</p>`:''}</div>`;
  }).join('');
 }
