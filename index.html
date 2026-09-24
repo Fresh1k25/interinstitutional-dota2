@@ -241,13 +241,13 @@ nav a {
 
 /* Нижня сітка спеціально опущена від верхньої */
 .bracket-column.r1-lower { left: 20px; top: 545px; }
-.bracket-column.r2-lower { left: 400px; top: 545px; }
-.bracket-column.r3-lower { left: 790px; top: 664px; }
-.bracket-column.final-lower { left: 1180px; top: 415px; }
+.bracket-column.r2-lower { left: 400px; top: 510px; }
+.bracket-column.r3-lower { left: 790px; top: 555px; }
+.bracket-column.final-lower { left: 1180px; top: 535px; }
 
 .bracket-column.grand-final {
     left: 1560px;
-    top: 290px;
+    top: 285px;
 }
 
 /* ================= ROUND TITLE ================= */
@@ -391,15 +391,15 @@ nav a {
 }
 
 .r2-upper .bracket-match + .bracket-match {
-    margin-top: 138px;
+    margin-top: 100px;
 }
 
 .r1-lower .bracket-match + .bracket-match {
-    margin-top: 138px;
+    margin-top: 38px;
 }
 
 .r2-lower .bracket-match + .bracket-match {
-    margin-top: 138px;
+    margin-top: 100px;
 }
 
 /* ================= CONNECTORS ================= */
@@ -2029,6 +2029,22 @@ function matchHTML(id) {
 
 function renderLines() {
 
+    /*
+       Лінії більше не прив'язані до "магічних" Y-координат.
+       Після побудови DOM updateBracketLines() бере реальний центр
+       кожної картки та з'єднує середину правої сторони з серединою лівої.
+    */
+    const links = [
+        ['U1','U5'], ['U2','U5'],
+        ['U3','U6'], ['U4','U6'],
+        ['U5','UF'], ['U6','UF'],
+        ['L1','L3'],
+        ['L2','L4'],
+        ['L3','L5'], ['L4','L5'],
+        ['L5','LF'],
+        ['UF','GF'], ['LF','GF']
+    ];
+
     return `
         <svg
             class="bracket-lines"
@@ -2036,37 +2052,109 @@ function renderLines() {
             preserveAspectRatio="none"
             aria-hidden="true"
         >
-
-            <!-- ВС R1 → R2 -->
-            <path d="M240 81 H320 V136 H400"/>
-            <path d="M240 183 H320 V136 H400"/>
-            <path d="M240 285 H320 V320 H400"/>
-            <path d="M240 387 H320 V320 H400"/>
-
-            <!-- ВС R2 → ФІНАЛ ВС -->
-            <path d="M620 136 H730 V246 H1180"/>
-            <path d="M620 320 H730 V246"/>
-
-            <!-- НС R1 → R2 -->
-            <path d="M240 626 H320 V591 H400"/>
-            <path d="M240 748 H320 V775 H400"/>
-
-            <!-- НС R2 → R3 -->
-            <path d="M620 591 H700 V627 H790"/>
-            <path d="M620 775 H700 V627 H790"/>
-
-            <!-- R3 → ФІНАЛ НС -->
-            <path d="M1010 627 H1090 V619 H1180"/>
-
-            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
-            <path d="M1400 246 H1480 V369 H1560"/>
-
-            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
-            <path d="M1400 619 H1480 V369 H1560"/>
-
+            ${links.map(([from,to],i) => '<path id="bracket-line-'+i+'" data-from="'+from+'" data-to="'+to+'" d=""/>').join('')}
         </svg>
     `;
 }
+
+function updateBracketLines(){
+    const bracket = document.getElementById('bracket');
+    if(!bracket) return;
+
+    const svg = bracket.querySelector('.bracket-lines');
+    if(!svg) return;
+
+    const baseWidth = 1840;
+    const baseHeight = 900;
+    const rect = bracket.getBoundingClientRect();
+    if(!rect.width || !rect.height) return;
+
+    const sx = rect.width / baseWidth;
+    const sy = rect.height / baseHeight;
+
+    const point = (id, side) => {
+        const el = bracket.querySelector(`[data-match="${id}"]`);
+        if(!el) return null;
+
+        const r = el.getBoundingClientRect();
+
+        return {
+            x: ((side === 'right' ? r.right : r.left) - rect.left) / sx,
+            y: ((r.top + r.height / 2) - rect.top) / sy
+        };
+    };
+
+    // Видаляємо тільки старі вертикальні перемички.
+    svg.querySelectorAll('.bracket-junction').forEach(el => el.remove());
+
+    const groups = new Map();
+
+    svg.querySelectorAll('path[data-from][data-to]').forEach(path => {
+        const to = path.dataset.to;
+        if(!groups.has(to)) groups.set(to, []);
+        groups.get(to).push(path);
+        path.setAttribute('d', '');
+    });
+
+    groups.forEach(paths => {
+        const items = paths.map(path => ({
+            path,
+            from: point(path.dataset.from, 'right'),
+            to: point(path.dataset.to, 'left')
+        })).filter(item => item.from && item.to);
+
+        if(!items.length) return;
+
+        const target = items[0].to;
+
+        // Одна команда → одна рівна горизонтальна лінія.
+        if(items.length === 1){
+            const from = items[0].from;
+            items[0].path.setAttribute(
+                'd',
+                `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} H ${target.x.toFixed(1)}`
+            );
+            return;
+        }
+
+        // Дві команди → класична схема з фото:
+        // кожна картка → горизонталь → спільна вертикаль → горизонталь → наступна картка.
+        items.sort((a,b) => a.from.y - b.from.y);
+
+        const minY = items[0].from.y;
+        const maxY = items[items.length - 1].from.y;
+        const midY = (minY + maxY) / 2;
+        const maxFromX = Math.max(...items.map(item => item.from.x));
+
+        // Перемичка залишається в проміжку між раундами,
+        // як на референсі, а не біля самої картки наступного раунду.
+        const gap = Math.max(0, target.x - maxFromX);
+        const junctionX = Math.min(
+            target.x - 35,
+            maxFromX + Math.min(90, gap * 0.55)
+        );
+
+        items.forEach(item => {
+            item.path.setAttribute(
+                'd',
+                `M ${item.from.x.toFixed(1)} ${item.from.y.toFixed(1)} H ${junctionX.toFixed(1)}`
+            );
+        });
+
+        const junction = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        junction.setAttribute('class', 'bracket-junction');
+        junction.setAttribute(
+            'd',
+            `M ${junctionX.toFixed(1)} ${minY.toFixed(1)} ` +
+            `V ${maxY.toFixed(1)} ` +
+            `M ${junctionX.toFixed(1)} ${midY.toFixed(1)} ` +
+            `H ${target.x.toFixed(1)}`
+        );
+        svg.appendChild(junction);
+    });
+}
+
+
 
 /* =====================================================
    ПОБУДОВА PLAYOFF
@@ -2206,6 +2294,9 @@ function renderBracket() {
         </div>
     `;
 
+    // Після побудови карток одразу малюємо конектори з центру сторони.
+    requestAnimationFrame(updateBracketLines);
+    setTimeout(updateBracketLines, 80);
 }
 
 /* =====================================================
@@ -2472,6 +2563,8 @@ function renderTeams() {
     window.fitPlayoffBracket=fitPlayoffBracket;
     window.addEventListener('resize',fitPlayoffBracket);
     window.addEventListener('orientationchange',fitPlayoffBracket);
+    window.addEventListener('resize',()=>requestAnimationFrame(updateBracketLines));
+    window.addEventListener('orientationchange',()=>setTimeout(updateBracketLines,120));
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fitPlayoffBracket);
     else fitPlayoffBracket();
     setTimeout(fitPlayoffBracket,100);
