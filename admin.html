@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NUWEE × DOTA 2 — Єдина адмін-панель</title>
+<title>NUWM × DOTA 2 — Єдина адмін-панель</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#06111d;color:#eef8ff;font-family:Arial,Helvetica,sans-serif}
@@ -57,7 +57,7 @@ input:focus,select:focus{outline:none;border-color:#25b5fa}
 <body>
 <header>
  <div class="header-inner">
-  <div class="logo">NUWEE <span>×</span> DOTA 2 — АДМІН-ПАНЕЛЬ</div>
+  <div class="logo">NUWM <span>×</span> DOTA 2 — АДМІН-ПАНЕЛЬ</div>
   <div class="toolbar">
    <a class="btn" href="index.html">← На сайт</a>
    <button class="btn" id="reload">↻ Оновити</button>
@@ -387,5 +387,99 @@ header{background:rgba(4,16,26,.82)!important;backdrop-filter:blur(16px);box-sha
   const update=()=>{const ts=window.teams||[],ms=window.matches||{},sc=window.schedule||[];let played=0,open=0;Object.keys(ms).forEach(id=>{const m=ms[id];const need=id==='GF'?3:2;if(Math.max(Number(m.sa)||0,Number(m.sb)||0)>=need&&Math.min(Number(m.sa)||0,Number(m.sb)||0)<need)played++});document.getElementById('kTeams').textContent=ts.length;document.getElementById('kPlayed').textContent=played;document.getElementById('kOpen').textContent=document.querySelectorAll('#matchesAdmin .game:not(.locked)').length;document.getElementById('kSchedule').textContent=sc.length};setInterval(update,1200);setTimeout(update,500)}
 })();
 </script>
+
+<style id="admin-final-polish">
+:root{
+ --ap-accent:#25b5fa;--ap-accent2:#58d0ff;--ap-bg:#040d16;
+ --ap-card:rgba(9,27,42,.88);--ap-border:rgba(71,177,229,.22);
+ --ap-muted:#7fa8bd;--ap-radius:16px;
+}
+html{scroll-behavior:smooth}
+body{
+ background:
+ radial-gradient(900px 500px at 8% -10%,rgba(37,181,250,.12),transparent 60%),
+ radial-gradient(700px 450px at 95% 0%,rgba(38,116,180,.09),transparent 58%),
+ linear-gradient(180deg,#040d16 0%,#061522 55%,#040d16 100%);
+}
+header{
+ border-bottom:1px solid rgba(72,181,235,.2)!important;
+ background:rgba(4,13,22,.78)!important;
+ backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.logo{letter-spacing:.2px;text-shadow:0 0 24px rgba(37,181,250,.16)}
+.wrap{max-width:1240px}
+.card{
+ border-radius:var(--ap-radius)!important;
+ border-color:var(--ap-border)!important;
+ background:var(--ap-card)!important;
+ box-shadow:0 20px 60px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.card h1,.card h2{letter-spacing:.2px}
+.card h1{font-size:clamp(22px,3vw,30px)}
+.card h2{font-size:18px}
+.btn{
+ transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.btn:hover{transform:translateY(-1px);border-color:rgba(88,208,255,.55);box-shadow:0 8px 22px rgba(0,0,0,.2)}
+.btn:active{transform:translateY(0)}
+.primary{box-shadow:0 7px 20px rgba(21,151,208,.18)}
+input,select{
+ border-color:rgba(40,86,110,.9)!important;
+ transition:border-color .18s,box-shadow .18s,background .18s;
+}
+input:hover,select:hover{border-color:rgba(37,181,250,.42)!important}
+input:focus,select:focus{
+ border-color:var(--ap-accent)!important;
+ box-shadow:0 0 0 3px rgba(37,181,250,.1)!important;
+}
+.admin-tabs{
+ gap:7px!important;
+ padding:7px!important;
+ border:1px solid rgba(72,181,235,.16)!important;
+ border-radius:15px!important;
+ background:rgba(4,13,22,.82)!important;
+ box-shadow:0 12px 35px rgba(0,0,0,.22)!important;
+}
+.admin-tab{
+ transition:transform .18s,background .18s,border-color .18s,box-shadow .18s;
+}
+.admin-tab:hover{transform:translateY(-1px);border-color:rgba(37,181,250,.55)}
+.admin-tab.active{box-shadow:0 7px 20px rgba(21,151,208,.18)}
+.team,.game,.match{
+ border-color:rgba(72,177,229,.17)!important;
+ border-radius:14px!important;
+ transition:transform .18s,border-color .18s,box-shadow .18s,background .18s;
+}
+.team:hover,.game:hover,.match:hover{
+ transform:translateY(-1px);
+ border-color:rgba(37,181,250,.34)!important;
+ box-shadow:0 14px 36px rgba(0,0,0,.22)!important;
+}
+.team-logo-row{padding:4px 0}
+.team-preview{
+ border-radius:13px!important;
+ border-color:rgba(37,181,250,.25)!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.upload{transition:.18s;background:#103650}
+.upload:hover{background:#154b6a;transform:translateY(-1px)}
+.remove-logo{cursor:pointer;color:#89b2c7;transition:.18s}
+.remove-logo:hover{color:#ff9ba8}
+.game-head{align-items:center}
+.format{font-weight:800;letter-spacing:.2px}
+.score{font-variant-numeric:tabular-nums}
+.status{color:var(--ap-muted)}
+.setup{box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.badge{border:1px solid rgba(72,181,235,.12)}
+@media(max-width:800px){
+ .wrap{margin-top:16px}
+ .card{padding:16px}
+ .admin-tabs{top:61px!important}
+ .team-logo-row{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+</style>
 </body>
 </html>
