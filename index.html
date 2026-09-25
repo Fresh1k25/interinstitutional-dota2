@@ -2416,7 +2416,6 @@ function renderTeams(){
           <span class="team-logo-box">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)} logo" loading="lazy">`:`<span class="team-logo-placeholder">★</span>`}</span>
           <strong>${escHTML(team.name)}</strong>
           <div class="team-mini-stats"><span>МАТЧІ <b>${st.played}</b></span><span>ПЕРЕМОГИ <b>${st.wins}</b></span><span>ПОРАЗКИ <b>${st.losses}</b></span></div>
-          ${players.length?`<div class="team-players">${players.slice(0,5).map(escHTML).join(' • ')}</div>`:''}
         </article>`;
     }).join('');
 }
