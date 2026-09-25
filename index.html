@@ -1602,6 +1602,249 @@ nav a:hover{color:var(--cyan)!important}
 .placements-section{padding:70px 30px 80px;max-width:1500px;margin:0 auto}.placements-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.placement-card{position:relative;min-height:150px;padding:22px;border:1px solid rgba(65,190,255,.2);border-radius:18px;background:linear-gradient(145deg,rgba(8,31,52,.9),rgba(3,15,28,.92));overflow:hidden}.placement-card .place{font-size:12px;letter-spacing:2px;color:#8fc9e6;font-weight:900}.placement-card .place-num{font-size:42px;font-weight:1000;line-height:1;margin:8px 0 14px;color:#fff}.placement-team{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:900}.placement-team img{width:46px;height:46px;object-fit:contain;border-radius:10px;background:#0d2946}.placement-wait{color:#65879a;font-weight:700}.placement-card.champion{border-color:rgba(255,210,80,.42);box-shadow:0 0 35px rgba(255,190,50,.08)}.placement-card.second{border-color:rgba(190,205,220,.3)}.placement-card.third{border-color:rgba(190,125,70,.28)}
 @media(max-width:700px){.placements-section{padding:48px 13px 58px}.placements-list{grid-template-columns:1fr;gap:10px}.placement-card{min-height:104px;padding:15px 16px}.placement-card .place-num{font-size:30px;margin:5px 0 8px}.placement-team{font-size:14px}.placement-team img{width:38px;height:38px}.placements-section .section-title h2{font-size:32px!important}}
 </style>
+
+<style id="nuwm-max-polish">
+/* =========================================================
+   NUWM MAX POLISH — ВІЗУАЛЬНЕ ПОКРАЩЕННЯ БЕЗ ЗМІНИ ХАРАКТЕРИСТИК
+   Не змінює структуру турніру, команди, рахунки, посилання,
+   адмінку, дані Supabase або логіку кліків.
+========================================================= */
+:root{
+  --nuwm-cyan:#28b9ff;
+  --nuwm-cyan-2:#67ddff;
+  --nuwm-blue:#0b65a7;
+  --nuwm-bg:#020b18;
+  --nuwm-panel:rgba(7,24,45,.82);
+  --nuwm-line:rgba(103,221,255,.18);
+  --nuwm-text:#f4fbff;
+  --nuwm-muted:#91abc0;
+  --nuwm-radius:16px;
+  --nuwm-shadow:0 18px 55px rgba(0,0,0,.30);
+}
+html{scroll-behavior:smooth;scroll-padding-top:82px}
+body{
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(40,185,255,.055),transparent 28%),
+    radial-gradient(circle at 88% 34%,rgba(0,110,255,.045),transparent 30%),
+    var(--nuwm-bg);
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.22;
+  background-image:
+    linear-gradient(rgba(103,221,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(103,221,255,.025) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(to bottom,black,transparent 80%);
+}
+::selection{background:rgba(40,185,255,.28);color:#fff}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#020914}
+::-webkit-scrollbar-thumb{background:linear-gradient(#146c9e,#28b9ff);border-radius:999px;border:2px solid #020914}
+::-webkit-scrollbar-thumb:hover{background:#67ddff}
+
+/* Header: той самий функціонал, але чистіша ієрархія */
+header{
+  background:rgba(2,12,28,.78)!important;
+  border-bottom-color:rgba(103,221,255,.16)!important;
+  box-shadow:0 10px 35px rgba(0,0,0,.18);
+}
+.logo{letter-spacing:.2px;text-shadow:0 0 24px rgba(40,185,255,.18)}
+nav a{
+  position:relative;
+  transition:color .2s ease,transform .2s ease;
+}
+nav a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;
+  transform:scaleX(0);transform-origin:center;
+  background:linear-gradient(90deg,transparent,var(--nuwm-cyan),transparent);
+  transition:transform .22s ease;
+}
+nav a:hover{color:var(--nuwm-cyan-2);transform:translateY(-1px)}
+nav a:hover::after{transform:scaleX(1)}
+.admin-button{
+  box-shadow:0 8px 22px rgba(34,174,245,.16);
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+}
+.admin-button:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(34,174,245,.28);filter:brightness(1.06)}
+.admin-button:active{transform:translateY(0)}
+
+/* Hero */
+.hero{
+  isolation:isolate;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(90deg,rgba(1,8,18,.22),transparent 35%,rgba(1,8,18,.18)),
+    radial-gradient(circle at 50% 42%,transparent 0 28%,rgba(0,0,0,.16) 72%);
+}
+.hero-content{position:relative;z-index:2}
+.hero .title,.hero .subtitle{filter:drop-shadow(0 8px 28px rgba(0,0,0,.4))}
+.hero .title{letter-spacing:-.02em}
+.hero-dota-logo{filter:drop-shadow(0 10px 25px rgba(0,0,0,.35))}
+
+/* Заголовки секцій */
+.section-title{
+  text-wrap:balance;
+  letter-spacing:-.015em;
+  text-shadow:0 5px 24px rgba(0,0,0,.3);
+}
+.subtitle{color:#a7bfd0}
+
+/* Команди — клікабельність зберігається */
+.team-card{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  box-shadow:var(--nuwm-shadow)!important;
+}
+.team-card::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(120deg,rgba(103,221,255,.07),transparent 38%,rgba(40,185,255,.035));
+  opacity:0;transition:opacity .25s ease;
+}
+.team-card::after{
+  content:"";position:absolute;top:-80%;left:-45%;width:38%;height:260%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.075),transparent);
+  transform:rotate(18deg) translateX(-180%);
+  transition:transform .7s ease;pointer-events:none;
+}
+.team-card:hover{
+  transform:translateY(-5px)!important;
+  border-color:rgba(103,221,255,.48)!important;
+  box-shadow:0 20px 50px rgba(0,0,0,.38),0 0 30px rgba(40,185,255,.08)!important;
+}
+.team-card:hover::before{opacity:1}
+.team-card:hover::after{transform:rotate(18deg) translateX(650%)}
+.team-card.team-clickable{cursor:pointer}
+.team-card:focus-visible,.team-clickable:focus-visible{
+  outline:2px solid var(--nuwm-cyan-2);
+  outline-offset:4px;
+}
+
+/* Логотипи команд */
+.team-logo-box,.bracket-logo-box{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.team-card:hover .team-logo-box,
+.bracket-team:hover .bracket-logo-box{
+  transform:scale(1.05);
+  border-color:rgba(103,221,255,.45)!important;
+  box-shadow:0 0 24px rgba(40,185,255,.12);
+}
+
+/* Playoffs: тільки косметика, позиції/конектори не змінюємо */
+.playoffs{
+  position:relative;
+  overflow:hidden;
+}
+.playoffs::before,.playoffs::after{
+  content:"";position:absolute;pointer-events:none;border-radius:50%;
+  filter:blur(1px);
+}
+.playoffs::before{
+  width:560px;height:560px;left:-260px;top:12%;
+  background:radial-gradient(circle,rgba(40,185,255,.08),transparent 68%);
+}
+.playoffs::after{
+  width:520px;height:520px;right:-240px;bottom:5%;
+  background:radial-gradient(circle,rgba(0,100,255,.07),transparent 68%);
+}
+.bracket-wrapper{position:relative;z-index:2}
+.bracket-match{
+  box-shadow:0 12px 30px rgba(0,0,0,.28),0 0 20px rgba(0,150,255,.06)!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.bracket-match:hover{
+  transform:translateY(-2px);
+  border-color:rgba(103,221,255,.96)!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.34),0 0 28px rgba(40,185,255,.12)!important;
+}
+.bracket-team{
+  transition:background .18s ease,filter .18s ease;
+}
+.bracket-team.team-clickable{cursor:pointer}
+.bracket-team.team-clickable:hover{
+  background:rgba(40,185,255,.075);
+  filter:brightness(1.08);
+}
+.bracket-score{
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 12px rgba(103,221,255,.16);
+}
+.bracket-team-name{transition:color .18s ease}
+.bracket-team.team-clickable:hover .bracket-team-name{color:#67ddff}
+
+/* Розділювачі */
+.section-divider{
+  opacity:.8;
+  filter:drop-shadow(0 0 10px rgba(40,185,255,.08));
+}
+
+/* Placement cards */
+.placement-card{
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.placement-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(103,221,255,.35)!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.28);
+}
+.place-num{text-shadow:0 0 22px rgba(103,221,255,.18)}
+
+/* Modal профілю команди */
+.team-profile-backdrop{
+  backdrop-filter:blur(8px);
+  background:rgba(0,5,13,.72)!important;
+}
+.team-profile-panel{
+  box-shadow:0 30px 100px rgba(0,0,0,.65),0 0 60px rgba(40,185,255,.07)!important;
+  scrollbar-color:#1676a8 #06111f;
+}
+.team-profile-close{
+  transition:transform .2s ease,background .2s ease,color .2s ease;
+}
+.team-profile-close:hover{transform:rotate(90deg);background:rgba(255,255,255,.08)!important;color:#67ddff!important}
+.team-profile-logo{
+  box-shadow:0 12px 35px rgba(0,0,0,.28),0 0 30px rgba(40,185,255,.08);
+}
+.team-profile-stats>div,.team-profile-section{
+  transition:border-color .2s ease,background .2s ease;
+}
+.team-profile-stats>div:hover{
+  border-color:rgba(103,221,255,.26)!important;
+  background:rgba(40,185,255,.035);
+}
+
+/* Mobile */
+@media (max-width:900px){
+  header{padding:0 22px!important}
+  nav{gap:14px}
+  nav a{font-size:13px}
+  .hero{min-height:620px!important}
+  .teams,.playoffs{padding-left:22px!important;padding-right:22px!important}
+}
+@media (max-width:640px){
+  html{scroll-padding-top:72px}
+  header{height:64px!important;padding:0 15px!important}
+  .logo{font-size:17px}
+  nav{gap:10px}
+  nav a{font-size:12px}
+  .admin-button{padding-left:12px!important;padding-right:12px!important}
+  .hero{min-height:570px!important}
+  .team-card{border-radius:13px}
+  .team-profile-modal{padding:10px!important}
+  .team-profile-panel{max-height:94vh!important;border-radius:16px!important;padding:20px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+</style>
+
 </head>
 
 <body>
