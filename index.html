@@ -1420,6 +1420,47 @@ nav a:hover{color:var(--cyan)!important}
     width:100% !important;
   }
 
+  /* Блоки 20 вересня / 1 корпус / 5v5 */
+  .event-info{
+    display:flex !important;
+    width:min(880px, 100%) !important;
+    gap:0 !important;
+  }
+
+  .event-info > *{
+    flex:1 1 0 !important;
+    min-width:0 !important;
+    padding:18px 26px !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Призовий фонд — зробити помітно ширшим і вищим,
+     але не чіпати інші елементи сторінки */
+  .prize,
+  .prize-fund,
+  .prize-box,
+  [class*="prize"]{
+    min-width:270px !important;
+    width:270px !important;
+    padding:18px 24px !important;
+    box-sizing:border-box !important;
+  }
+
+  .prize h3,
+  .prize-fund h3,
+  .prize-box h3,
+  [class*="prize"] h3{
+    white-space:nowrap !important;
+  }
+
+  .prize strong,
+  .prize-fund strong,
+  .prize-box strong,
+  [class*="prize"] strong{
+    white-space:nowrap !important;
+  }
+}
+
 /* На телефоні нічого нового не масштабуємо — залишаємо існуючу адаптацію */
 @media (max-width:700px){
   .event-info{
@@ -2175,44 +2216,43 @@ function matchHTML(id) {
 ===================================================== */
 
 function renderLines() {
-
     return `
-        <svg
-            class="bracket-lines"
-            viewBox="0 0 1840 900"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-        >
-
-            <!-- ВС R1 → R2 -->
-            <path d="M240 81 H320 V136 H400"/>
-            <path d="M240 183 H320 V136 H400"/>
-            <path d="M240 285 H320 V320 H400"/>
-            <path d="M240 387 H320 V320 H400"/>
-
-            <!-- ВС R2 → ФІНАЛ ВС -->
-            <path d="M620 136 H730 V246 H1180"/>
-            <path d="M620 320 H730 V246"/>
-
-            <!-- НС R1 → R2 -->
-            <path d="M240 626 H320 V591 H400"/>
-            <path d="M240 748 H320 V775 H400"/>
-
-            <!-- НС R2 → R3 -->
-            <path d="M620 591 H700 V627 H790"/>
-            <path d="M620 775 H700 V627 H790"/>
-
-            <!-- R3 → ФІНАЛ НС -->
-            <path d="M1010 627 H1090 V619 H1180"/>
-
-            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
-            <path d="M1400 246 H1480 V369 H1560"/>
-
-            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
-            <path d="M1400 619 H1480 V369 H1560"/>
-
-        </svg>
+        <svg class="bracket-lines" viewBox="0 0 1840 900" preserveAspectRatio="none" aria-hidden="true"></svg>
     `;
+}
+
+/* =====================================================
+   ТОЧНЕ ВИРІВНЮВАННЯ ЛІНІЙ ПО ЦЕНТРАХ МАТЧІВ
+===================================================== */
+function updateBracketLines(){
+    const bracket=document.getElementById('bracket');
+    const svg=bracket?.querySelector('.bracket-lines');
+    if(!bracket||!svg)return;
+
+    const pairs=[
+        ['U1','U5'],['U2','U5'],['U3','U6'],['U4','U6'],
+        ['U5','UF'],['U6','UF'],
+        ['L1','L3'],['L2','L4'],
+        ['L3','L5'],['L4','L5'],
+        ['L5','LF'],['UF','GF'],['LF','GF']
+    ];
+
+    const point=(id,side)=>{
+        const m=bracket.querySelector(`[data-match="${id}"]`);
+        if(!m)return null;
+        const c=m.closest('.bracket-column');
+        if(!c)return null;
+        const x=c.offsetLeft+m.offsetLeft;
+        const y=c.offsetTop+m.offsetTop;
+        return {x:side==='right'?x+m.offsetWidth:x,y:y+m.offsetHeight/2};
+    };
+
+    svg.innerHTML=pairs.map(([a,b])=>{
+        const from=point(a,'right'),to=point(b,'left');
+        if(!from||!to)return '';
+        const mid=Math.round((from.x+to.x)/2);
+        return `<path d="M ${from.x} ${from.y} H ${mid} V ${to.y} H ${to.x}"/>`;
+    }).join('');
 }
 
 /* =====================================================
@@ -2236,7 +2276,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 1 РАУНД ВС
                 <span class="bracket-round-date">
-                    23 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2253,7 +2293,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 2 РАУНД ВС
                 <span class="bracket-round-date">
-                    24 Жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2268,7 +2308,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ФІНАЛ ВС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2284,7 +2324,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 1 РАУНД НС
                 <span class="bracket-round-date">
-                    24 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2299,7 +2339,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 2 РАУНД НС
                 <span class="bracket-round-date">
-                    24 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2314,7 +2354,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 3 РАУНД НС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2328,7 +2368,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ФІНАЛ НС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2344,7 +2384,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ГРАНДФІНАЛ — BO5
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2352,6 +2392,9 @@ function renderBracket() {
 
         </div>
     `;
+
+    updateBracketLines();
+    requestAnimationFrame(updateBracketLines);
 }
 
 /* =====================================================
@@ -2367,10 +2410,13 @@ function renderTeams(){
     const list=document.getElementById('teamList');
     list.innerHTML=teams.map(team=>{
         const st=teamStats(team.id);
+        const d=team.details||{};
+        const players=Array.isArray(d.players)?d.players.filter(Boolean):[];
         return `<article class="team-card team-clickable" data-team-id="${Number(team.id)}" role="button" tabindex="0" title="Відкрити профіль команди">
           <span class="team-logo-box">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)} logo" loading="lazy">`:`<span class="team-logo-placeholder">★</span>`}</span>
           <strong>${escHTML(team.name)}</strong>
           <div class="team-mini-stats"><span>МАТЧІ <b>${st.played}</b></span><span>ПЕРЕМОГИ <b>${st.wins}</b></span><span>ПОРАЗКИ <b>${st.losses}</b></span></div>
+          ${players.length?`<div class="team-players">${players.slice(0,5).map(escHTML).join(' • ')}</div>`:''}
         </article>`;
     }).join('');
 }
@@ -2632,11 +2678,11 @@ function renderSchedule(){
     }
 
     window.fitPlayoffBracket=fitPlayoffBracket;
-    window.addEventListener('resize',fitPlayoffBracket);
+    window.addEventListener('resize',()=>{fitPlayoffBracket();requestAnimationFrame(updateBracketLines);});
     window.addEventListener('orientationchange',fitPlayoffBracket);
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fitPlayoffBracket);
     else fitPlayoffBracket();
-    setTimeout(fitPlayoffBracket,100);
+    setTimeout(()=>{fitPlayoffBracket();updateBracketLines();},100);
 })();
 </script>
 
