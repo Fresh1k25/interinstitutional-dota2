@@ -1728,7 +1728,17 @@ nav a:hover{color:var(--cyan)!important}
 
 </section>
 
-
+<!-- TEAM PROFILE MODAL -->
+<div id="teamProfileModal" class="team-profile-modal" aria-hidden="true">
+  <div class="team-profile-backdrop" data-team-close="1"></div>
+  <div class="team-profile-panel" role="dialog" aria-modal="true" aria-labelledby="teamModalName">
+    <button class="team-profile-close" type="button" aria-label="Закрити" data-team-close="1">×</button>
+    <div class="team-profile-head"><div class="team-profile-logo" id="teamModalLogo"><span>★</span></div><div><div class="team-profile-kicker">NUWM DOTA 2 • TEAM PROFILE</div><h2 id="teamModalName">Команда</h2></div></div>
+    <div class="team-profile-stats"><div><small>КАПІТАН</small><strong id="teamCaptain">Не вказано</strong></div><div><small>ЗІГРАНО</small><strong id="teamPlayed">0</strong></div><div><small>ПЕРЕМОГИ / ПОРАЗКИ</small><strong id="teamRecord">0 / 0</strong></div><div><small>ПОТОЧНЕ МІСЦЕ</small><strong id="teamPosition">—</strong></div><div><small>СТАТУС</small><strong id="teamStatus">У турнірі</strong></div></div>
+    <div class="team-profile-section"><h3>СКЛАД — 5 ГРАВЦІВ</h3><div class="team-profile-roster" id="teamRoster"></div></div>
+    <div class="team-profile-section"><h3>ОСТАННІ МАТЧІ</h3><div class="team-profile-results" id="teamResults"></div></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
@@ -1764,7 +1774,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 async function loadTournamentData() {
     const [teamsResult, matchesResult] = await Promise.all([
-        db.from('teams').select('id,name,logo').order('id'),
+        db.from('teams').select('id,name,logo,details').order('id'),
         db.from('matches').select('id,a,b,sa,sb')
     ]);
 
@@ -1774,7 +1784,8 @@ async function loadTournamentData() {
     teams = teamsResult.data.map(t => ({
         id: t.id,
         name: t.name,
-        logo: t.logo || ''
+        logo: t.logo || '',
+        details: t.details || {}
     }));
 
     const freshMatches = {};
@@ -1938,7 +1949,7 @@ function teamHTML(teamIndex, score, winner) {
     const team = teams[teamIndex];
 
     return `
-        <div class="bracket-team ${winner ? "winner" : ""}">
+        <div class="bracket-team team-clickable ${winner ? "winner" : ""}" data-team-id="${Number(team.id)}" role="button" tabindex="0" title="Відкрити профіль команди">
 
             <span class="bracket-logo-box ${team.logo ? "has-logo" : ""}">
                 ${team.logo ? `<img src="${team.logo}" alt="${team.name}">` : `<span class="bracket-logo-placeholder">★</span>`}
@@ -2306,31 +2317,42 @@ function renderPlacements(){
    СПИСОК КОМАНД
 ===================================================== */
 
-function renderTeams() {
-
-    const list = document.getElementById("teamList");
-
-    list.innerHTML = teams.map(team => {
-
-        return `
-            <div class="team-card">
-
-                <span class="team-logo-box">
-                    ${team.logo
-                        ? `<img src="${team.logo}" alt="${team.name} logo">`
-                        : `<span class="team-logo-placeholder">★</span>`}
-                </span>
-
-                <strong>
-                    ${team.name}
-                </strong>
-
-            </div>
-        `;
-
-    }).join("");
+function teamStats(teamId){
+    let played=0,wins=0,losses=0;
+    for(const key of Object.keys(matches)){
+        const m=matches[key]; if(!m||m.a==null||m.b==null) continue;
+        const aId=Number(m.a)+1,bId=Number(m.b)+1;
+        if(aId!==Number(teamId)&&bId!==Number(teamId)) continue;
+        const r=getMatchResult(m,key); if(!r) continue;
+        played++; if(Number(r.winner)+1===Number(teamId)) wins++; else losses++;
+    }
+    return {played,wins,losses};
 }
-
+function teamById(id){return teams.find(t=>Number(t.id)===Number(id))||null;}
+function escHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderTeams(){
+    const list=document.getElementById('teamList'); if(!list)return;
+    list.innerHTML=teams.map(team=>{const st=teamStats(team.id);return `<article class="team-card team-clickable" data-team-id="${Number(team.id)}" role="button" tabindex="0" title="Відкрити профіль команди"><span class="team-logo-box">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)} logo">`:`<span class="team-logo-placeholder">★</span>`}</span><strong>${escHTML(team.name)}</strong><div class="team-mini-stats"><span>МАТЧІ <b>${st.played}</b></span><span>ПЕРЕМОГИ <b>${st.wins}</b></span><span>ПОРАЗКИ <b>${st.losses}</b></span></div></article>`;}).join('');
+}
+function openTeamProfile(id){
+    const team=teamById(id),modal=document.getElementById('teamProfileModal'); if(!team||!modal)return;
+    const d=team.details||{},st=teamStats(team.id);
+    document.getElementById('teamModalLogo').innerHTML=team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)}">`:'<span>★</span>';
+    document.getElementById('teamModalName').textContent=team.name||'Команда';
+    document.getElementById('teamCaptain').textContent=d.captain||'Не вказано';
+    document.getElementById('teamPlayed').textContent=st.played; document.getElementById('teamRecord').textContent=`${st.wins} / ${st.losses}`;
+    document.getElementById('teamPosition').textContent=d.position||'—'; document.getElementById('teamStatus').textContent=d.status||'У турнірі';
+    const players=Array.isArray(d.players)?d.players.filter(Boolean):[];
+    document.getElementById('teamRoster').innerHTML=players.length?players.slice(0,5).map((name,i)=>`<div class="team-roster-player"><span>${i+1}</span><strong>${escHTML(name)}</strong></div>`).join(''):'<div class="team-empty">Склад ще не доданий.</div>';
+    const results=[];
+    for(const mid of Object.keys(matches)){const m=matches[mid],r=getMatchResult(m,mid);if(!m||m.a==null||m.b==null||!r)continue;const aId=Number(m.a)+1,bId=Number(m.b)+1;if(aId!==Number(team.id)&&bId!==Number(team.id))continue;const oppId=aId===Number(team.id)?bId:aId,opp=teamById(oppId),won=Number(r.winner)+1===Number(team.id);const ownScore=aId===Number(team.id)?m.sa:m.sb,oppScore=aId===Number(team.id)?m.sb:m.sa;results.push({mid,won,opp:opp?.name||'Команда',ownScore,oppScore});}
+    results.reverse();
+    document.getElementById('teamResults').innerHTML=results.length?results.slice(0,6).map(x=>`<div class="team-result-row ${x.won?'win':'loss'}"><span>${x.won?'ПЕРЕМОГА':'ПОРАЗКА'}</span><strong>${escHTML(x.mid)}</strong><b>${x.ownScore} : ${x.oppScore}</b><small>vs ${escHTML(x.opp)}</small></div>`).join(''):'<div class="team-empty">Завершених матчів ще немає.</div>';
+    modal.classList.add('active');modal.setAttribute('aria-hidden','false');document.body.classList.add('team-modal-open');
+}
+function closeTeamProfile(){const modal=document.getElementById('teamProfileModal');if(!modal)return;modal.classList.remove('active');modal.setAttribute('aria-hidden','true');document.body.classList.remove('team-modal-open');}
+function initTeamClicks(){document.addEventListener('click',e=>{const close=e.target.closest('[data-team-close]');if(close){closeTeamProfile();return;}const card=e.target.closest('.team-clickable');if(card&&card.dataset.teamId)openTeamProfile(Number(card.dataset.teamId));});document.addEventListener('keydown',e=>{const card=e.target.closest?.('.team-clickable');if(card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openTeamProfile(Number(card.dataset.teamId));}if(e.key==='Escape')closeTeamProfile();});}
+initTeamClicks();
 
 
 /* =====================================================
@@ -2670,5 +2692,9 @@ document.readyState==='loading'?addEventListener('DOMContentLoaded',drag):drag()
   else drag();
 })();
 </script>
+
+<style id="team-profile-clickable">
+.team-clickable{cursor:pointer!important}.team-clickable:focus-visible{outline:2px solid #42c8ff;outline-offset:3px}.team-profile-modal{position:fixed;inset:0;z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}.team-profile-modal.active{display:flex}.team-profile-backdrop{position:absolute;inset:0;background:rgba(0,5,15,.82);backdrop-filter:blur(9px)}.team-profile-panel{position:relative;width:min(760px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#071a30,#041120);border:1px solid rgba(103,221,255,.3);border-radius:20px;padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.55);color:#fff}.team-profile-close{position:absolute;right:14px;top:10px;width:42px;height:42px;border:0;background:transparent;color:#fff;font-size:34px;line-height:1;cursor:pointer;border-radius:10px}.team-profile-close:hover{background:rgba(255,255,255,.08)}.team-profile-head{display:flex;align-items:center;gap:18px;padding-right:45px}.team-profile-logo{width:86px;height:86px;flex:0 0 86px;border:2px solid rgba(155,220,255,.75);border-radius:14px;background:#0a233d;display:flex;align-items:center;justify-content:center;overflow:hidden}.team-profile-logo img{width:100%;height:100%;object-fit:contain;padding:7px}.team-profile-logo span{font-size:38px;color:#9bdcff;font-weight:900}.team-profile-kicker{font-size:10px;letter-spacing:2px;color:#42c8ff;font-weight:900;margin-bottom:6px}.team-profile-head h2{margin:0;font-size:34px;line-height:1.05}.team-profile-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:24px 0}.team-profile-stats>div{padding:12px;background:rgba(8,35,61,.65);border:1px solid rgba(100,200,255,.12);border-radius:10px;min-width:0}.team-profile-stats small{display:block;color:#8fcff1;font-size:8px;font-weight:900;letter-spacing:.7px;margin-bottom:6px}.team-profile-stats strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.team-profile-section{margin-top:20px}.team-profile-section h3{font-size:12px;letter-spacing:1.5px;margin:0 0 10px;color:#42c8ff}.team-profile-roster{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.team-roster-player{padding:12px 8px;background:#0a233d;border:1px solid rgba(100,200,255,.12);border-radius:10px;text-align:center}.team-roster-player span{display:block;color:#6dcaf4;font-size:9px;margin-bottom:4px}.team-roster-player strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.team-profile-results{display:grid;gap:7px}.team-result-row{display:grid;grid-template-columns:90px 1fr 55px 1fr;gap:10px;align-items:center;padding:10px 12px;border-radius:9px;background:rgba(8,35,61,.65);border:1px solid rgba(100,200,255,.1);font-size:11px}.team-result-row>span{font-size:9px;font-weight:900}.team-result-row.win>span{color:#6dffb0}.team-result-row.loss>span{color:#ff8d9c}.team-result-row b{text-align:center}.team-result-row small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#9edaff}.team-empty{padding:14px;color:#8eaabd;background:rgba(8,35,61,.45);border-radius:9px;text-align:center;font-size:12px}body.team-modal-open{overflow:hidden}@media(max-width:700px){.team-profile-modal{padding:10px}.team-profile-panel{max-height:92vh;padding:20px 14px}.team-profile-head{gap:12px}.team-profile-logo{width:64px;height:64px;flex-basis:64px}.team-profile-head h2{font-size:25px}.team-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.team-profile-roster{grid-template-columns:1fr 1fr}.team-result-row{grid-template-columns:78px 1fr 50px;gap:7px}.team-result-row small{grid-column:2 / -1}.team-profile-kicker{font-size:8px}}
+</style>
 </body>
 </html>
