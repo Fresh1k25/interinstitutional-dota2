@@ -2959,5 +2959,170 @@ input:focus,select:focus{border-color:#3b82f6!important;box-shadow:0 0 0 3px rgb
 button:focus-visible,a:focus-visible{outline-color:#60a5fa!important}
 </style>
 
+
+
+<style id="pro-esports-bracket-polish-v3">
+/* Refined playoff styling — presentation only; tournament logic and Supabase untouched. */
+.bracket-lines {
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+.bracket-lines path {
+  fill: none !important;
+  stroke: rgba(76, 183, 255, .82) !important;
+  stroke-width: 2.15 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  vector-effect: non-scaling-stroke !important;
+  filter: drop-shadow(0 0 2px rgba(40, 165, 255, .20));
+}
+
+/* More legible cards while keeping their exact geometry for connector alignment. */
+.bracket-match {
+  border: 1px solid rgba(121, 190, 255, .20) !important;
+  border-radius: 11px !important;
+  background: linear-gradient(145deg, rgba(19, 25, 37, .99), rgba(9, 12, 19, .99)) !important;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .30), inset 0 1px 0 rgba(255, 255, 255, .025) !important;
+  transition: border-color .18s ease, box-shadow .18s ease !important;
+}
+/* Do not lift the whole card on hover: that would visually detach it from its lines. */
+.bracket-match:hover {
+  transform: none !important;
+  border-color: rgba(96, 184, 255, .62) !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .34), 0 0 18px rgba(40, 150, 255, .10) !important;
+}
+.bracket-match.finished {
+  border-color: rgba(59, 130, 246, .46) !important;
+  box-shadow: inset 3px 0 0 rgba(59, 130, 246, .78), 0 9px 24px rgba(0, 0, 0, .28) !important;
+}
+.bracket-match.locked {
+  opacity: .82 !important;
+}
+
+/* Consistent logo slots regardless of source image dimensions. */
+.bracket-logo-box,
+.bracket-logo-box.has-logo {
+  width: 38px !important;
+  height: 38px !important;
+  flex: 0 0 38px !important;
+  margin-right: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(148, 163, 184, .23) !important;
+  border-radius: 8px !important;
+  background: linear-gradient(145deg, rgba(25, 31, 44, .98), rgba(13, 17, 25, .98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035) !important;
+}
+.bracket-logo-box img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  padding: 4px !important;
+  box-sizing: border-box !important;
+}
+.bracket-logo-placeholder {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: #8bd7ff !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  text-shadow: 0 0 10px rgba(76, 183, 255, .20);
+}
+
+/* Uniform team rows and a clearer score column. */
+.bracket-team {
+  min-width: 0 !important;
+  height: 49px !important;
+  padding: 0 0 0 8px !important;
+  gap: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, .075) !important;
+  background: rgba(255, 255, 255, .008);
+}
+.bracket-team-name {
+  min-width: 0 !important;
+  padding-right: 7px !important;
+  color: #eef4ff !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: .05px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.bracket-score {
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 100% !important;
+  flex: 0 0 46px !important;
+  border-left: 1px solid rgba(148, 177, 208, .25) !important;
+  background: rgba(255, 255, 255, .018) !important;
+  color: #f6f9ff !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  font-variant-numeric: tabular-nums !important;
+  text-shadow: 0 0 12px rgba(96, 165, 250, .16) !important;
+}
+.bracket-team.winner {
+  background: linear-gradient(90deg, rgba(37, 99, 235, .23), rgba(59, 130, 246, .075)) !important;
+  box-shadow: inset 3px 0 0 #3b82f6 !important;
+}
+.bracket-team.winner .bracket-team-name,
+.bracket-team.winner .bracket-score {
+  color: #d9f1ff !important;
+}
+.bracket-match.finished .bracket-team:not(.winner) {
+  opacity: .58 !important;
+  filter: grayscale(.35) brightness(.78) !important;
+}
+.bracket-match.finished .bracket-team:not(.winner) .bracket-score {
+  color: #a4acba !important;
+  text-shadow: none !important;
+}
+.bracket-team.team-clickable:hover {
+  background-color: rgba(59, 130, 246, .09) !important;
+}
+.bracket-team.team-clickable:hover .bracket-team-name {
+  color: #93d8ff !important;
+}
+
+/* Make round labels feel consistent without changing their positions. */
+.bracket-round-title {
+  color: #f4f7ff !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  letter-spacing: .8px !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .28);
+}
+.bracket-round-date {
+  color: #69baff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: .8px !important;
+}
+@media (max-width: 700px) {
+  .bracket-logo-box,
+  .bracket-logo-box.has-logo {
+    width: 36px !important;
+    height: 36px !important;
+    flex-basis: 36px !important;
+    margin-right: 8px !important;
+  }
+  .bracket-team { padding-left: 7px !important; }
+  .bracket-team-name { font-size: 12px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bracket-match { transition: none !important; }
+}
+</style>
+
 </body>
 </html>
