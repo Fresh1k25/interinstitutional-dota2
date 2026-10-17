@@ -2216,44 +2216,61 @@ function matchHTML(id) {
 ===================================================== */
 
 function renderLines() {
-
+    // Координати ліній будуються після розміщення карток, а не задаються вручну.
     return `
-        <svg
-            class="bracket-lines"
-            viewBox="0 0 1840 900"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-        >
-
-            <!-- ВС R1 → R2 -->
-            <path d="M240 81 H320 V136 H400"/>
-            <path d="M240 183 H320 V136 H400"/>
-            <path d="M240 285 H320 V320 H400"/>
-            <path d="M240 387 H320 V320 H400"/>
-
-            <!-- ВС R2 → ФІНАЛ ВС -->
-            <path d="M620 136 H730 V246 H1180"/>
-            <path d="M620 320 H730 V246"/>
-
-            <!-- НС R1 → R2 -->
-            <path d="M240 626 H320 V591 H400"/>
-            <path d="M240 748 H320 V775 H400"/>
-
-            <!-- НС R2 → R3 -->
-            <path d="M620 591 H700 V627 H790"/>
-            <path d="M620 775 H700 V627 H790"/>
-
-            <!-- R3 → ФІНАЛ НС -->
-            <path d="M1010 627 H1090 V619 H1180"/>
-
-            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
-            <path d="M1400 246 H1480 V369 H1560"/>
-
-            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
-            <path d="M1400 619 H1480 V369 H1560"/>
-
-        </svg>
+        <svg class="bracket-lines" viewBox="0 0 1840 900"
+             preserveAspectRatio="none" aria-hidden="true"></svg>
     `;
+}
+
+function drawBracketLines() {
+    const bracket = document.getElementById('bracket');
+    const svg = bracket && bracket.querySelector('.bracket-lines');
+    if (!bracket || !svg) return;
+
+    const bracketRect = bracket.getBoundingClientRect();
+    const scaleX = bracket.offsetWidth ? bracketRect.width / bracket.offsetWidth : 1;
+    const scaleY = bracket.offsetHeight ? bracketRect.height / bracket.offsetHeight : 1;
+    if (!scaleX || !scaleY) return;
+
+    const edgePoint = (matchId, edge) => {
+        const card = bracket.querySelector(`[data-match="${matchId}"]`);
+        if (!card) return null;
+        const rect = card.getBoundingClientRect();
+        return {
+            x: ((edge === 'right' ? rect.right : rect.left) - bracketRect.left) / scaleX,
+            y: ((rect.top + rect.height / 2) - bracketRect.top) / scaleY
+        };
+    };
+
+    // Зв'язки раундів. Центри беруться з фактичного розташування карток,
+    // тому лінії не зсуваються, коли змінюється висота картки чи заголовка.
+    const routes = [
+        { from: ['U1', 'U2'], to: 'U5' },
+        { from: ['U3', 'U4'], to: 'U6' },
+        { from: ['U5', 'U6'], to: 'UF' },
+        { from: ['L1'], to: 'L3' },
+        { from: ['L2'], to: 'L4' },
+        { from: ['L3', 'L4'], to: 'L5' },
+        { from: ['L5'], to: 'LF' },
+        { from: ['UF', 'LF'], to: 'GF' }
+    ];
+
+    const paths = [];
+    for (const route of routes) {
+        const target = edgePoint(route.to, 'left');
+        if (!target) continue;
+        for (const sourceId of route.from) {
+            const source = edgePoint(sourceId, 'right');
+            if (!source) continue;
+            const middleX = source.x + (target.x - source.x) / 2;
+            const d = `M ${source.x.toFixed(2)} ${source.y.toFixed(2)} ` +
+                      `H ${middleX.toFixed(2)} V ${target.y.toFixed(2)} ` +
+                      `H ${target.x.toFixed(2)}`;
+            paths.push(`<path d="${d}"/>`);
+        }
+    }
+    svg.innerHTML = paths.join('');
 }
 
 /* =====================================================
@@ -2393,7 +2410,14 @@ function renderBracket() {
 
         </div>
     `;
+
+    // Після вставлення карток маємо їхні точні координати для конекторів.
+    drawBracketLines();
 }
+
+
+window.addEventListener('resize', () => requestAnimationFrame(drawBracketLines), { passive: true });
+window.addEventListener('orientationchange', () => setTimeout(drawBracketLines, 120));
 
 /* =====================================================
    СПИСОК КОМАНД
