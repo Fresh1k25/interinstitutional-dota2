@@ -143,8 +143,51 @@ const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — м
 const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function msg(id,t){$(id).textContent=t||'';}
-function result(id){const m=matches[id];if(!m||m.a==null||m.b==null)return null;const need=id==='GF'?3:2;if(m.sa>=need&&m.sb<need)return{winner:m.a,loser:m.b};if(m.sb>=need&&m.sa<need)return{winner:m.b,loser:m.a};return null;}
-function participants(){const p={},r=['U1','U2','U3','U4'].map(result);p.U5=[r[0]?.winner??null,r[1]?.winner??null];p.U6=[r[2]?.winner??null,r[3]?.winner??null];p.L1=[r[0]?.loser??null,r[1]?.loser??null];p.L2=[r[2]?.loser??null,r[3]?.loser??null];const u5=result('U5'),u6=result('U6'),l1=result('L1'),l2=result('L2');p.UF=[u5?.winner??null,u6?.winner??null];p.L3=[u5?.loser??null,l1?.winner??null];p.L4=[u6?.loser??null,l2?.winner??null];const l3=result('L3'),l4=result('L4');p.L5=[l3?.winner??null,l4?.winner??null];const l5=result('L5'),uf=result('UF');p.LF=[l5?.winner??null,uf?.loser??null];const lf=result('LF');p.GF=[uf?.winner??null,lf?.winner??null];return p;}
+function result(id, participantPair=null){
+ const m=matches[id];
+ const pair=participantPair || (m ? [m.a,m.b] : [null,null]);
+ if(!m || pair[0]==null || pair[1]==null) return null;
+ const need=id==='GF'?3:2;
+ const teamA=Number(pair[0]), teamB=Number(pair[1]);
+ if(Number(m.sa)>=need && Number(m.sb)<need) return {winner:teamA,loser:teamB};
+ if(Number(m.sb)>=need && Number(m.sa)<need) return {winner:teamB,loser:teamA};
+ return null;
+}
+function assignParticipants(id,a,b){
+ const m=matches[id]||(matches[id]={a:null,b:null,sa:0,sb:0});
+ const nextA=a==null?null:Number(a), nextB=b==null?null:Number(b);
+ const oldA=m.a==null?null:Number(m.a), oldB=m.b==null?null:Number(m.b);
+ const hadKnownParticipants=oldA!==null || oldB!==null;
+ const changed=oldA!==nextA || oldB!==nextB;
+ // Preserve scores on legacy NULL -> assigned rows; reset only when a known
+ // matchup changes, so an old score can never be attributed to new teams.
+ if(hadKnownParticipants && changed){m.sa=0;m.sb=0;}
+ m.a=nextA; m.b=nextB;
+ return [nextA,nextB];
+}
+function participants(){
+ const p={};
+ ['U1','U2','U3','U4'].forEach(id=>{
+  const m=matches[id]||{};
+  p[id]=[m.a==null?null:Number(m.a),m.b==null?null:Number(m.b)];
+ });
+ const r1=['U1','U2','U3','U4'].map(id=>result(id,p[id]));
+ p.U5=assignParticipants('U5',r1[0]?.winner??null,r1[1]?.winner??null);
+ p.U6=assignParticipants('U6',r1[2]?.winner??null,r1[3]?.winner??null);
+ p.L1=assignParticipants('L1',r1[0]?.loser??null,r1[1]?.loser??null);
+ p.L2=assignParticipants('L2',r1[2]?.loser??null,r1[3]?.loser??null);
+ const u5=result('U5',p.U5),u6=result('U6',p.U6),l1=result('L1',p.L1),l2=result('L2',p.L2);
+ p.UF=assignParticipants('UF',u5?.winner??null,u6?.winner??null);
+ p.L3=assignParticipants('L3',u5?.loser??null,l1?.winner??null);
+ p.L4=assignParticipants('L4',u6?.loser??null,l2?.winner??null);
+ const l3=result('L3',p.L3),l4=result('L4',p.L4);
+ p.L5=assignParticipants('L5',l3?.winner??null,l4?.winner??null);
+ const l5=result('L5',p.L5),uf=result('UF',p.UF);
+ p.LF=assignParticipants('LF',l5?.winner??null,uf?.loser??null);
+ const lf=result('LF',p.LF);
+ p.GF=assignParticipants('GF',uf?.winner??null,lf?.winner??null);
+ return p;
+}
 function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
 
 function renderTeams(){
@@ -186,7 +229,7 @@ function matchStage(id){
 }
 function currentPlayoffStage(p){
  const playable=Object.keys(labels).filter(id=>matchReadyForScore(id,p));
- const unfinished=playable.filter(id=>!result(id));
+ const unfinished=playable.filter(id=>!result(id,p[id]||[matches[id]?.a,matches[id]?.b]));
  if(!unfinished.length)return null;
  // Перший раунд ВС і перший раунд НС відкриті одночасно.
  const firstRoundOpen=unfinished.some(id=>matchStage(id)===1||matchStage(id)===2);
@@ -203,7 +246,7 @@ function renderMatches(){
  $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
   const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
   const noTeams=a==null||b==null;
-  const finished=!!result(id);
+  const finished=!!result(id,[a,b]);
   const isCurrentStage=(stage===1 && (matchStage(id)===1 || matchStage(id)===2)) || stage===matchStage(id);
   const locked=noTeams || (!finished && !isCurrentStage);
   let lockText='';
@@ -262,17 +305,47 @@ async function saveTeams(){
  }catch(e){msg('teamMsg','Помилка: '+(e.message||e));}
 }
 async function saveScores(){
- msg('saveMsg','Зберігаю...');
+ msg('saveMsg','Зберігаю результати та оновлюю сітку...');
  try{
+  // Read all editable inputs first. This lets the bracket be recalculated once
+  // from the complete set of newly entered scores before saving participants.
+  const pending={};
   for(const id of Object.keys(labels)){
-   const a=$('sa-'+id),b=$('sb-'+id);if(!a||!b||a.disabled)continue;
-   const max=id==='GF'?3:2,sa=Math.max(0,Math.min(max,Number(a.value)||0)),sb=Math.max(0,Math.min(max,Number(b.value)||0));
+   const a=$('sa-'+id),b=$('sb-'+id);
+   if(!a||!b||a.disabled)continue;
+   const max=id==='GF'?3:2;
+   const sa=Math.max(0,Math.min(max,Math.trunc(Number(a.value)||0)));
+   const sb=Math.max(0,Math.min(max,Math.trunc(Number(b.value)||0)));
    if(sa===max&&sb===max)throw new Error(labels[id]+' не може мати однаковий максимальний рахунок.');
-   const r=await db.from('matches').update({sa,sb}).eq('id',id);if(r.error)throw r.error;
+   pending[id]={sa,sb};
   }
-  msg('saveMsg','Результати збережено.');await load();
+  for(const [id,score] of Object.entries(pending)){
+   if(!matches[id])matches[id]={a:null,b:null,sa:0,sb:0};
+   matches[id].sa=score.sa; matches[id].sb=score.sb;
+  }
+
+  // Recalculate winner/loser flow, clearing any later score when its known
+  // participants have changed. The existing a/b columns store that matchup,
+  // so the public site and admin panel now agree after refresh.
+  const p=participants();
+  for(const id of Object.keys(labels)){
+   const m=matches[id]||{a:null,b:null,sa:0,sb:0};
+   const pair=p[id]||[m.a,m.b];
+   const payload={
+    a:pair[0]==null?null:Number(pair[0]),
+    b:pair[1]==null?null:Number(pair[1]),
+    sa:Math.max(0,Math.trunc(Number(m.sa)||0)),
+    sb:Math.max(0,Math.trunc(Number(m.sb)||0))
+   };
+   const r=await db.from('matches').update(payload).eq('id',id);
+   if(r.error)throw r.error;
+   matches[id]={...m,...payload};
+  }
+  msg('saveMsg','Результати збережено. Переможці та наступні матчі оновлені.');
+  await load();
  }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
 }
+
 async function saveSchedule(){
  if(scheduleSaving)return;
  scheduleSaving=true;

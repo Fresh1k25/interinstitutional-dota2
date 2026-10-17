@@ -2105,15 +2105,24 @@ function isFinished(match) {
 ===================================================== */
 
 function setMatchTeams(id, a, b) {
+    const m = matches[id] || {sa: 0, sb: 0};
+    const nextA = a == null ? null : Number(a);
+    const nextB = b == null ? null : Number(b);
+    const oldA = m.a == null ? null : Number(m.a);
+    const oldB = m.b == null ? null : Number(m.b);
+    const hadKnownParticipants = oldA !== null || oldB !== null;
+    const participantsChanged = oldA !== nextA || oldB !== nextB;
 
-    const match = matches[id];
-
-    if (match.a !== a || match.b !== b) {
-        match.a = a;
-        match.b = b;
-        match.sa = 0;
-        match.sb = 0;
+    // Legacy rows may have scores but a/b still NULL because earlier versions
+    // calculated the participants only in the browser. Preserve those scores
+    // on the first NULL -> resolved assignment; reset only if known teams change.
+    if (hadKnownParticipants && participantsChanged) {
+        m.sa = 0;
+        m.sb = 0;
     }
+    m.a = nextA;
+    m.b = nextB;
+    matches[id] = m;
 }
 
 function calculateBracket() {
@@ -2437,7 +2446,7 @@ function renderMobileBracket() {
             { key: 'L5', label: '3 раунд НС', matches: ['L5'] },
             { key: 'LF', label: 'Фінал НС', matches: ['LF'] }
         ] },
-        final: { label: 'ГРАНДФІНАЛ', stages: [
+        final: { label: 'ФІНАЛИ', stages: [
             { key: 'GF', label: 'Грандфінал · BO5', matches: ['GF'] }
         ] }
     };
