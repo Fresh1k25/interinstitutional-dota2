@@ -1915,6 +1915,9 @@ nav a:hover::after{transform:scaleX(1)}
 
     </div>
 
+    <!-- Мобільний плей-оф: показує один етап за раз без горизонтального гортання. -->
+    <div id="mobileBracketView" class="mobile-bracket-view" aria-label="Мобільна турнірна сітка"></div>
+
 </section>
 
 <div class="section-divider"></div>
@@ -2410,10 +2413,88 @@ function renderBracket() {
         </div>
     `;
 
-    // Після вставлення карток маємо їхні точні координати для конекторів.
+    // На десктопі малюємо точні конектори, на мобільному оновлюємо компактний етапний вигляд.
     drawBracketLines();
+    renderMobileBracket();
 }
 
+let mobilePlayoffGroup = 'upper';
+let mobilePlayoffRound = 'U1';
+
+function renderMobileBracket() {
+    const root = document.getElementById('mobileBracketView');
+    if (!root) return;
+
+    const groups = {
+        upper: { label: 'ВЕРХНЯ СІТКА', stages: [
+            { key: 'U1', label: '1 раунд ВС', matches: ['U1','U2','U3','U4'] },
+            { key: 'U5', label: '2 раунд ВС', matches: ['U5','U6'] },
+            { key: 'UF', label: 'Фінал ВС', matches: ['UF'] }
+        ] },
+        lower: { label: 'НИЖНЯ СІТКА', stages: [
+            { key: 'L1', label: '1 раунд НС', matches: ['L1','L2'] },
+            { key: 'L3', label: '2 раунд НС', matches: ['L3','L4'] },
+            { key: 'L5', label: '3 раунд НС', matches: ['L5'] },
+            { key: 'LF', label: 'Фінал НС', matches: ['LF'] }
+        ] },
+        final: { label: 'ФІНАЛИ', stages: [
+            { key: 'GF', label: 'Грандфінал · BO5', matches: ['GF'] }
+        ] }
+    };
+
+    // Use event delegation so controls keep working after real-time data refreshes.
+    if (!root.dataset.controlsBound) {
+        root.dataset.controlsBound = 'true';
+        root.addEventListener('click', event => {
+            const groupButton = event.target.closest('[data-mobile-group]');
+            if (groupButton) {
+                mobilePlayoffGroup = groupButton.dataset.mobileGroup;
+                mobilePlayoffRound = groups[mobilePlayoffGroup].stages[0].key;
+                renderMobileBracket();
+                return;
+            }
+            const stageButton = event.target.closest('[data-mobile-stage]');
+            if (stageButton) {
+                mobilePlayoffRound = stageButton.dataset.mobileStage;
+                renderMobileBracket();
+            }
+        });
+    }
+
+    const group = groups[mobilePlayoffGroup] || groups.upper;
+    if (!group.stages.some(stage => stage.key === mobilePlayoffRound)) {
+        mobilePlayoffRound = group.stages[0].key;
+    }
+    const stage = group.stages.find(item => item.key === mobilePlayoffRound) || group.stages[0];
+
+    const groupTabs = Object.entries(groups).map(([key, value]) => `
+        <button type="button" class="mobile-bracket-tab ${key === mobilePlayoffGroup ? 'active' : ''}" data-mobile-group="${key}" aria-pressed="${key === mobilePlayoffGroup}">${value.label}</button>
+    `).join('');
+
+    const stageTabs = group.stages.map(item => `
+        <button type="button" class="mobile-round-tab ${item.key === stage.key ? 'active' : ''}" data-mobile-stage="${item.key}" aria-pressed="${item.key === stage.key}">${item.label}</button>
+    `).join('');
+
+    const matchCards = stage.matches.map((id, index) => {
+        const match = matches[id] || { a: null, b: null, sa: 0, sb: 0 };
+        const result = getMatchResult(match, id);
+        const state = result ? 'ЗАВЕРШЕНО' : (match.a != null && match.b != null ? 'ОЧІКУЄТЬСЯ' : 'ОЧІКУЄМО КОМАНДИ');
+        return `<article class="mobile-match-item">
+            <div class="mobile-match-meta"><span>МАТЧ ${index + 1}</span><span class="${result ? 'is-finished' : ''}">${state}</span></div>
+            ${matchHTML(id)}
+        </article>`;
+    }).join('');
+
+    root.innerHTML = `
+        <div class="mobile-bracket-tabs" role="tablist" aria-label="Вибір сітки">${groupTabs}</div>
+        <div class="mobile-round-tabs" role="tablist" aria-label="Вибір раунду">${stageTabs}</div>
+        <div class="mobile-round-heading">
+            <div><span>ОБРАНИЙ ЕТАП</span><strong>${stage.label}</strong></div>
+            <small>20 ВЕРЕСНЯ</small>
+        </div>
+        <div class="mobile-match-grid">${matchCards}</div>
+    `;
+}
 
 window.addEventListener('resize', () => requestAnimationFrame(drawBracketLines), { passive: true });
 window.addEventListener('orientationchange', () => setTimeout(drawBracketLines, 120));
@@ -3120,6 +3201,172 @@ button:focus-visible,a:focus-visible{outline-color:#60a5fa!important}
 }
 @media (prefers-reduced-motion: reduce) {
   .bracket-match { transition: none !important; }
+}
+</style>
+
+
+<style id="mobile-playoff-no-horizontal-scroll">
+/* Mobile-specific playoffs: replace the wide bracket with round-by-round cards. */
+.mobile-bracket-view { display: none; }
+
+@media (max-width: 700px) {
+  html, body { max-width: 100%; overflow-x: hidden !important; }
+  .playoffs { padding: 36px 12px 46px !important; }
+  .playoffs::before { margin-bottom: 26px !important; }
+  .playoffs .section-title { margin-bottom: 16px !important; padding: 0 3px !important; }
+  .playoffs .section-title h2 { font-size: 31px !important; line-height: 1.05 !important; }
+
+  /* Hide the 1840px desktop bracket entirely on phones. */
+  .playoffs .bracket-wrapper { display: none !important; }
+  .mobile-bracket-view {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+  .mobile-bracket-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .mobile-bracket-tab {
+    min-width: 0 !important;
+    min-height: 38px !important;
+    padding: 8px 3px !important;
+    border: 1px solid rgba(120, 170, 220, .18) !important;
+    border-radius: 9px !important;
+    background: rgba(13, 21, 34, .90) !important;
+    color: #a9b8cc !important;
+    font: 800 9px/1.15 system-ui, sans-serif !important;
+    letter-spacing: .35px !important;
+    overflow-wrap: anywhere !important;
+  }
+  .mobile-bracket-tab.active {
+    color: #f2f8ff !important;
+    border-color: rgba(72, 158, 255, .72) !important;
+    background: linear-gradient(135deg, rgba(29, 78, 216, .42), rgba(20, 38, 62, .95)) !important;
+    box-shadow: inset 0 1px rgba(255,255,255,.06), 0 0 15px rgba(59,130,246,.09) !important;
+  }
+  .mobile-round-tabs {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin: 10px 0 13px !important;
+    width: 100% !important;
+  }
+  .mobile-round-tab {
+    flex: 1 1 calc(33.333% - 6px) !important;
+    min-width: 0 !important;
+    min-height: 31px !important;
+    padding: 7px 8px !important;
+    border: 1px solid rgba(125, 155, 190, .16) !important;
+    border-radius: 8px !important;
+    background: rgba(255,255,255,.025) !important;
+    color: #aebbd0 !important;
+    font: 750 10px/1.15 system-ui, sans-serif !important;
+    white-space: normal !important;
+  }
+  .mobile-round-tab.active {
+    color: #d8f2ff !important;
+    border-color: rgba(96, 184, 255, .55) !important;
+    background: rgba(32, 104, 177, .20) !important;
+  }
+  .mobile-round-heading {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    gap: 8px !important;
+    margin: 0 1px 10px !important;
+    padding-bottom: 9px !important;
+    border-bottom: 1px solid rgba(108, 173, 255, .17) !important;
+  }
+  .mobile-round-heading div { display: flex !important; flex-direction: column !important; gap: 3px !important; min-width: 0 !important; }
+  .mobile-round-heading div span { color: #6bb9ff !important; font: 850 8px/1 system-ui, sans-serif !important; letter-spacing: 1.5px !important; }
+  .mobile-round-heading strong { color: #f5f8ff !important; font: 900 17px/1.1 system-ui, sans-serif !important; letter-spacing: -.25px !important; }
+  .mobile-round-heading > small { color: #7694b8 !important; font: 800 8px/1.2 system-ui, sans-serif !important; white-space: nowrap !important; }
+  .mobile-match-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .mobile-match-item { min-width: 0 !important; width: 100% !important; }
+  .mobile-match-meta {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin: 0 3px 4px !important;
+    color: #6d8eb6 !important;
+    font: 800 8px/1.1 system-ui, sans-serif !important;
+    letter-spacing: .8px !important;
+  }
+  .mobile-match-meta span:last-child { color: #8697ad !important; letter-spacing: .25px !important; }
+  .mobile-match-meta .is-finished { color: #7ac5ff !important; }
+  .mobile-match-grid .bracket-match {
+    position: relative !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    border: 1px solid rgba(112, 166, 231, .21) !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg, rgba(19,27,42,.98), rgba(8,13,22,.99)) !important;
+    box-shadow: 0 7px 18px rgba(0,0,0,.22) !important;
+  }
+  .mobile-match-grid .bracket-team {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 35px !important;
+    min-height: 35px !important;
+    box-sizing: border-box !important;
+    padding: 0 0 0 8px !important;
+    gap: 0 !important;
+  }
+  .mobile-match-grid .bracket-logo-box,
+  .mobile-match-grid .bracket-logo-box.has-logo {
+    width: 27px !important;
+    height: 27px !important;
+    flex: 0 0 27px !important;
+    margin: 0 8px 0 0 !important;
+    border-radius: 6px !important;
+  }
+  .mobile-match-grid .bracket-logo-box img { padding: 3px !important; }
+  .mobile-match-grid .bracket-logo-placeholder { font-size: 16px !important; }
+  .mobile-match-grid .bracket-team-name {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    padding-right: 6px !important;
+    font-size: 11.5px !important;
+    line-height: 1.1 !important;
+  }
+  .mobile-match-grid .bracket-score {
+    width: 36px !important;
+    min-width: 36px !important;
+    flex: 0 0 36px !important;
+    height: 35px !important;
+    font-size: 16px !important;
+    border-left: 1px solid rgba(148, 177, 208, .22) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .playoffs { padding-left: 9px !important; padding-right: 9px !important; }
+  .mobile-bracket-tab { font-size: 8px !important; letter-spacing: .1px !important; }
+  .mobile-round-tab { font-size: 9px !important; padding-left: 5px !important; padding-right: 5px !important; }
+  .mobile-match-grid .bracket-team { height: 33px !important; min-height: 33px !important; }
+  .mobile-match-grid .bracket-score { height: 33px !important; }
+  .mobile-match-grid .bracket-team-name { font-size: 10.5px !important; }
+  .mobile-match-grid .bracket-logo-box,
+  .mobile-match-grid .bracket-logo-box.has-logo { width: 25px !important; height: 25px !important; flex-basis: 25px !important; margin-right: 6px !important; }
 }
 </style>
 
