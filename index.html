@@ -2216,43 +2216,44 @@ function matchHTML(id) {
 ===================================================== */
 
 function renderLines() {
+
     return `
-        <svg class="bracket-lines" viewBox="0 0 1840 900" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <svg
+            class="bracket-lines"
+            viewBox="0 0 1840 900"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+        >
+
+            <!-- ВС R1 → R2 -->
+            <path d="M240 81 H320 V136 H400"/>
+            <path d="M240 183 H320 V136 H400"/>
+            <path d="M240 285 H320 V320 H400"/>
+            <path d="M240 387 H320 V320 H400"/>
+
+            <!-- ВС R2 → ФІНАЛ ВС -->
+            <path d="M620 136 H730 V246 H1180"/>
+            <path d="M620 320 H730 V246"/>
+
+            <!-- НС R1 → R2 -->
+            <path d="M240 626 H320 V591 H400"/>
+            <path d="M240 748 H320 V775 H400"/>
+
+            <!-- НС R2 → R3 -->
+            <path d="M620 591 H700 V627 H790"/>
+            <path d="M620 775 H700 V627 H790"/>
+
+            <!-- R3 → ФІНАЛ НС -->
+            <path d="M1010 627 H1090 V619 H1180"/>
+
+            <!-- ФІНАЛ ВС → ГРАНДФІНАЛ -->
+            <path d="M1400 246 H1480 V369 H1560"/>
+
+            <!-- ФІНАЛ НС → ГРАНДФІНАЛ -->
+            <path d="M1400 619 H1480 V369 H1560"/>
+
+        </svg>
     `;
-}
-
-/* =====================================================
-   ТОЧНЕ ВИРІВНЮВАННЯ ЛІНІЙ ПО ЦЕНТРАХ МАТЧІВ
-===================================================== */
-function updateBracketLines(){
-    const bracket=document.getElementById('bracket');
-    const svg=bracket?.querySelector('.bracket-lines');
-    if(!bracket||!svg)return;
-
-    const pairs=[
-        ['U1','U5'],['U2','U5'],['U3','U6'],['U4','U6'],
-        ['U5','UF'],['U6','UF'],
-        ['L1','L3'],['L2','L4'],
-        ['L3','L5'],['L4','L5'],
-        ['L5','LF'],['UF','GF'],['LF','GF']
-    ];
-
-    const point=(id,side)=>{
-        const m=bracket.querySelector(`[data-match="${id}"]`);
-        if(!m)return null;
-        const c=m.closest('.bracket-column');
-        if(!c)return null;
-        const x=c.offsetLeft+m.offsetLeft;
-        const y=c.offsetTop+m.offsetTop;
-        return {x:side==='right'?x+m.offsetWidth:x,y:y+m.offsetHeight/2};
-    };
-
-    svg.innerHTML=pairs.map(([a,b])=>{
-        const from=point(a,'right'),to=point(b,'left');
-        if(!from||!to)return '';
-        const mid=Math.round((from.x+to.x)/2);
-        return `<path d="M ${from.x} ${from.y} H ${mid} V ${to.y} H ${to.x}"/>`;
-    }).join('');
 }
 
 /* =====================================================
@@ -2276,7 +2277,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 1 РАУНД ВС
                 <span class="bracket-round-date">
-                    23 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2293,7 +2294,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 2 РАУНД ВС
                 <span class="bracket-round-date">
-                    24 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2308,7 +2309,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ФІНАЛ ВС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2324,7 +2325,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 1 РАУНД НС
                 <span class="bracket-round-date">
-                    24 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2339,7 +2340,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 2 РАУНД НС
                 <span class="bracket-round-date">
-                    24 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2354,7 +2355,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 3 РАУНД НС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2368,7 +2369,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ФІНАЛ НС
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2384,7 +2385,7 @@ function renderBracket() {
             <div class="bracket-round-title">
                 ГРАНДФІНАЛ — BO5
                 <span class="bracket-round-date">
-                    25 жовтня
+                    20 вересня
                 </span>
             </div>
 
@@ -2392,9 +2393,6 @@ function renderBracket() {
 
         </div>
     `;
-
-    updateBracketLines();
-    requestAnimationFrame(updateBracketLines);
 }
 
 /* =====================================================
@@ -2410,8 +2408,6 @@ function renderTeams(){
     const list=document.getElementById('teamList');
     list.innerHTML=teams.map(team=>{
         const st=teamStats(team.id);
-        const d=team.details||{};
-        const players=Array.isArray(d.players)?d.players.filter(Boolean):[];
         return `<article class="team-card team-clickable" data-team-id="${Number(team.id)}" role="button" tabindex="0" title="Відкрити профіль команди">
           <span class="team-logo-box">${team.logo?`<img src="${escHTML(team.logo)}" alt="${escHTML(team.name)} logo" loading="lazy">`:`<span class="team-logo-placeholder">★</span>`}</span>
           <strong>${escHTML(team.name)}</strong>
@@ -2677,11 +2673,11 @@ function renderSchedule(){
     }
 
     window.fitPlayoffBracket=fitPlayoffBracket;
-    window.addEventListener('resize',()=>{fitPlayoffBracket();requestAnimationFrame(updateBracketLines);});
+    window.addEventListener('resize',fitPlayoffBracket);
     window.addEventListener('orientationchange',fitPlayoffBracket);
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fitPlayoffBracket);
     else fitPlayoffBracket();
-    setTimeout(()=>{fitPlayoffBracket();updateBracketLines();},100);
+    setTimeout(fitPlayoffBracket,100);
 })();
 </script>
 
@@ -2844,5 +2840,43 @@ document.readyState==='loading'?addEventListener('DOMContentLoaded',drag):drag()
 body.team-modal-open{overflow:hidden}
 @media(max-width:700px){.team-profile-modal{padding:10px}.team-profile-panel{max-height:92vh;padding:20px 14px}.team-profile-head{gap:12px}.team-profile-logo{width:64px;height:64px;flex-basis:64px}.team-profile-head h2{font-size:25px}.team-profile-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.team-profile-roster{grid-template-columns:1fr 1fr}.team-result-row{grid-template-columns:78px 1fr 50px;gap:7px}.team-result-row small{grid-column:2 / -1}.team-profile-kicker{font-size:8px}}
 </style>
+
+
+<!-- PRO ESPORTS FRONTEND POLISH — visual-only; Supabase and tournament logic unchanged -->
+<style id="pro-esports-frontend-polish">
+:root{--es-red:#f04452;--es-red2:#ff5964;--es-bg:#07090e;--es-panel:#10131b;--es-line:rgba(255,255,255,.09);--es-muted:#9ba4b5}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(240,68,82,.13),transparent 42%),#07090e!important;color:#f4f5f8!important}
+header,.site-header,.navbar,.nav-bar{background:rgba(7,9,14,.88)!important;border-bottom:1px solid rgba(240,68,82,.22)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+button,a,.btn,.nav-link{transition:color .18s ease,background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+a:hover,button:hover,.btn:hover{filter:brightness(1.08)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--es-red2);outline-offset:3px}
+section{scroll-margin-top:90px}
+.section-title{position:relative}
+.section-title small{color:var(--es-red2)!important;letter-spacing:2.5px!important;font-weight:900}
+.section-title h2{letter-spacing:1.5px;text-shadow:0 5px 24px rgba(0,0,0,.3)}
+.info-item,.prize,.team-card,.schedule-card,.match-card,.placement-card,.bracket-match,.team-profile-panel{box-shadow:0 14px 40px rgba(0,0,0,.24)}
+.team-card,.team,.schedule-card,.match-card,.placement-card{border-color:var(--es-line)!important}
+.team-card:hover,.team:hover,.schedule-card:hover,.match-card:hover{border-color:rgba(240,68,82,.48)!important;transform:translateY(-2px)}
+.btn,.button,.nav-link.active{border-color:rgba(240,68,82,.45)!important}
+.btn-primary,.primary,.button-primary{background:linear-gradient(135deg,#d92e3e,#f04452)!important;border-color:#f04452!important;color:#fff!important;box-shadow:0 7px 22px rgba(240,68,82,.17)}
+.badge,.status-badge{border-color:rgba(240,68,82,.22)}
+.bracket-wrapper{border-radius:16px;scrollbar-color:#73303a #10131b}
+.bracket-wrapper::-webkit-scrollbar{height:7px}.bracket-wrapper::-webkit-scrollbar-track{background:#10131b;border-radius:10px}.bracket-wrapper::-webkit-scrollbar-thumb{background:#73303a;border-radius:10px}
+.team-profile-panel{background:linear-gradient(145deg,#151821,#0a0c12)!important;border-color:rgba(240,68,82,.32)!important}
+.team-profile-logo{border-color:rgba(240,68,82,.65)!important;background:#10131b!important}
+.team-profile-kicker,.team-profile-section h3{color:var(--es-red2)!important}
+.team-profile-stats>div,.team-roster-player,.team-result-row{background:rgba(255,255,255,.035)!important;border-color:var(--es-line)!important}
+.team-profile-stats small,.team-roster-player span{color:#ff8b95!important}
+input:focus,select:focus{border-color:var(--es-red)!important;box-shadow:0 0 0 3px rgba(240,68,82,.12)}
+@media(max-width:700px){
+  .section-title h2{font-size:clamp(27px,7vw,36px)!important}
+  .team-profile-panel{border-radius:15px!important}
+  .team-profile-head h2{overflow-wrap:anywhere}
+  .team-profile-stats strong{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
 </body>
 </html>
