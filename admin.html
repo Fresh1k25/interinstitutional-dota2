@@ -242,21 +242,16 @@ function anyUnfinishedPlayableMatch(p){
 }
 function renderMatches(){
  const p=participants();
- const stage=currentPlayoffStage(p);
  $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
   const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
   const noTeams=a==null||b==null;
   const finished=!!result(id,[a,b]);
-  const isCurrentStage=(stage===1 && (matchStage(id)===1 || matchStage(id)===2)) || stage===matchStage(id);
-  const locked=noTeams || (!finished && !isCurrentStage);
-  let lockText='';
-  if(noTeams){
-   lockText='Команди з’являться після завершення попередніх матчів.';
-  }else if(!finished && !isCurrentStage){
-   lockText='Цей раунд заблокований. Спочатку завершіть попередні матчі.';
-  }
+  // Раунди не блокуються через незавершені матчі в іншій частині сітки.
+  // Матч доступний, щойно для нього визначені обидві команди.
+  const locked=noTeams;
+  const lockText=noTeams?'Команди з’являться після визначення учасників попередніх матчів.':'';
   return `<div class="game ${locked?'locked':''}">
-   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Заблоковано')}</span></div>
+   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Очікує команди')}</span></div>
    <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
    ${lockText?`<p class="status">${lockText}</p>`:''}
   </div>`;
