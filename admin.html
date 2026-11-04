@@ -1,487 +1,1603 @@
-<!doctype html>
-<html lang="uk">
+<!DOCTYPE html>
+
+<html class="dark scroll-smooth" lang="uk">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NUWEE × DOTA 2 — Єдина адмін-панель</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#06111d;color:#eef8ff;font-family:Arial,Helvetica,sans-serif}
-header{padding:18px 5%;border-bottom:1px solid #1b3b50;background:#071a2a;position:sticky;top:0;z-index:20}
-.header-inner{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}
-.logo{font-size:21px;font-weight:900}.logo span{color:#25b5fa}
-.wrap{max-width:1200px;margin:25px auto 60px;padding:0 16px}
-.card{background:#0a2032;border:1px solid #1c4963;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 10px 35px #0003}
-h1,h2{margin-top:0}.hint{font-size:13px;color:#7fa6ba;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}
-label{font-size:11px;color:#86b9d2;text-transform:uppercase;letter-spacing:1px}
-input,select{width:100%;padding:11px;border-radius:8px;border:1px solid #28566e;background:#061522;color:#fff;font:inherit}
-input:focus,select:focus{outline:none;border-color:#25b5fa}
-.btn{border:1px solid #2b6684;background:#123c55;color:#fff;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
-.primary{background:#1597d0}.danger{background:#642c38}.secondary{background:#123454}
-.toolbar,.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.actions{justify-content:flex-end;margin-top:12px}
-.status{color:#8eb4c8;min-height:20px}
-.hidden{display:none!important}
-.team{border-top:1px solid #21455b;padding-top:16px;margin-top:16px}
-.players{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.team-logo-row{display:grid;grid-template-columns:70px 1fr 150px 120px;gap:10px;align-items:center}
-.team-preview{width:64px;height:64px;object-fit:contain;border:1px solid #28566e;border-radius:10px;background:#061522;padding:5px}
-.upload{background:#123454;padding:11px;border-radius:8px;text-align:center;font-weight:800;cursor:pointer}
-.upload input{display:none}
-.game,.match{padding:15px;background:#071a2a;border:1px solid #1c465c;border-radius:12px;margin:10px 0}
-.game-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
-.format{color:#79cfff;font-size:11px}
-.game-grid{display:grid;grid-template-columns:1fr 65px 20px 65px 1fr;gap:8px;align-items:center}
-.game-grid span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.score{text-align:center;font-weight:900;font-size:16px}
-.match-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr 1fr 1fr 1fr;gap:8px;align-items:end}
-.setup{background:#14283a;border-left:3px solid #25b5fa;padding:12px;border-radius:8px;margin:12px 0;font-size:13px;line-height:1.5}
-.badge{font-size:11px;padding:4px 8px;border-radius:99px;background:#123c55}
-@media(max-width:800px){
- .grid,.match-grid{grid-template-columns:1fr}.full{grid-column:auto}
- .players{grid-template-columns:1fr 1fr}
- .team-logo-row{grid-template-columns:60px 1fr}
- .team-logo-row .upload,.team-logo-row .remove-logo{grid-column:2}
- .game-grid{grid-template-columns:1fr 52px 12px 52px 1fr;font-size:11px}
- .header-inner{align-items:flex-start;flex-direction:column}
-}
-</style>
-
-
-
-
-
-<style id="admin-tabs-style">.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.admin-tab{border:1px solid #28566e;background:#071a2a;color:#9edaff;border-radius:9px;padding:11px 18px;font-weight:800;cursor:pointer}.admin-tab.active{background:#1597d0;color:#fff}.admin-tab-panel{display:none}.admin-tab-panel.active{display:block}.match-grid{grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr 1fr}.badge{display:flex;align-items:center;justify-content:center;min-height:42px}.auto-status{font-weight:800;color:#bdeaff}@media(max-width:800px){.match-grid{grid-template-columns:1fr}.admin-tabs{position:sticky;top:75px;z-index:10;background:#06111d;padding:8px 0}.admin-tab{flex:1 1 calc(50% - 8px)}}</style></head>
-<body>
-<header>
- <div class="header-inner">
-  <div class="logo">NUWEE <span>×</span> DOTA 2 — АДМІН-ПАНЕЛЬ</div>
-  <div class="toolbar">
-   <a class="btn" href="index.html">← На сайт</a>
-   <button class="btn" id="reload">↻ Оновити</button>
-   <button class="btn danger" id="logout">Вийти</button>
-  </div>
- </div>
-</header>
-
-<div class="wrap">
- <div id="login" class="card">
-  <h1>Вхід адміністратора</h1>
-  <div class="grid">
-   <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div>
-   <div class="field"><label>Пароль</label><input id="password" type="password" autocomplete="current-password"></div>
-  </div>
-  <div class="actions"><button class="btn primary" id="loginBtn">УВІЙТИ</button></div>
-  <p id="loginMsg" class="status"></p>
- </div>
-
- <div id="app" class="hidden">
-  <div class="card">
-   <h1>ЄДИНА АДМІН-ПАНЕЛЬ</h1>
-   <p id="userStatus" class="status"></p>
-   
-  </div>
-
-  <div class="admin-tabs"><button class="admin-tab active" data-tab="tab-teams">Команди</button><button class="admin-tab" data-tab="tab-matches">Матчі</button><button class="admin-tab" data-tab="tab-schedule">Розклад</button></div>
-
-<div class="card admin-tab-panel" id="tab-teams">
-   <h2>1. КОМАНДИ ТА ПРОФІЛІ</h2>
-   
-   <div id="teams"></div>
-   <div class="actions"><button class="btn primary" id="saveTeams">💾 ЗБЕРЕГТИ КОМАНДИ</button></div>
-   <p id="teamMsg" class="status"></p>
-  </div>
-
-  <div class="card admin-tab-panel" id="tab-matches">
-   <h2>2. РЕЗУЛЬТАТИ ПЛЕЙ-ОФФ</h2>
-   
-   <div id="matchesAdmin"></div>
-   <div class="actions"><button class="btn primary" id="saveScores">💾 ЗБЕРЕГТИ РЕЗУЛЬТАТИ</button></div>
-   <p id="saveMsg" class="status"></p>
-  </div>
-
-  <div class="card admin-tab-panel" id="tab-schedule">
-   <h2>3. РОЗКЛАД МАТЧІВ</h2>
-   
-   
-   <div id="schedule"></div>
-   <div class="actions">
-    <button class="btn primary" id="addMatch">＋ ДОДАТИ МАТЧ</button>
-    <button class="btn" id="saveSchedule">💾 ЗБЕРЕГТИ РОЗКЛАД</button>
-   </div>
-   <p id="scheduleMsg" class="status"></p>
-  </div>
- </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Адмін-панель — Міжвузівський Dota 2 Championship</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&amp;family=Inter:wght@300;400;500;600;700;800&amp;family=Rajdhani:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- FontAwesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <script>
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-let teams=[],matches={},schedule=[];
-let scheduleSaving=false;
-const $=id=>document.getElementById(id);
-function pad2(n){return String(n).padStart(2,'0');}
-function toLocalInput(value){
-  if(!value) return '';
-  const d=new Date(value);
-  if(Number.isNaN(d.getTime())) return '';
-  return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())+'T'+pad2(d.getHours())+':'+pad2(d.getMinutes());
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dota: {
+                            bg: '#080b11',
+                            card: '#0f141f',
+                            panel: '#161c2b',
+                            border: '#232d42',
+                            red: '#e53935',
+                            redGlow: '#ff4655',
+                            gold: '#f59e0b',
+                            goldGlow: '#fbbf24',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7',
+                            text: '#e2e8f0'
+                        }
+                    },
+                    fontFamily: {
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #080b11;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(229, 57, 53, 0.20) 0%, transparent 65%),
+                radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 15% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+            color: #e2e8f0;
+            background-attachment: fixed;
+        }
+
+        .dota-glass {
+            background: linear-gradient(135deg, rgba(22, 28, 43, 0.94) 0%, rgba(12, 16, 25, 0.97) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+        }
+
+        .dota-match-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dota-match-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(229, 57, 53, 0.28);
+            border-color: rgba(229, 57, 53, 0.62);
+        }
+
+        .glow-red { text-shadow: 0 0 12px rgba(255, 70, 85, 0.88); }
+        .glow-gold { text-shadow: 0 0 12px rgba(245, 158, 11, 0.85); }
+        .glow-cyan { text-shadow: 0 0 12px rgba(6, 182, 212, 0.85); }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #080b11; }
+        ::-webkit-scrollbar-thumb { background: #232d42; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #e53935; }
+
+        .nav-link.active {
+            background-color: rgba(229, 57, 53, 0.2);
+            border-color: rgba(229, 57, 53, 0.7);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(229, 57, 53, 0.28);
+        }
+
+
+        /* VISUAL POLISH — preserves the existing tournament structure and logic */
+        :root {
+            color-scheme: dark;
+            --accent: #e53935;
+            --accent-bright: #ff4655;
+            --surface: rgba(15, 22, 36, .88);
+            --line: rgba(180, 90, 95, .16);
+        }
+        html { scroll-padding-top: 88px; }
+        body {
+            background-color: #070c16;
+            background-image:
+                radial-gradient(ellipse at 50% -12%, rgba(229,57,53,.22), transparent 58%),
+                radial-gradient(circle at 92% 34%, rgba(6,182,212,.075), transparent 34%),
+                linear-gradient(180deg, #080e1a 0%, #070b13 58%, #080d17 100%);
+            line-height: 1.55;
+        }
+        ::selection { background: rgba(229,57,53,.42); color: #fff; }
+        ::-webkit-scrollbar { width: 9px; height: 9px; }
+        ::-webkit-scrollbar-track { background: #080d17; }
+        ::-webkit-scrollbar-thumb { background: #542326; border: 2px solid #080d17; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #e53935; }
+        button, input, select { -webkit-tap-highlight-color: transparent; }
+        button { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease; }
+        button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid #ff4655; outline-offset: 3px;
+        }
+        .dota-glass {
+            background: linear-gradient(145deg, rgba(19,29,47,.94), rgba(10,16,27,.96));
+            border-color: rgba(180,90,95,.15);
+            box-shadow: 0 14px 38px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.025);
+        }
+        .dota-match-card {
+            background: linear-gradient(145deg, rgba(16,25,41,.98), rgba(8,14,25,.98));
+            border-color: rgba(180,90,95,.18);
+            box-shadow: 0 8px 20px rgba(0,0,0,.16);
+        }
+        .dota-match-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,70,85,.72);
+            box-shadow: 0 12px 28px rgba(150,25,32,.20);
+        }
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(229,57,53,.22), rgba(229,57,53,.08));
+            border-color: rgba(255,70,85,.45);
+            color: #fff;
+            box-shadow: 0 0 22px rgba(229,57,53,.12);
+        }
+        header {
+            background: rgba(7,12,22,.88) !important;
+            border-color: rgba(180,90,95,.16) !important;
+            box-shadow: 0 10px 35px rgba(0,0,0,.24) !important;
+        }
+        header > div { min-height: 72px; }
+        .tab-content section { scroll-margin-top: 90px; }
+        .dota-glass, .dota-match-card { backdrop-filter: blur(14px); }
+        #tab-home > section:first-child {
+            background-image: radial-gradient(ellipse at 50% 0%, rgba(229,57,53,.16), transparent 62%), linear-gradient(180deg, rgba(19,29,47,.78), rgba(7,12,22,0));
+        }
+        #tab-home h1 { text-wrap: balance; }
+        #homeNewsContainer > div, #newsContainer > div, #teamsContainer > div {
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        #homeNewsContainer > div:hover, #newsContainer > div:hover, #teamsContainer > div:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,70,85,.38);
+            box-shadow: 0 16px 34px rgba(0,0,0,.22);
+        }
+        input, select {
+            transition: border-color .18s ease, box-shadow .18s ease;
+        }
+        input:focus, select:focus {
+            border-color: rgba(255,70,85,.75) !important;
+            box-shadow: 0 0 0 3px rgba(229,57,53,.12);
+            outline: none;
+        }
+        #mobileNav { background: rgba(10,17,29,.98) !important; }
+        #mobileNav button { border-radius: 10px; padding: 10px 12px; }
+        #mobileNav button:hover { background: rgba(229,57,53,.12); }
+        #toast { backdrop-filter: blur(16px); box-shadow: 0 18px 50px rgba(0,0,0,.42); }
+        footer { border-color: rgba(180,90,95,.16) !important; }
+
+        .gf-connectors span { width: 100%; height: 1px; background: linear-gradient(90deg, rgba(229,57,53,.85), rgba(229,57,53,.2)); position: relative; }
+        .gf-connectors span::after { content: ""; position: absolute; right: -1px; top: -4px; width: 8px; height: 8px; border-top: 1px solid rgba(229,57,53,.9); border-right: 1px solid rgba(229,57,53,.9); transform: rotate(45deg); }
+        .gf-source { min-height: 64px; }
+        .admin-action-card { background: linear-gradient(145deg, rgba(23,25,34,.96), rgba(9,12,19,.98)); border: 1px solid rgba(229,57,53,.2); }
+        .news-editor-input { width: 100%; background: #080b11; border: 1px solid #3b2930; border-radius: 12px; padding: 11px 13px; color: #f8fafc; font-size: 12px; }
+        .news-editor-input:focus { border-color: #e53935; outline: none; box-shadow: 0 0 0 3px rgba(229,57,53,.12); }
+        #newsModal { z-index: 70; }
+        @media (max-width: 1023px) { .gf-connectors { display: none !important; } }
+
+        /* The existing bracket becomes a compact vertical round layout on phones. */
+        @media (max-width: 767px) {
+            header .h-20 { height: 66px; }
+            header a .w-11 { width: 38px; height: 38px; }
+            header a span.font-rajdhani { font-size: 14px; letter-spacing: .035em; }
+            header a .text-\[10px\] { font-size: 8px; }
+            #nav-admin { padding: 9px 11px !important; font-size: 10px !important; }
+            #mobileMenuBtn { font-size: 21px; }
+            #tab-home > section:first-child { padding-top: 54px; padding-bottom: 58px; }
+            #tab-home h1 { font-size: clamp(2.15rem, 9vw, 3.5rem); line-height: .98; }
+            #tab-home .grid { gap: 12px; }
+            #tab-home .grid > div { padding: 18px 12px; }
+            #tab-bracket .dota-glass { padding: 13px; overflow: visible !important; }
+            #upperBracketRender, #lowerBracketRender {
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 20px !important;
+                width: 100%;
+            }
+            #upperBracketRender > div, #lowerBracketRender > div {
+                width: 100%;
+                min-width: 0;
+                padding: 12px;
+                border: 1px solid rgba(180,90,95,.13);
+                border-radius: 15px;
+                background: rgba(5,11,20,.32);
+            }
+            #upperBracketRender .dota-match-card, #lowerBracketRender .dota-match-card {
+                width: 100%;
+                padding: 12px;
+            }
+            #upperBracketRender .dota-match-card span, #lowerBracketRender .dota-match-card span {
+                min-width: 0;
+                overflow-wrap: anywhere;
+            }
+            #upperBracketRender .dota-match-card .flex.items-center,
+            #lowerBracketRender .dota-match-card .flex.items-center { min-width: 0; gap: 6px; }
+            #upperBracketRender .dota-match-card .text-xs,
+            #lowerBracketRender .dota-match-card .text-xs { font-size: 11px; }
+            #grandFinalRender { padding: 18px 12px; }
+            #grandFinalRender .flex.items-center.gap-6 { gap: 12px; width: 100%; justify-content: center; }
+            #grandFinalRender .text-3xl { font-size: 1.5rem; padding: 8px 12px; }
+            #tab-teams .flex.items-center.gap-3 { flex-wrap: wrap; }
+            #teamSearchInput { width: 100%; min-width: 0; }
+            #tab-teams .flex.items-center.gap-3:has(#teamSearchInput) { width: 100%; }
+            #tab-teams .flex.items-center.gap-3:has(#teamSearchInput) button { white-space: nowrap; }
+            #adminMatchesEditor > div { align-items: stretch; }
+            #adminMatchesEditor > div > div:nth-child(2) { width: 100%; justify-content: center; flex-wrap: wrap; }
+            #adminMatchesEditor > div > div:last-child, #adminMatchesEditor select { width: 100%; }
+            #adminSecTeams > div:first-child { gap: 12px; flex-wrap: wrap; }
+            #toast { left: 14px; right: 14px; bottom: 14px; }
+        }
+        @media (max-width: 420px) {
+            #nav-admin span { display: none; }
+            #nav-admin { min-width: 38px; justify-content: center; }
+            #tab-bracket h1 { font-size: 1.65rem; line-height: 1.05; }
+            #tab-bracket h2 { font-size: 1.15rem; }
+            #grandFinalRender .flex.items-center.gap-6 { gap: 7px; }
+            #grandFinalRender .w-14 { width: 42px; height: 42px; }
+            #grandFinalRender .text-xs { font-size: 10px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+
+    </style>
+<style>
+body.admin-page .tab-content:not(#tab-admin) { display: none !important; }
+body.admin-page #tab-admin { min-height: calc(100vh - 150px); }
+#adminLoginScreen { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1.25rem; background: radial-gradient(circle at 50% 30%, rgba(229,57,53,.16), transparent 38%), #05070b; }
+#adminLoginScreen.hidden { display: none !important; }
+#adminAppShell.hidden { display: none !important; }
+.admin-login-card { width: min(100%, 440px); border: 1px solid rgba(229,57,53,.32); background: linear-gradient(145deg, rgba(20,22,30,.98), rgba(7,9,14,.98)); box-shadow: 0 24px 80px rgba(0,0,0,.55), 0 0 45px rgba(229,57,53,.09); }
+.admin-login-input { width: 100%; background: #070a10; border: 1px solid #453039; border-radius: 12px; padding: 13px 15px; color: white; outline: none; }
+.admin-login-input:focus { border-color: #e53935; box-shadow: 0 0 0 3px rgba(229,57,53,.12); }
+</style><style>
+
+/* ===== CINEMATIC VISUAL REFRESH — presentation only; no behavior changes ===== */
+:root {
+  --ui-bg: #07090f;
+  --ui-panel: #10141e;
+  --ui-panel-2: #151a26;
+  --ui-line: rgba(255,255,255,.075);
+  --ui-line-red: rgba(239,55,63,.25);
+  --ui-red: #ed343d;
+  --ui-red-hot: #ff515a;
+  --ui-muted: #9299a8;
+  color-scheme: dark;
 }
-function localDateTimeToIso(value){
-  if(!value) return null;
-  const m=value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
-  if(!m) return null;
-  const d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]),Number(m[5]),0,0);
-  if(Number.isNaN(d.getTime())) return null;
-  return d.toISOString();
+html { background: var(--ui-bg); }
+body {
+  color: #edf0f6;
+  background-color: var(--ui-bg) !important;
+  background-image:
+    radial-gradient(ellipse at 50% -14%, rgba(225,35,45,.20), transparent 48%),
+    radial-gradient(ellipse at 4% 38%, rgba(95,20,28,.14), transparent 34%),
+    radial-gradient(ellipse at 98% 72%, rgba(92,18,27,.12), transparent 32%),
+    linear-gradient(180deg,#080a11 0%,#090c14 48%,#07090f 100%) !important;
+  background-attachment: fixed;
+  letter-spacing: .005em;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .16;
+  background-image: linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(to bottom,black,transparent 86%);
+}
+::selection { background: rgba(237,52,61,.42); color: #fff; }
+::-webkit-scrollbar-track { background: #080a10 !important; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#8d2830,#441b23) !important; border: 2px solid #080a10; }
+::-webkit-scrollbar-thumb:hover { background: #ed343d !important; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button { font-family: Inter,sans-serif; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #ff5a63 !important; outline-offset: 3px; }
+
+/* Top navigation */
+header.sticky {
+  background: rgba(7,9,15,.88) !important;
+  border-bottom: 1px solid rgba(239,55,63,.22) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.035) !important;
+  backdrop-filter: blur(22px) saturate(145%);
+}
+header.sticky > div { max-width: 1360px; }
+header .h-20 { height: 78px; }
+header a.group { gap: 13px; }
+header a.group > div:first-child {
+  border-radius: 14px !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.1),0 7px 24px rgba(229,38,48,.22) !important;
+}
+header nav { padding: 5px; border: 1px solid rgba(255,255,255,.055); background: rgba(255,255,255,.025); border-radius: 15px; }
+.nav-link {
+  padding: 10px 15px !important; border-radius: 11px !important; font-size: 12px !important;
+  letter-spacing: .015em; transition: color .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease !important;
+}
+.nav-link:hover { background: rgba(255,255,255,.055); color: #fff !important; transform: translateY(-1px); }
+.nav-link.active {
+  color: #fff !important; background: linear-gradient(135deg,rgba(237,52,61,.25),rgba(123,22,31,.15)) !important;
+  border-color: rgba(255,80,89,.38) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.08),0 4px 18px rgba(215,35,45,.13) !important;
+}
+.nav-link i { opacity: .95; }
+#mobileNav { padding: 12px 16px 16px !important; background: rgba(8,10,16,.98) !important; border-color: rgba(239,55,63,.2) !important; }
+#mobileNav button { border: 1px solid transparent; padding: 12px 13px !important; border-radius: 11px !important; }
+#mobileNav button:hover { background: rgba(237,52,61,.1) !important; border-color: rgba(237,52,61,.2); }
+#mobileMenuBtn { border-radius: 10px; }
+
+/* Hero section */
+#tab-home > section:first-child {
+  position: relative; isolation: isolate; min-height: 420px;
+  display: flex; align-items: center;
+  border-bottom: 1px solid rgba(239,55,63,.22) !important;
+  background:
+    radial-gradient(ellipse at 50% 2%,rgba(226,37,48,.22),transparent 54%),
+    radial-gradient(ellipse at 50% 100%,rgba(117,22,29,.16),transparent 58%),
+    linear-gradient(180deg,rgba(17,20,30,.92),rgba(7,9,15,.98)) !important;
+}
+#tab-home > section:first-child::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .23;
+  background: repeating-linear-gradient(128deg,transparent 0 46px,rgba(255,255,255,.025) 47px,transparent 48px 96px),
+              linear-gradient(90deg,rgba(0,0,0,.38),transparent 35%,transparent 65%,rgba(0,0,0,.38));
+}
+#tab-home > section:first-child::after {
+  content: "DOTA 2"; position: absolute; z-index: -1; right: max(3vw,calc((100vw - 1320px)/2)); top: 50%; transform: translateY(-50%);
+  font: 900 clamp(100px,19vw,270px)/.8 Rajdhani,sans-serif; letter-spacing: -.085em; color: rgba(255,255,255,.022);
+  white-space: nowrap; pointer-events: none;
+}
+#tab-home > section:first-child > div { padding-top: 20px; padding-bottom: 20px; }
+#tab-home > section:first-child > div > div:first-child {
+  background: rgba(12,14,21,.68) !important; border: 1px solid rgba(244,181,80,.35) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.055) !important;
+  padding: 9px 17px !important; letter-spacing: .11em; font-size: 10px !important;
+}
+#tab-home h1 { font-size: clamp(3rem,7vw,6.5rem) !important; line-height: .91 !important; letter-spacing: .015em !important; text-shadow: 0 8px 34px rgba(0,0,0,.52); }
+#tab-home h1 span { text-shadow: 0 0 28px rgba(237,52,61,.36); }
+#tab-home > section:first-child p { max-width: 690px; font-size: clamp(14px,1.3vw,17px) !important; color: #b6bdca !important; line-height: 1.7; }
+#tab-home > section:first-child .pt-4 { padding-top: 15px; }
+#tab-home > section:first-child button { min-height: 48px; padding: 13px 23px !important; border-radius: 12px !important; letter-spacing: .025em; }
+#tab-home > section:first-child button:first-child { background: linear-gradient(135deg,#f0444d,#b91f2b) !important; box-shadow: 0 9px 28px rgba(224,36,47,.27),inset 0 1px 0 rgba(255,255,255,.22) !important; }
+#tab-home > section:first-child button:first-child:hover { transform: translateY(-2px); box-shadow: 0 13px 34px rgba(224,36,47,.34) !important; }
+#tab-home > section:first-child button:last-child { background: rgba(18,22,32,.78) !important; border-color: rgba(255,255,255,.13) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.055); }
+#tab-home > section:first-child button:last-child:hover { border-color: rgba(255,80,89,.4) !important; background: rgba(34,23,29,.9) !important; }
+
+/* Main page content + stat tiles */
+#tab-home > section:nth-child(2) { padding-top: 48px !important; padding-bottom: 64px !important; }
+#tab-home > section:nth-child(2) > .grid { gap: 18px !important; }
+#tab-home > section:nth-child(2) > .grid > div {
+  position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,.075) !important; border-radius: 18px !important;
+  padding: 25px 20px !important; background: linear-gradient(145deg,rgba(21,25,36,.94),rgba(10,13,21,.96)) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035) !important;
+  transition: transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+#tab-home > section:nth-child(2) > .grid > div::before { content:""; position:absolute; left:18px; right:18px; top:0; height:2px; background:linear-gradient(90deg,transparent,rgba(239,55,63,.8),transparent); }
+#tab-home > section:nth-child(2) > .grid > div:hover { transform: translateY(-4px); border-color: rgba(255,80,89,.27) !important; box-shadow: 0 20px 42px rgba(0,0,0,.28),0 0 24px rgba(221,38,47,.06) !important; }
+#tab-home > section:nth-child(2) > .grid > div > div:first-child { font-size: clamp(27px,3vw,38px) !important; line-height: 1.1; }
+#tab-home > section:nth-child(2) > .grid > div > div:last-child { font-size: 10px !important; letter-spacing: .16em; color: #929aaa !important; }
+#tab-home > section:nth-child(2) > div:last-child { margin-top: 54px; }
+#tab-home h2, #tab-bracket h2, #tab-teams h1, #tab-news h1 { letter-spacing: .055em; }
+#tab-home > section:nth-child(2) > div:last-child > div:first-child,
+#tab-teams section > div:first-child, #tab-news section > div:first-child { border-color: rgba(255,255,255,.09) !important; }
+#tab-home > section:nth-child(2) > div:last-child > div:first-child button { color: #ff626a !important; }
+
+/* Shared panel and card surfaces */
+.dota-glass {
+  background: linear-gradient(145deg,rgba(20,25,36,.94),rgba(10,13,21,.97)) !important;
+  border: 1px solid rgba(255,255,255,.075) !important;
+  box-shadow: 0 14px 38px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.035) !important;
+  backdrop-filter: blur(16px) saturate(125%);
+}
+.dota-match-card {
+  background: linear-gradient(145deg,rgba(22,27,39,.98),rgba(9,12,20,.99)) !important;
+  border-color: rgba(255,255,255,.09) !important;
+  border-radius: 13px !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+.dota-match-card:hover { transform: translateY(-3px); border-color: rgba(255,80,89,.6) !important; box-shadow: 0 14px 30px rgba(0,0,0,.3),0 0 22px rgba(229,38,48,.09) !important; }
+.dota-match-card .border-b, .dota-match-card .border-t { border-color: rgba(255,255,255,.07) !important; }
+
+/* Bracket */
+#tab-bracket > section:first-child { background: linear-gradient(120deg,rgba(32,15,22,.92),rgba(9,12,19,.98) 62%) !important; border-color: rgba(239,55,63,.18) !important; }
+#tab-bracket > section:first-child > div { padding-top: 34px; padding-bottom: 34px; }
+#tab-bracket > section:first-child h1 { letter-spacing: .025em; text-shadow: 0 5px 25px rgba(0,0,0,.35); }
+#tab-bracket > section:nth-child(2) { padding-top: 42px !important; }
+#tab-bracket > section:nth-child(2) > div { gap: 17px !important; }
+#tab-bracket > section:nth-child(2) > div > .flex.items-center { padding: 0 2px 3px; }
+#tab-bracket > section:nth-child(2) > div > .dota-glass { padding: 23px !important; background: linear-gradient(145deg,rgba(17,21,31,.9),rgba(8,11,18,.96)) !important; }
+#upperBracketRender > div > div:first-child, #lowerBracketRender > div > div:first-child { padding-bottom: 10px !important; border-color: rgba(239,55,63,.27) !important; letter-spacing: .12em; }
+#grandFinalRender { border-color: rgba(242,174,75,.35) !important; box-shadow: 0 16px 42px rgba(0,0,0,.25),inset 0 0 50px rgba(173,103,32,.045) !important; }
+#grandFinalRender + * { border-color: rgba(255,255,255,.1); }
+
+/* Teams and news cards */
+#tab-teams section, #tab-news section { padding-top: 44px !important; }
+#teamsContainer, #newsContainer, #homeNewsContainer { gap: 20px !important; }
+#teamsContainer > div, #newsContainer > div, #homeNewsContainer > div {
+  overflow: hidden; border: 1px solid rgba(255,255,255,.075) !important; border-radius: 18px !important;
+  background: linear-gradient(145deg,rgba(21,26,38,.96),rgba(9,12,20,.98)) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.035) !important;
+  transition: transform .22s ease,border-color .22s ease,box-shadow .22s ease !important;
+}
+#teamsContainer > div:hover, #newsContainer > div:hover, #homeNewsContainer > div:hover {
+  transform: translateY(-5px) !important; border-color: rgba(255,80,89,.36) !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,.3),0 0 24px rgba(229,38,48,.06) !important;
+}
+#teamsContainer > div { padding: 21px !important; }
+#teamsContainer > div .border-b { border-color: rgba(255,255,255,.085) !important; }
+#teamsContainer > div .bg-dota-bg { background: rgba(5,8,14,.55) !important; border-color: rgba(255,255,255,.065) !important; }
+#teamsContainer > div > div:first-child > div:first-child > span:first-child { display:inline-flex; width:48px; height:48px; align-items:center; justify-content:center; border-radius:14px; background:linear-gradient(145deg,rgba(237,52,61,.13),rgba(255,255,255,.025)); border:1px solid rgba(237,52,61,.18); font-size:26px !important; }
+#newsContainer > div img, #homeNewsContainer > div img { display:block; width:100%; object-fit:cover; background:#0b0e16; transition: transform .5s ease,filter .4s ease; }
+#newsContainer > div:hover img, #homeNewsContainer > div:hover img { transform: scale(1.035); filter: saturate(1.08) contrast(1.04); }
+#newsContainer > div > div, #homeNewsContainer > div > div { position:relative; }
+#newsContainer > div > div h3, #homeNewsContainer > div > div h3 { line-height:1.2; letter-spacing:.015em; }
+#newsContainer > div > div p, #homeNewsContainer > div > div p { color:#aab2c0 !important; line-height:1.65; }
+#newsContainer > div > div span, #homeNewsContainer > div > div span { color:#ff777d !important; letter-spacing:.08em; }
+#tab-teams input, #tab-news input { background:rgba(12,16,25,.9) !important; border-color:rgba(255,255,255,.12) !important; border-radius:12px !important; min-height:42px; }
+#tab-teams input:focus, #tab-news input:focus { border-color:rgba(255,80,89,.7) !important; box-shadow:0 0 0 3px rgba(237,52,61,.12) !important; }
+
+/* Streaming, footer, dialogs and notifications */
+#tab-stream .dota-glass { padding:22px !important; border-radius:20px !important; }
+#tab-stream .aspect-video { border-color:rgba(255,255,255,.1) !important; box-shadow:0 16px 40px rgba(0,0,0,.38); }
+footer { background:rgba(6,8,13,.8) !important; border-color:rgba(255,255,255,.075) !important; }
+footer .font-rajdhani { letter-spacing:.09em; }
+#matchModal > div, #teamModal > div, #newsModal > div { border-radius:22px !important; border-color:rgba(237,52,61,.25) !important; box-shadow:0 28px 90px rgba(0,0,0,.68),0 0 36px rgba(229,38,48,.08) !important; }
+#toast { background:rgba(15,19,28,.96) !important; border-color:rgba(239,55,63,.42) !important; }
+#toastTitle { color:#ff6a72 !important; }
+
+@media (max-width: 767px) {
+  header .h-20 { height:66px !important; }
+  header nav { display:none; }
+  #tab-home > section:first-child { min-height:370px; padding-top:50px !important; padding-bottom:50px !important; }
+  #tab-home > section:first-child::after { right:-16px; opacity:.7; font-size:28vw; }
+  #tab-home h1 { font-size:clamp(2.65rem,11vw,4.3rem) !important; }
+  #tab-home > section:first-child p { font-size:13px !important; }
+  #tab-home > section:nth-child(2) { padding-top:28px !important; padding-bottom:38px !important; }
+  #tab-home > section:nth-child(2) > .grid > div { padding:18px 12px !important; }
+  #tab-home > section:nth-child(2) > div:last-child { margin-top:38px; }
+  #tab-bracket > section:nth-child(2) > div > .dota-glass { padding:13px !important; }
+  #tab-teams section, #tab-news section { padding-top:28px !important; }
+  #teamsContainer, #newsContainer, #homeNewsContainer { gap:14px !important; }
+  #tab-stream .dota-glass { padding:13px !important; }
+  footer { text-align:center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
 }
 
-const labels={U1:'1 раунд ВС — матч 1',U2:'1 раунд ВС — матч 2',U3:'1 раунд ВС — матч 3',U4:'1 раунд ВС — матч 4',U5:'2 раунд ВС — матч 1',U6:'2 раунд ВС — матч 2',UF:'Фінал ВС',L1:'1 раунд НС — матч 1',L2:'1 раунд НС — матч 2',L3:'2 раунд НС — матч 1',L4:'2 раунд НС — матч 2',L5:'3 раунд НС',LF:'Фінал НС',GF:'Грандфінал — BO5'};
-const placeholder='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120"%3E%3Crect width="120" height="120" fill="%230d2946"/%3E%3Ctext x="60" y="72" text-anchor="middle" font-size="52" fill="%239bdcff"%3E★%3C/text%3E%3C/svg%3E';
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function msg(id,t){$(id).textContent=t||'';}
-function result(id, participantPair=null){
- const m=matches[id];
- const pair=participantPair || (m ? [m.a,m.b] : [null,null]);
- if(!m || pair[0]==null || pair[1]==null) return null;
- const need=id==='GF'?3:2;
- const teamA=Number(pair[0]), teamB=Number(pair[1]);
- if(Number(m.sa)>=need && Number(m.sb)<need) return {winner:teamA,loser:teamB};
- if(Number(m.sb)>=need && Number(m.sa)<need) return {winner:teamB,loser:teamA};
- return null;
-}
-function assignParticipants(id,a,b){
- const m=matches[id]||(matches[id]={a:null,b:null,sa:0,sb:0});
- const nextA=a==null?null:Number(a), nextB=b==null?null:Number(b);
- const oldA=m.a==null?null:Number(m.a), oldB=m.b==null?null:Number(m.b);
- const hadKnownParticipants=oldA!==null || oldB!==null;
- const changed=oldA!==nextA || oldB!==nextB;
- // Preserve scores on legacy NULL -> assigned rows; reset only when a known
- // matchup changes, so an old score can never be attributed to new teams.
- if(hadKnownParticipants && changed){m.sa=0;m.sb=0;}
- m.a=nextA; m.b=nextB;
- return [nextA,nextB];
-}
-function participants(){
- const p={};
- ['U1','U2','U3','U4'].forEach(id=>{
-  const m=matches[id]||{};
-  p[id]=[m.a==null?null:Number(m.a),m.b==null?null:Number(m.b)];
- });
- const r1=['U1','U2','U3','U4'].map(id=>result(id,p[id]));
- p.U5=assignParticipants('U5',r1[0]?.winner??null,r1[1]?.winner??null);
- p.U6=assignParticipants('U6',r1[2]?.winner??null,r1[3]?.winner??null);
- p.L1=assignParticipants('L1',r1[0]?.loser??null,r1[1]?.loser??null);
- p.L2=assignParticipants('L2',r1[2]?.loser??null,r1[3]?.loser??null);
- const u5=result('U5',p.U5),u6=result('U6',p.U6),l1=result('L1',p.L1),l2=result('L2',p.L2);
- p.UF=assignParticipants('UF',u5?.winner??null,u6?.winner??null);
- p.L3=assignParticipants('L3',u5?.loser??null,l1?.winner??null);
- p.L4=assignParticipants('L4',u6?.loser??null,l2?.winner??null);
- const l3=result('L3',p.L3),l4=result('L4',p.L4);
- p.L5=assignParticipants('L5',l3?.winner??null,l4?.winner??null);
- const l5=result('L5',p.L5),uf=result('UF',p.UF);
- p.LF=assignParticipants('LF',l5?.winner??null,uf?.loser??null);
- const lf=result('LF',p.LF);
- p.GF=assignParticipants('GF',uf?.winner??null,lf?.winner??null);
- return p;
-}
-function teamName(id){if(id==null)return 'Очікуємо';const t=teams.find(x=>x.id===id);return t?t.name:'Очікуємо';}
 
-function renderTeams(){
- $('teams').innerHTML=teams.map(t=>{
-  const d=t.details||{},p=Array.isArray(d.players)?d.players:[];
-  return `<div class="team">
-   <div class="team-logo-row">
-    <img class="team-preview" id="preview-${t.id}" src="${esc(t.logo||placeholder)}" alt="">
-    <div class="field"><label>Назва</label><input id="name-${t.id}" value="${esc(t.name)}"></div>
-    <label class="upload">📁 ОБРАТИ ЛОГО<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="uploadLogo(event,${t.id})"></label>
-    <span class="remove-logo" onclick="removeLogo(${t.id})">✕ Прибрати лого</span>
-   </div>
-   <div class="grid" style="margin-top:12px">
-    <div class="field"><label>Капітан</label><input id="cap-${t.id}" value="${esc(d.captain||'')}"></div>
-    <div class="field"><label>Поточне місце</label><input id="pos-${t.id}" value="${esc(d.position||'')}"></div>
-    <div class="field full"><label>Статус</label><input id="status-${t.id}" value="${esc(d.status||'У турнірі')}"></div>
-    <div class="field full"><label>5 гравців</label><div class="players">${[0,1,2,3,4].map(i=>`<input id="player-${t.id}-${i}" value="${esc(p[i]||'')}" placeholder="Гравець ${i+1}">`).join('')}</div></div>
-   </div>
-  </div>`;
- }).join('');
+/* ===== ADMIN STUDIO VISUAL REFRESH — CSS only, existing controls and state remain intact ===== */
+body.admin-page {
+  background-color:#07090f !important;
+  background-image:radial-gradient(ellipse at 50% -12%,rgba(225,35,45,.18),transparent 48%),radial-gradient(ellipse at 0% 60%,rgba(105,20,30,.1),transparent 35%),linear-gradient(180deg,#080a11,#07090f) !important;
 }
-function matchReadyForScore(id, p){
- const m=matches[id]||{};
- const [a,b]=p[id]||[m.a,m.b];
- return a!=null && b!=null;
+body.admin-page::before { content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.13;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:54px 54px; }
+#adminLoginScreen {
+  background:radial-gradient(ellipse at 50% 40%,rgba(229,38,48,.16),transparent 36%),linear-gradient(145deg,#080a11,#0d1019 55%,#07090f) !important;
+  overflow:hidden;
 }
-function matchStage(id){
- const stages={
-  U1:1,U2:1,U3:1,U4:1,
-  L1:2,L2:2,
-  U5:3,U6:3,
-  L3:4,L4:4,
-  UF:5,
-  L5:6,
-  LF:7,
-  GF:8
- };
- return stages[id]??999;
+#adminLoginScreen::before { content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background:repeating-linear-gradient(135deg,transparent 0 58px,rgba(255,255,255,.04) 59px,transparent 60px 116px); }
+.admin-login-card {
+  position:relative;z-index:1;width:min(100%,460px) !important;padding:42px !important;
+  border:1px solid rgba(255,85,94,.28) !important;border-radius:26px !important;
+  background:linear-gradient(145deg,rgba(23,27,38,.97),rgba(9,12,20,.98)) !important;
+  box-shadow:0 32px 100px rgba(0,0,0,.62),0 0 65px rgba(229,38,48,.11),inset 0 1px 0 rgba(255,255,255,.07) !important;
+  backdrop-filter:blur(20px);
 }
-function currentPlayoffStage(p){
- const playable=Object.keys(labels).filter(id=>matchReadyForScore(id,p));
- const unfinished=playable.filter(id=>!result(id,p[id]||[matches[id]?.a,matches[id]?.b]));
- if(!unfinished.length)return null;
- // Перший раунд ВС і перший раунд НС відкриті одночасно.
- const firstRoundOpen=unfinished.some(id=>matchStage(id)===1||matchStage(id)===2);
- if(firstRoundOpen)return 1;
- return Math.min(...unfinished.map(matchStage));
+.admin-login-card::before { content:"";position:absolute;top:0;left:14%;right:14%;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,#ff5962,transparent); }
+.admin-login-card h1 { font-size:clamp(28px,5vw,36px);letter-spacing:.025em; }
+.admin-login-card .text-center.mb-7 > div:first-child { letter-spacing:.24em !important; }
+.admin-login-card .w-16 { width:68px !important;height:68px !important;border-radius:20px !important; }
+.admin-login-input { min-height:48px;padding:13px 15px !important;border-radius:12px !important;background:rgba(5,8,14,.82) !important;border:1px solid rgba(255,255,255,.13) !important;font-size:14px !important;transition:border-color .2s ease,box-shadow .2s ease; }
+.admin-login-input:focus { border-color:rgba(255,80,89,.8) !important;box-shadow:0 0 0 4px rgba(229,38,48,.13) !important; }
+.admin-login-card button[type="submit"] { min-height:48px;border-radius:12px !important;background:linear-gradient(135deg,#f0444d,#b71f2a) !important;box-shadow:0 10px 28px rgba(221,34,45,.24),inset 0 1px 0 rgba(255,255,255,.18) !important;letter-spacing:.08em; }
+.admin-login-card button[type="submit"]:hover { transform:translateY(-2px);box-shadow:0 14px 34px rgba(221,34,45,.32) !important; }
+
+/* Admin shell */
+#adminAppShell header.sticky { background:rgba(7,9,15,.9) !important;border-bottom:1px solid rgba(239,55,63,.22) !important;box-shadow:0 12px 36px rgba(0,0,0,.38) !important;backdrop-filter:blur(22px); }
+#adminAppShell header .h-16, #adminAppShell header .sm\:h-20 { min-height:76px; }
+#adminAppShell header .w-10 { border-radius:14px !important;box-shadow:0 0 28px rgba(229,38,48,.18); }
+#adminAppShell header a, #adminAppShell header button { border-radius:11px !important;transition:transform .2s ease,background .2s ease,border-color .2s ease; }
+#adminAppShell header a:hover, #adminAppShell header button:hover { transform:translateY(-1px); }
+#adminAppShell main { min-height:calc(100vh - 100px); }
+#tab-admin > section { max-width:1260px; padding-top:40px !important;padding-bottom:64px !important; }
+#tab-admin > section > div:first-child { border-color:rgba(255,255,255,.09) !important;padding-bottom:24px; }
+#tab-admin > section > div:first-child h1 { letter-spacing:.035em;text-shadow:0 5px 24px rgba(0,0,0,.32); }
+#tab-admin > section > div:first-child button { border-radius:11px !important; }
+#tab-admin .border-b.border-dota-border.pb-4 { gap:8px !important;padding:7px !important;border:1px solid rgba(255,255,255,.07) !important;border-radius:15px;background:rgba(14,18,27,.72); }
+#tab-admin .border-b.border-dota-border.pb-4 button { min-height:42px;padding:11px 17px !important;border-radius:10px !important;transition:all .2s ease; }
+#tab-admin .border-b.border-dota-border.pb-4 button:hover { color:#fff !important;background:rgba(255,255,255,.055) !important; }
+#tab-admin .border-b.border-dota-border.pb-4 button[id^="admTab"] { border:1px solid transparent; }
+#admTabMatches:not(.bg-dota-panel), #admTabTeams:not(.bg-dota-panel), #admTabNews:not(.bg-dota-panel), #admTabSettings:not(.bg-dota-panel) { background:linear-gradient(135deg,rgba(237,52,61,.27),rgba(123,22,31,.15)) !important;border-color:rgba(255,80,89,.35) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 5px 16px rgba(215,35,45,.1); }
+#adminSecMatches, #adminSecTeams, #adminSecNews, #adminSecSettings { padding-top:10px; }
+#tab-admin h3 { font-size:22px !important;letter-spacing:.025em; }
+#adminMatchesEditor { gap:10px !important; }
+#adminMatchesEditor > div {
+  padding:15px 17px !important;border-radius:15px !important;border:1px solid rgba(255,255,255,.075) !important;
+  background:linear-gradient(145deg,rgba(21,25,36,.96),rgba(9,12,20,.98)) !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.03);transition:border-color .2s ease,transform .2s ease;
 }
-function anyUnfinishedPlayableMatch(p){
- const stage=currentPlayoffStage(p);
- return stage!=null && Object.keys(labels).some(id=>matchStage(id)===stage && matchReadyForScore(id,p) && !result(id));
+#adminMatchesEditor > div:hover { border-color:rgba(255,80,89,.25) !important;transform:translateY(-1px); }
+#adminMatchesEditor input, #adminMatchesEditor select { min-height:36px;border-radius:9px !important;border-color:rgba(255,255,255,.13) !important;background:#0b0e16 !important; }
+#adminMatchesEditor select { color:#ffd4d5 !important;border-color:rgba(239,55,63,.35) !important; }
+#adminTeamsList { gap:12px !important; }
+#adminTeamsList > div {
+  padding:16px !important;border-radius:15px !important;border:1px solid rgba(255,255,255,.075) !important;
+  background:linear-gradient(145deg,rgba(21,25,36,.96),rgba(9,12,20,.98)) !important;box-shadow:0 8px 22px rgba(0,0,0,.17);
 }
-function renderMatches(){
- const p=participants();
- $('matchesAdmin').innerHTML=Object.keys(labels).map(id=>{
-  const m=matches[id]||{sa:0,sb:0},[a,b]=p[id]||[m.a,m.b],max=id==='GF'?3:2;
-  const noTeams=a==null||b==null;
-  const finished=!!result(id,[a,b]);
-  // Раунди не блокуються через незавершені матчі в іншій частині сітки.
-  // Матч доступний, щойно для нього визначені обидві команди.
-  const locked=noTeams;
-  const lockText=noTeams?'Команди з’являться після визначення учасників попередніх матчів.':'';
-  return `<div class="game ${locked?'locked':''}">
-   <div class="game-head"><strong>${labels[id]}</strong><span class="format">${id==='GF'?'BO5':'BO3'}${finished?' • Завершено':(!locked?' • 🔴 Можна редагувати':' • 🔒 Очікує команди')}</span></div>
-   <div class="game-grid"><span>${esc(teamName(a))}</span><input class="score" id="sa-${id}" type="number" min="0" max="${max}" value="${m.sa}" ${locked?'disabled':''}><span>:</span><input class="score" id="sb-${id}" type="number" min="0" max="${max}" value="${m.sb}" ${locked?'disabled':''}><span>${esc(teamName(b))}</span></div>
-   ${lockText?`<p class="status">${lockText}</p>`:''}
-  </div>`;
- }).join('');
+#adminTeamsList > div:hover { border-color:rgba(255,80,89,.3) !important; }
+#adminTeamsList > div > div:first-child > span { width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:rgba(237,52,61,.08);border:1px solid rgba(237,52,61,.15); }
+#adminTeamsList button, #adminNewsList button { min-height:34px;border-radius:9px !important; }
+#adminNewsList { gap:13px !important; }
+#adminNewsList article {
+  min-height:148px;padding:14px !important;border-radius:16px !important;border:1px solid rgba(255,255,255,.08) !important;
+  background:linear-gradient(145deg,rgba(21,25,36,.97),rgba(9,12,20,.99)) !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.03) !important;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+#adminNewsList article:hover { transform:translateY(-2px);border-color:rgba(255,80,89,.32) !important;box-shadow:0 15px 32px rgba(0,0,0,.26) !important; }
+#adminNewsList article img { width:116px !important;height:100px !important;border-radius:11px !important;border-color:rgba(255,255,255,.11) !important; }
+#adminNewsList article h4 { font-family:Rajdhani,sans-serif;font-size:18px !important;letter-spacing:.01em; }
+#adminNewsList article p { line-height:1.55; }
+#adminSecNews > div:first-child { padding:18px 19px;border-radius:15px;border:1px solid rgba(255,255,255,.075);background:rgba(13,17,26,.72); }
+#adminSecNews > div:first-child button { min-height:42px;border-radius:10px !important;background:linear-gradient(135deg,#f0444d,#b91f2a) !important;box-shadow:0 8px 22px rgba(221,34,45,.18); }
+#adminSecSettings .dota-glass { border-radius:17px !important;padding:24px !important; }
+#adminSecSettings input { min-height:43px;border-radius:10px !important;background:#0a0d14 !important;border-color:rgba(255,255,255,.12) !important; }
+#adminSecSettings button { min-height:42px;border-radius:10px !important; }
+
+/* Form fields + dialogs */
+#teamModal > div, #newsModal > div { border-radius:22px !important;background:linear-gradient(145deg,rgba(22,27,38,.99),rgba(8,11,18,.99)) !important;border-color:rgba(239,55,63,.3) !important;box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 40px rgba(229,38,48,.08) !important; }
+#teamModal input, #newsModal input, #newsModal textarea { min-height:42px;background:rgba(5,8,14,.78) !important;border:1px solid rgba(255,255,255,.12) !important;border-radius:10px !important;padding:11px 13px !important;color:#f4f5f8 !important; }
+#newsModal textarea { min-height:140px; }
+#teamModal input:focus, #newsModal input:focus, #newsModal textarea:focus { outline:none;border-color:rgba(255,80,89,.75) !important;box-shadow:0 0 0 3px rgba(229,38,48,.12) !important; }
+#newsImagePreview { border:1px solid rgba(255,255,255,.09); }
+#toast { background:rgba(15,19,28,.97) !important;border-color:rgba(239,55,63,.4) !important;backdrop-filter:blur(18px); }
+#toastTitle { color:#ff737a !important; }
+
+@media (max-width: 767px) {
+  .admin-login-card { padding:30px 23px !important; }
+  #tab-admin > section { padding-top:24px !important; }
+  #tab-admin > section > div:first-child { align-items:flex-start;gap:16px; }
+  #tab-admin > section > div:first-child h1 { font-size:27px !important;line-height:1.05; }
+  #tab-admin .border-b.border-dota-border.pb-4 { display:grid;grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #tab-admin .border-b.border-dota-border.pb-4 button { width:100%;padding:10px 8px !important; }
+  #adminMatchesEditor > div { padding:13px !important; }
+  #adminNewsList article { align-items:flex-start; }
+  #adminNewsList article img { width:88px !important;height:88px !important; }
+  #adminNewsList article button { padding:8px 9px !important;font-size:10px !important; }
+  #adminSecNews > div:first-child { padding:14px; }
+}
+@media (max-width: 430px) {
+  #adminNewsList article { flex-direction:column; }
+  #adminNewsList article img { width:100% !important;height:145px !important; }
+  #adminNewsList article > div { width:100%; }
 }
 
-function teamOptions(v){return teams.map(t=>`<option value="${t.id}" ${String(v)==String(t.id)?'selected':''}>${esc(t.name)}</option>`).join('');}
-function automaticScheduleStatus(m){const need=String(m.best_of||'BO3')==='BO5'?3:2;if((Number(m.sa)>=need&&Number(m.sb)<need)||(Number(m.sb)>=need&&Number(m.sa)<need))return'finished';if(!m.scheduled_at)return'scheduled';return new Date(m.scheduled_at).getTime()<=Date.now()?'live':'scheduled';}
-function renderSchedule(){
- $('schedule').innerHTML=schedule.map((m,i)=>{const status=automaticScheduleStatus(m);return `<div class="match" data-i="${i}"><div class="match-grid"><div class="field"><label>Етап</label><input class="m-stage" value="${esc(m.stage||'')}"></div><div class="field"><label>Команда 1</label><select class="m-a"><option value="">—</option>${teamOptions(m.a)}</select></div><div class="field"><label>Команда 2</label><select class="m-b"><option value="">—</option>${teamOptions(m.b)}</select></div><div class="field"><label>Дата й час</label><input class="m-date" type="datetime-local" value="${m.scheduled_at?toLocalInput(m.scheduled_at):''}"></div><div class="field"><label>Формат</label><select class="m-bo"><option ${m.best_of==='BO3'?'selected':''}>BO3</option><option ${m.best_of==='BO5'?'selected':''}>BO5</option></select></div><div class="field"><label>Рахунок</label><div style="display:grid;grid-template-columns:1fr 12px 1fr;gap:6px;align-items:center"><input class="m-sa" type="number" min="0" max="3" value="${Number(m.sa)||0}"><span>:</span><input class="m-sb" type="number" min="0" max="3" value="${Number(m.sb)||0}"></div></div><div class="field"><label>Статус</label><div class="badge auto-status">${status==='live'?'🔴 LIVE':status==='finished'?'Завершено':'Заплановано'}</div></div></div><div class="actions"><button class="btn danger remove-match">Видалити</button></div></div>`;}).join('');
-}
-
-async function compressImage(file){
- return new Promise((resolve,reject)=>{
-  if(file.type==='image/svg+xml'){const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);return;}
-  const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const max=256,s=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*s)),h=Math.max(1,Math.round(img.height*s)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/webp',.86));};img.onerror=reject;img.src=r.result;};r.onerror=reject;r.readAsDataURL(file);
- });
-}
-async function uploadLogo(e,id){const f=e.target.files[0];if(!f)return;if(f.size>8*1024*1024){alert('Файл завеликий. Максимум 8 МБ.');return;}try{const data=await compressImage(f),t=teams.find(x=>x.id===id);if(t){t.logo=data;$('preview-'+id).src=data;msg('teamMsg','Логотип підготовлено. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}catch(_){alert('Не вдалося обробити зображення.');}}
-function removeLogo(id){const t=teams.find(x=>x.id===id);if(t){t.logo='';$('preview-'+id).src=placeholder;msg('teamMsg','Логотип прибрано. Натисніть «ЗБЕРЕГТИ КОМАНДИ».');}}
-
-async function load(){
- const tr=await db.from('teams').select('*').order('id');
- if(tr.error)throw tr.error;
- teams=(tr.data||[]).map(t=>({...t,id:Number(t.id),details:t.details||{},logo:t.logo||''}));
- const mr=await db.from('matches').select('id,a,b,sa,sb');
- if(mr.error)throw mr.error;
- matches=Object.fromEntries((mr.data||[]).map(x=>[x.id,{...x,a:x.a==null?null:Number(x.a),b:x.b==null?null:Number(x.b),sa:Number(x.sa)||0,sb:Number(x.sb)||0}]));
- renderTeams();renderMatches();await loadSchedule();
-}
-async function loadSchedule(){
- const r=await db.from('match_schedule').select('*').order('scheduled_at',{ascending:true});
- if(r.error){schedule=[];renderSchedule();msg('scheduleMsg','Таблиця match_schedule не доступна: '+r.error.message);return;}
- schedule=Array.from(new Map((r.data||[]).map(x=>[String(x.id),x])).values());renderSchedule();
-}
-async function saveTeams(){
- msg('teamMsg','Зберігаю...');
- try{
-  for(const t of teams){
-   const d={...(t.details||{}),captain:$('cap-'+t.id).value.trim(),position:$('pos-'+t.id).value.trim(),status:$('status-'+t.id).value.trim(),players:[0,1,2,3,4].map(i=>$('player-'+t.id+'-'+i).value.trim()).filter(Boolean)};
-   const name=$('name-'+t.id).value.trim()||('Команда '+t.id);
-   const r=await db.from('teams').update({name,logo:t.logo||null,details:d}).eq('id',t.id);
-   if(r.error)throw r.error;
-  }
-  msg('teamMsg','Команди та профілі збережено.');await load();
- }catch(e){msg('teamMsg','Помилка: '+(e.message||e));}
-}
-async function saveScores(){
- msg('saveMsg','Зберігаю результати та оновлюю сітку...');
- try{
-  // Read all editable inputs first. This lets the bracket be recalculated once
-  // from the complete set of newly entered scores before saving participants.
-  const pending={};
-  for(const id of Object.keys(labels)){
-   const a=$('sa-'+id),b=$('sb-'+id);
-   if(!a||!b||a.disabled)continue;
-   const max=id==='GF'?3:2;
-   const sa=Math.max(0,Math.min(max,Math.trunc(Number(a.value)||0)));
-   const sb=Math.max(0,Math.min(max,Math.trunc(Number(b.value)||0)));
-   if(sa===max&&sb===max)throw new Error(labels[id]+' не може мати однаковий максимальний рахунок.');
-   pending[id]={sa,sb};
-  }
-  for(const [id,score] of Object.entries(pending)){
-   if(!matches[id])matches[id]={a:null,b:null,sa:0,sb:0};
-   matches[id].sa=score.sa; matches[id].sb=score.sb;
-  }
-
-  // Recalculate winner/loser flow, clearing any later score when its known
-  // participants have changed. The existing a/b columns store that matchup,
-  // so the public site and admin panel now agree after refresh.
-  const p=participants();
-  for(const id of Object.keys(labels)){
-   const m=matches[id]||{a:null,b:null,sa:0,sb:0};
-   const pair=p[id]||[m.a,m.b];
-   const payload={
-    a:pair[0]==null?null:Number(pair[0]),
-    b:pair[1]==null?null:Number(pair[1]),
-    sa:Math.max(0,Math.trunc(Number(m.sa)||0)),
-    sb:Math.max(0,Math.trunc(Number(m.sb)||0))
-   };
-   const r=await db.from('matches').update(payload).eq('id',id);
-   if(r.error)throw r.error;
-   matches[id]={...m,...payload};
-  }
-  msg('saveMsg','Результати збережено. Переможці та наступні матчі оновлені.');
-  await load();
- }catch(e){msg('saveMsg','Помилка: '+(e.message||e));}
-}
-
-async function saveSchedule(){
- if(scheduleSaving)return;
- scheduleSaving=true;
- const btn=$('saveSchedule');
- if(btn)btn.disabled=true;
- msg('scheduleMsg','Зберігаю...');
- try{
-  const rows=[...document.querySelectorAll('#schedule .match')].map(x=>{
-   const i=+x.dataset.i,old=schedule[i]||{},dt=x.querySelector('.m-date').value;
-   const row={id:old.id||null,stage:x.querySelector('.m-stage').value.trim(),a:Number(x.querySelector('.m-a').value)||null,b:Number(x.querySelector('.m-b').value)||null,scheduled_at:dt?localDateTimeToIso(dt):null,best_of:x.querySelector('.m-bo').value,sa:Math.max(0,Number(x.querySelector('.m-sa').value)||0),sb:Math.max(0,Number(x.querySelector('.m-sb').value)||0)};
-   row.status=automaticScheduleStatus(row);
-   return row;
-  });
-
-  // Видаляємо записи, які прибрали з адмінки.
-  for(const old of schedule){
-   if(old.id && !rows.some(x=>String(x.id)===String(old.id))){
-    const d=await db.from('match_schedule').delete().eq('id',old.id);
-    if(d.error)throw d.error;
-   }
-  }
-
-  // Оновлюємо існуючі та створюємо нові записи рівно по одному разу.
-  for(const row of rows){
-   const payload={stage:row.stage,a:row.a,b:row.b,scheduled_at:row.scheduled_at,best_of:row.best_of,status:row.status,sa:row.sa,sb:row.sb};
-   let r;
-   if(row.id){
-    r=await db.from('match_schedule').update(payload).eq('id',row.id);
-   }else{
-    r=await db.from('match_schedule').insert(payload).select('*').single();
-   }
-   if(r.error)throw r.error;
-  }
-  msg('scheduleMsg','Розклад збережено.');
-  await loadSchedule();
- }catch(e){
-  msg('scheduleMsg','Помилка: '+(e.message||e));
- }finally{
-  scheduleSaving=false;
-  if(btn)btn.disabled=false;
- }
-}
-
-$('addMatch').onclick=()=>{if(scheduleSaving)return; schedule.push({id:null,_new:true,stage:'',a:null,b:null,scheduled_at:null,best_of:'BO3',status:'scheduled',sa:0,sb:0});renderSchedule();};
-document.addEventListener('click',async e=>{
- if(!e.target.classList.contains('remove-match')) return;
- const card=e.target.closest('.match');
- if(!card) return;
- const i=Number(card.dataset.i);
- const row=schedule[i];
- if(!row) return;
- if(!confirm('Видалити цей матч?')) return;
- e.target.disabled=true;
- e.target.textContent='Видаляю...';
- try{
-  // Для вже збереженого матчу видаляємо його одразу з Supabase.
-  if(row.id){
-   const r=await db.from('match_schedule').delete().eq('id',row.id);
-   if(r.error) throw r.error;
-  }
-  schedule.splice(i,1);
-  renderSchedule();
-  msg('scheduleMsg','Матч видалено.');
- }catch(err){
-  e.target.disabled=false;
-  e.target.textContent='Видалити';
-  msg('scheduleMsg','Не вдалося видалити матч: '+(err.message||err));
- }
-});
-$('saveTeams').onclick=saveTeams;$('saveScores').onclick=saveScores;$('saveSchedule').onclick=saveSchedule;$('reload').onclick=async()=>{try{await load();}catch(e){msg('teamMsg','Помилка: '+e.message);}};
-$('loginBtn').onclick=async()=>{msg('loginMsg','Вхід...');const r=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(r.error){msg('loginMsg',r.error.message);return;}await show();};
-$('logout').onclick=async()=>{await db.auth.signOut();location.reload();};
-async function show(){const {data}=await db.auth.getSession();if(data.session){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('userStatus').textContent='Увійшли як '+(data.session.user.email||'адміністратор');try{await load();}catch(e){msg('teamMsg','Помилка завантаження: '+e.message);}}else{$('login').classList.remove('hidden');$('app').classList.add('hidden');}}
-function initAdminTabs(){document.querySelectorAll('.admin-tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.admin-tab').forEach(x=>x.classList.toggle('active',x===btn));document.querySelectorAll('.admin-tab-panel').forEach(x=>x.classList.toggle('active',x.id===btn.dataset.tab));}));document.querySelectorAll('.admin-tab-panel').forEach((x,i)=>x.classList.toggle('active',i===0));}
-setInterval(()=>{if(!document.getElementById('app').classList.contains('hidden')){schedule=schedule.map(m=>({...m,status:automaticScheduleStatus(m)}));renderSchedule();}},30000);
-initAdminTabs();
-show();
-</script>
-
-<style id="admin-pro-polish">
-:root{--ap-cyan:#25b5fa;--ap-bg:#04101a;--ap-panel:rgba(10,31,48,.82);--ap-line:rgba(72,181,235,.18)}
-body{background:radial-gradient(circle at 50% -20%,rgba(21,151,208,.14),transparent 42%),#04101a}.card{background:var(--ap-panel);border-color:var(--ap-line);box-shadow:0 18px 55px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.02);backdrop-filter:blur(14px)}
-header{background:rgba(4,16,26,.82)!important;backdrop-filter:blur(16px);box-shadow:0 8px 35px rgba(0,0,0,.22)}
-.admin-tabs{position:sticky!important;top:76px;z-index:30;padding:8px!important;border:1px solid rgba(72,181,235,.12);border-radius:14px;background:rgba(4,16,26,.82)!important;backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.2)}
-.admin-tab{transition:.2s}.admin-tab:hover{transform:translateY(-1px);border-color:rgba(37,181,250,.5)}
-.game,.match,.team{transition:border-color .2s,box-shadow .2s,transform .2s}.game:hover,.match:hover,.team:hover{border-color:rgba(37,181,250,.34);box-shadow:0 12px 32px rgba(0,0,0,.2)}
-.game.locked{opacity:.58;filter:saturate(.75)}.game:not(.locked){box-shadow:inset 3px 0 0 #25b5fa,0 12px 32px rgba(0,0,0,.16)}
-.score{min-width:64px!important;font-size:20px!important;font-weight:900!important;text-align:center!important;border-color:rgba(37,181,250,.28)!important}.score:focus{box-shadow:0 0 0 3px rgba(37,181,250,.12)}
-.quick-score{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.quick-score button{border:1px solid rgba(37,181,250,.22);background:#0b2a40;color:#ccefff;border-radius:8px;padding:7px 10px;font-weight:900;cursor:pointer}.quick-score button:hover{background:#125174;border-color:#25b5fa}.quick-score button.primary-q{background:#116f9d;color:#fff}
-.admin-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.admin-kpi>div{padding:12px;border:1px solid rgba(72,181,235,.14);border-radius:11px;background:rgba(3,15,25,.45)}.admin-kpi b{display:block;font-size:22px;color:#eafaff}.admin-kpi span{font-size:10px;color:#78a6bb;text-transform:uppercase;letter-spacing:1px}
-@media(max-width:800px){.admin-kpi{grid-template-columns:repeat(2,1fr)}.admin-tabs{top:62px}.quick-score button{flex:1 1 calc(33% - 6px);min-height:40px}.game-grid{grid-template-columns:minmax(0,1fr) 58px 12px 58px minmax(0,1fr)!important}}
 </style>
-<script id="admin-pro-polish-js">
-(function(){
- function decorateScores(){
-  document.querySelectorAll('#matchesAdmin .game').forEach(card=>{
-   if(card.querySelector('.quick-score'))return;
-   const head=card.querySelector('.game-head strong'); if(!head)return;
-   const isGrandFinal=head.textContent.includes('Грандфінал');
-   const inputs=card.querySelectorAll('.score'); if(inputs.length!==2||inputs[0].disabled)return;
-   const max=isGrandFinal?3:2;
-   const box=document.createElement('div');box.className='quick-score';
-   const sets=[];for(let a=0;a<=max;a++)for(let b=0;b<=max;b++)if((a===max&&b<max)||(b===max&&a<max))sets.push([a,b]);
-   sets.forEach(([a,b])=>{const bt=document.createElement('button');bt.type='button';bt.textContent=a+' : '+b;bt.className=(Number(inputs[0].value)===a&&Number(inputs[1].value)===b)?'primary-q':'';bt.onclick=()=>{inputs[0].value=a;inputs[1].value=b;box.querySelectorAll('button').forEach(x=>x.classList.remove('primary-q'));bt.classList.add('primary-q')};box.appendChild(bt)});
-   card.appendChild(box);
-  });
- }
- const oldRender=window.renderMatches;
- if(typeof oldRender==='function'){window.renderMatches=function(){oldRender();decorateScores()};setTimeout(decorateScores,0)}
- const app=document.getElementById('app');
- if(app){const k=document.createElement('div');k.className='admin-kpi';k.innerHTML='<div><b id="kTeams">—</b><span>Команд</span></div><div><b id="kPlayed">—</b><span>Завершених матчів</span></div><div><b id="kOpen">—</b><span>Доступних матчів</span></div><div><b id="kSchedule">—</b><span>У розкладі</span></div>';const first=app.querySelector('.card');if(first)first.appendChild(k);
-  const update=()=>{const cards=[...document.querySelectorAll('#matchesAdmin .game')];const played=cards.filter(c=>c.querySelector('.format')?.textContent.includes('Завершено')).length;document.getElementById('kTeams').textContent=document.querySelectorAll('#teams .team').length;document.getElementById('kPlayed').textContent=played;document.getElementById('kOpen').textContent=document.querySelectorAll('#matchesAdmin .game:not(.locked)').length;document.getElementById('kSchedule').textContent=document.querySelectorAll('#schedule .match').length};setInterval(update,1200);setTimeout(update,500)}
-})();
-</script>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-dota-red selection:text-white admin-page"><div id="adminLoginScreen">
+<div class="admin-login-card rounded-3xl p-7 sm:p-9">
+<div class="flex items-center justify-center mb-5">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-dota-red to-red-950 p-[2px] shadow-xl shadow-dota-red/20"><div class="w-full h-full rounded-2xl bg-dota-bg flex items-center justify-center"><i class="fa-solid fa-lock text-dota-red text-2xl"></i></div></div>
+</div>
+<div class="text-center mb-7">
+<div class="text-[10px] uppercase tracking-[.25em] text-dota-red font-black mb-2">Захищений доступ</div>
+<h1 class="font-rajdhani text-3xl font-black text-white">ВХІД В АДМІН-ПАНЕЛЬ</h1>
+<p class="text-xs text-gray-400 mt-2">Введи пароль організатора, щоб керувати турніром.</p>
+</div>
+<form class="space-y-4" onsubmit="loginToAdmin(event)">
+<label class="block text-xs text-gray-300 font-bold" for="adminPasswordInput">Пароль</label>
+<input autocomplete="current-password" class="admin-login-input" id="adminPasswordInput" placeholder="Введи пароль..." required="" type="password"/>
+<p class="hidden text-xs text-red-400" id="adminLoginError">Неправильний пароль. Спробуй ще раз.</p>
+<button class="w-full bg-dota-red hover:bg-red-700 text-white font-rajdhani font-black text-sm py-3.5 rounded-xl shadow-lg shadow-dota-red/20 transition-all" type="submit"><i class="fa-solid fa-unlock-keyhole mr-2"></i>УВІЙТИ</button>
+</form>
+<div class="text-[10px] text-gray-600 text-center mt-6">Організаторський доступ · Dota 2 Championship</div>
+</div>
+</div><div class="hidden" id="adminAppShell">
+<!-- HEADER NAVIGATION -->
+<header class="sticky top-0 z-40 bg-dota-bg/95 backdrop-blur-md border-b border-dota-border shadow-2xl">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-dota-red to-red-900 p-0.5 shadow-lg shadow-dota-red/20 shrink-0"><div class="w-full h-full bg-dota-bg rounded-[10px] flex items-center justify-center"><i class="fa-solid fa-shield-halved text-dota-red text-lg"></i></div></div>
+<div class="min-w-0"><div class="font-rajdhani font-black text-white text-lg sm:text-xl leading-none">АДМІН-ПАНЕЛЬ</div><div class="text-[9px] sm:text-[10px] text-dota-red font-bold tracking-[.18em] mt-1">DOTA 2 CHAMPIONSHIP</div></div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<a class="bg-dota-panel hover:bg-dota-border border border-dota-border text-gray-200 text-[11px] sm:text-xs font-bold px-3 py-2.5 rounded-xl" href="index.html"><i class="fa-solid fa-arrow-left mr-1"></i><span class="hidden sm:inline">На сайт</span><span class="sm:hidden">Сайт</span></a>
+<button class="bg-red-950/70 hover:bg-dota-red border border-dota-red/50 text-red-100 text-[11px] sm:text-xs font-bold px-3 py-2.5 rounded-xl" onclick="adminLogout()"><i class="fa-solid fa-right-from-bracket mr-1"></i>Вийти</button>
+</div>
+</div>
+</div>
+<div class="hidden" id="mobileNav"></div>
+</header>
+<!-- MAIN APP CONTAINER -->
+<main class="flex-grow">
+<!-- VIEW 1: HOME (ГОЛОВНА) -->
+<div class="tab-content" id="tab-home">
+<!-- Hero Banner -->
+<section class="relative overflow-hidden py-16 lg:py-24 border-b border-dota-border bg-gradient-to-b from-dota-panel via-dota-bg to-dota-bg">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-6">
+<div class="inline-flex items-center gap-2 bg-dota-bg border border-dota-gold/50 px-4 py-1.5 rounded-full text-xs font-bold text-dota-gold shadow-lg">
+<i class="fa-solid fa-fire text-dota-red animate-bounce"></i> ВСЕУКРАЇНСЬКИЙ СТУДЕНТСЬКИЙ КІБЕРСПОРТ
+                    </div>
+<h1 class="font-rajdhani font-black text-4xl sm:text-6xl lg:text-7xl text-white tracking-wider uppercase">
+                        МІЖВУЗІВСЬКИЙ <span class="text-dota-red glow-red">DOTA 2</span> КУБОК
+                    </h1>
+<p class="max-w-2xl text-sm sm:text-base text-gray-300">
+                        Найкращі збірні університетів країни зійшлися у грандіозній битві за звання чемпіона та призовий фонд у 150 000 гривень!
+                    </p>
+<div class="flex flex-wrap justify-center gap-4 pt-4">
+<button class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-dota-red/30 transition-all flex items-center gap-2" onclick="showTab('bracket')">
+<i class="fa-solid fa-sitemap"></i> Дивитись Плей-оф Сітку
+                        </button>
+<button class="dota-glass hover:bg-dota-panel text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl border border-dota-border transition-all flex items-center gap-2" onclick="showTab('teams')">
+<i class="fa-solid fa-users text-dota-red"></i> Переглянути Команди
+                        </button>
+</div>
+</div>
+</section>
+<!-- Quick Stats & Highlights -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+<div class="text-3xl font-rajdhani font-black text-dota-gold" id="homePrizePool">150,000 ₴</div>
+<div class="text-xs text-gray-400 uppercase font-bold">Призовий фонд</div>
+</div>
+<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+<div class="text-3xl font-rajdhani font-black text-dota-red" id="homeTeamsCount">8</div>
+<div class="text-xs text-gray-400 uppercase font-bold">Університетських команд</div>
+</div>
+<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+<div class="text-3xl font-rajdhani font-black text-dota-red">Double Elim</div>
+<div class="text-xs text-gray-400 uppercase font-bold">Формат турніру</div>
+</div>
+</div>
+<!-- Latest News Preview -->
+<div class="space-y-6">
+<div class="flex items-center justify-between border-b border-dota-border pb-4">
+<h2 class="font-rajdhani font-black text-2xl text-white uppercase tracking-wider">ОСТАННІ НОВИНИ ТУРНІРУ</h2>
+<button class="text-xs font-bold text-dota-gold hover:underline" onclick="showTab('news')">Всі новини →</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="homeNewsContainer">
+<!-- Populated dynamically -->
+</div>
+</div>
+</section>
+</div>
+<!-- VIEW 2: PLAY-OFF DOUBLE ELIMINATION BRACKET -->
+<div class="tab-content hidden" id="tab-bracket">
+<section class="border-b border-dota-border bg-gradient-to-b from-dota-panel to-dota-bg py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div>
+<span class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1 block">Студентська Ліга 2026</span>
+<h1 class="font-rajdhani font-black text-3xl sm:text-4xl text-white">ПЛЕЙ-ОФ СІТКА (DOUBLE ELIMINATION)</h1>
+<p class="text-xs text-gray-400 mt-1">Натисніть на матч для перегляду драфту героїв та деталей.</p>
+</div>
+<button class="bg-dota-panel hover:bg-dota-border text-dota-gold border border-dota-gold/50 font-rajdhani font-bold text-xs px-4 py-3 rounded-xl transition-all flex items-center gap-2" onclick="showTab('admin')">
+<i class="fa-solid fa-pen-to-square"></i> Редагувати Матчі в Адмінці
+                    </button>
+</div>
+</section>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+<!-- Upper Bracket -->
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
+<h2 class="font-rajdhani text-2xl font-black text-white uppercase">ВЕРХНЯ СІТКА (UPPER BRACKET)</h2>
+</div>
+<div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
+<div class="min-w-[960px] grid grid-cols-3 gap-8 items-center" id="upperBracketRender"></div>
+</div>
+</div>
+<!-- Lower Bracket -->
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
+<h2 class="font-rajdhani text-2xl font-black text-white uppercase">НИЖНЯ СІТКА (LOWER BRACKET)</h2>
+</div>
+<div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
+<div class="min-w-[1100px] grid grid-cols-4 gap-6 items-center" id="lowerBracketRender"></div>
+</div>
+</div>
+<!-- Grand Final -->
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-3.5 h-7 bg-dota-gold rounded-full"></div>
+<h2 class="font-rajdhani text-2xl font-black text-white uppercase">🏆 ГРАНД-ФІНАЛ (BO5)</h2>
+</div>
+<div class="dota-glass rounded-3xl p-6 border border-dota-gold/60 bg-gradient-to-r from-dota-panel via-dota-bg to-dota-panel" id="grandFinalRender"></div>
+</div>
+</section>
+</div>
+<!-- VIEW 3: TEAMS & UNIVERSITY ROSTERS -->
+<div class="tab-content hidden" id="tab-teams">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-dota-border pb-6">
+<div>
+<div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Студентські збірні</div>
+<h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">КОМАНДИ</h1>
+</div>
+<div class="flex items-center gap-3">
+<input class="bg-dota-panel border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-dota-red w-64" id="teamSearchInput" onkeyup="renderTeamsView()" placeholder="Пошук команди..." type="text"/>
+<button class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-black text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-2" onclick="openTeamModal()">
+<i class="fa-solid fa-plus"></i> Додати Команду
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="teamsContainer"></div>
+</section>
+</div>
+<!-- VIEW 4: STREAM -->
+<div class="tab-content hidden" id="tab-stream">
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+<div class="dota-glass rounded-3xl p-6 border border-dota-border space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+<h2 class="font-rajdhani font-bold text-white text-xl">ОФІЦІЙНА ТРАНСЛЯЦІЯ</h2>
+</div>
+<span class="text-xs font-mono text-dota-gold bg-dota-bg px-3 py-1 rounded-full border border-dota-border">
+<i class="fa-solid fa-eye text-dota-red mr-1"></i> 14,800 Глядачів
+                        </span>
+</div>
+<div class="aspect-video w-full rounded-2xl bg-black border border-dota-border overflow-hidden" id="twitchWrapper"></div>
+</div>
+</section>
+</div>
+<!-- VIEW 6: NEWS -->
+<div class="tab-content hidden" id="tab-news">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+<div class="border-b border-dota-border pb-6">
+<div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Анонси та звіти</div>
+<h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">НОВИНИ ТУРНІРУ</h1>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsContainer"></div>
+</section>
+</div>
+<!-- VIEW 7: ADMIN PANEL -->
+<div class="tab-content hidden" id="tab-admin">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+<div class="flex items-center justify-between border-b border-dota-border pb-6">
+<div>
+<div class="text-xs font-bold text-dota-gold uppercase tracking-widest mb-1">Панель організатора</div>
+<h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">ЦЕНТР УПРАВЛІННЯ ТУРНІРОМ</h1>
+</div>
+<div class="flex gap-2">
+<button class="bg-red-950 hover:bg-dota-red border border-dota-red text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all" onclick="adminResetToDefaults()">
+<i class="fa-solid fa-rotate-left mr-1"></i> Скинути Дані
+                        </button>
+</div>
+</div>
+<!-- Admin Tabs -->
+<div class="flex gap-3 border-b border-dota-border pb-4">
+<button class="bg-dota-red text-white px-4 py-2 rounded-xl text-xs font-bold transition-all" id="admTabMatches" onclick="switchAdminTab('matches')">Матчі та Сітка</button>
+<button class="bg-dota-panel text-gray-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all" id="admTabTeams" onclick="switchAdminTab('teams')">Команди</button>
+<button class="bg-dota-panel text-gray-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all" id="admTabNews" onclick="switchAdminTab('news')"><i class="fa-solid fa-newspaper mr-1"></i>Новини</button>
+<button class="bg-dota-panel text-gray-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all" id="admTabSettings" onclick="switchAdminTab('settings')">Налаштування</button>
+</div>
+<!-- Admin Section: Matches -->
+<div class="space-y-4" id="adminSecMatches">
+<h3 class="font-rajdhani text-xl font-bold text-white">Керування результатами плей-оф</h3>
+<div class="space-y-3" id="adminMatchesEditor"></div>
+</div>
+<!-- Admin Section: Teams -->
+<div class="space-y-4 hidden" id="adminSecTeams">
+<div class="flex justify-between items-center">
+<h3 class="font-rajdhani text-xl font-bold text-white">Керування командами</h3>
+<button class="bg-dota-red hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-xl" onclick="openTeamModal()">
+<i class="fa-solid fa-plus mr-1"></i> Додати команду
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adminTeamsList"></div>
+</div>
+<!-- Admin Section: News -->
+<div class="space-y-5 hidden" id="adminSecNews">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<h3 class="font-rajdhani text-xl font-bold text-white">Керування новинами</h3>
+<p class="text-xs text-gray-400 mt-1">Створюй, редагуй та видаляй новини. Зміни автоматично з’являться на головній сторінці.</p>
+</div>
+<button class="bg-dota-red hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-dota-red/20" onclick="openNewsEditor()">
+<i class="fa-solid fa-plus mr-1"></i> Додати новину
+                        </button>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4" id="adminNewsList"></div>
+</div>
+<!-- Admin Section: Settings -->
+<div class="space-y-4 hidden max-w-xl" id="adminSecSettings">
+<h3 class="font-rajdhani text-xl font-bold text-white">Глобальні налаштування</h3>
+<div class="dota-glass p-6 rounded-2xl border border-dota-border space-y-4">
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Призовий фонд</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2 text-xs text-white" id="settingPrize" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Twitch канал стріму</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2 text-xs text-white" id="settingStream" type="text"/>
+</div>
+<button class="bg-dota-gold hover:bg-amber-500 text-black font-bold text-xs px-5 py-2.5 rounded-xl" onclick="saveSettings()">Зберегти налаштування</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FOOTER -->
 
-<style id="admin-2026-finish">
-:root{color-scheme:dark;--accent:#f04452;--accent2:#ff6b72;--panel:#0b1421;--line:rgba(255,255,255,.09)}
-*{scrollbar-color:#34475c #07101b;scrollbar-width:thin}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 15% 0%,rgba(240,68,82,.12),transparent 32%),radial-gradient(ellipse at 90% 12%,rgba(38,116,176,.12),transparent 30%),#050a12;color:#f4f7fb;letter-spacing:.01em}
-header{background:rgba(5,10,18,.86)!important;border-bottom:1px solid rgba(255,255,255,.09)!important;backdrop-filter:blur(18px);padding:15px 4%!important}
-.logo{font-size:clamp(15px,2vw,22px);letter-spacing:.035em}.logo span{color:var(--accent)!important}
-.wrap{max-width:1320px;margin:30px auto 72px}
-.card{background:linear-gradient(145deg,rgba(15,26,42,.96),rgba(8,16,28,.96))!important;border:1px solid var(--line)!important;border-radius:17px!important;padding:clamp(16px,2.2vw,26px)!important;box-shadow:0 18px 55px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.025)!important}
-h1{font-size:clamp(22px,3vw,30px);letter-spacing:-.035em}h2{font-size:clamp(17px,2vw,22px);letter-spacing:-.02em}
-#app>.card:first-child h1{margin-bottom:8px}#userStatus{font-size:13px}
-.btn{border:1px solid rgba(255,255,255,.12)!important;background:#172438!important;transition:transform .18s,border-color .18s,filter .18s;border-radius:10px!important;min-height:42px}
-.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.3)!important;filter:brightness(1.1)}.btn.primary{background:linear-gradient(135deg,#df3445,#a91e31)!important;border-color:#ff5866!important;box-shadow:0 7px 20px rgba(214,45,64,.18)}.btn.danger{background:#431a25!important;border-color:rgba(255,91,107,.25)!important}
-.admin-tabs{gap:8px!important;padding:8px!important;background:rgba(6,12,21,.92)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:0 14px 34px #0004!important}
-.admin-tab{background:transparent!important;border-color:transparent!important;color:#9aa9bd!important;min-height:43px;transition:all .18s}.admin-tab:hover{color:white!important;background:#172438!important}.admin-tab.active{background:linear-gradient(135deg,#e64050,#a91e31)!important;color:white!important;box-shadow:0 6px 18px rgba(222,45,64,.2)}
-input,select{background:#080f1b!important;border:1px solid rgba(156,177,204,.18)!important;border-radius:9px!important;min-height:42px;transition:border-color .15s,box-shadow .15s}input:hover,select:hover{border-color:rgba(156,177,204,.35)!important}input:focus,select:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px rgba(240,68,82,.12)!important}
-label{color:#9aa9bd!important;font-size:10px!important;font-weight:800;letter-spacing:.11em!important}.hint,.status{color:#93a3b8!important;font-size:12px}
-.team,.game,.match{background:rgba(5,13,23,.68)!important;border:1px solid var(--line)!important;border-radius:13px!important;padding:16px!important}.team{border-top:1px solid var(--line)!important}.team:hover,.game:hover,.match:hover{border-color:rgba(240,68,82,.35)!important;transform:translateY(-1px)}
-.team-preview{background:#080f1b!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important}.upload{border:1px dashed rgba(240,68,82,.42);background:rgba(240,68,82,.08)!important;color:#ffdce0;border-radius:10px!important;transition:.18s}.upload:hover{background:rgba(240,68,82,.16)!important}
-.game-head{align-items:center}.format{font-weight:800;letter-spacing:.035em}.game.locked{opacity:.48;filter:grayscale(.18)}.game:not(.locked){border-left:3px solid var(--accent)!important}
-.score{background:#050b14!important;border:1px solid rgba(240,68,82,.28)!important;border-radius:10px!important;min-height:48px!important;font-size:21px!important}.quick-score button{background:#111e30!important;border-color:rgba(255,255,255,.12)!important;border-radius:9px!important}.quick-score button:hover,.quick-score button.primary-q{background:#a91e31!important;border-color:#ff5967!important}
-.admin-kpi>div{background:linear-gradient(145deg,rgba(21,34,52,.82),rgba(8,15,25,.82))!important;border-color:var(--line)!important;border-radius:12px!important}.admin-kpi b{font-size:clamp(20px,2.4vw,27px)!important}.admin-kpi span{letter-spacing:.09em!important}
-.badge{border:1px solid var(--line);background:#111e30!important;border-radius:9px!important}.auto-status{color:#d6e2f0!important}
-#login{max-width:720px;margin:5vh auto 0}#login h1{margin-bottom:22px}
-@media(max-width:800px){.wrap{margin-top:16px}.admin-tabs{top:68px!important}.admin-tab{padding:10px 8px!important;font-size:12px}.team-logo-row{grid-template-columns:58px minmax(0,1fr)!important}.team-preview{width:54px;height:54px}.team-logo-row .upload,.team-logo-row .remove-logo{grid-column:2}.game-grid{gap:6px!important}.game-head{align-items:flex-start;flex-direction:column}.actions .btn{flex:1 1 100%}.header-inner .toolbar{width:100%;flex-wrap:wrap}.header-inner .toolbar .btn{flex:1;text-align:center}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
-</style>
+<!-- MODAL 1: MATCH DETAILS -->
+<div class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4" id="matchModal">
+<div class="dota-glass max-w-3xl w-full rounded-3xl p-6 border border-dota-border relative space-y-6 max-h-[90vh] overflow-y-auto">
+<button class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl" onclick="closeMatchModal()"><i class="fa-solid fa-xmark"></i></button>
+<div id="matchModalContent"></div>
+</div>
+</div>
+<!-- MODAL 2: ADD / EDIT TEAM -->
+<div class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4" id="teamModal">
+<div class="dota-glass max-w-xl w-full rounded-3xl p-6 border border-dota-gold/50 relative space-y-6 max-h-[90vh] overflow-y-auto">
+<button class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl" onclick="closeTeamModal()"><i class="fa-solid fa-xmark"></i></button>
+<h3 class="font-rajdhani font-black text-2xl text-white" id="teamModalTitle">Додати нову команду</h3>
+<form class="space-y-4" id="teamForm" onsubmit="handleTeamFormSubmit(event)">
+<input id="editTeamId" type="hidden"/>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Назва команди</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white focus:border-dota-red" id="teamNameInput" required="" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Тег (напр. KNU)</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white" id="teamTagInput" required="" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Логотип (Emoji)</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white" id="teamLogoInput" required="" type="text" value="🦁"/>
+</div>
+</div>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Університет</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white" id="teamUniInput" required="" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Капітан</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white" id="teamCaptainInput" required="" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-gray-400 mb-1 font-bold">Ростер (5 гравців через кому)</label>
+<input class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white" id="teamRosterInput" placeholder="Гравець 1, Гравець 2, ..." required="" type="text"/>
+</div>
+<div class="flex justify-end gap-3 pt-2">
+<button class="bg-dota-panel text-gray-300 px-4 py-2.5 rounded-xl text-xs font-bold" onclick="closeTeamModal()" type="button">Скасувати</button>
+<button class="bg-dota-red hover:bg-red-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold" type="submit">Зберегти команду</button>
+</div>
+</form>
+</div>
+</div>
+<!-- MODAL: ADD / EDIT NEWS -->
+<div class="fixed inset-0 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4" id="newsModal">
+<div class="dota-glass w-full max-w-2xl rounded-3xl p-5 sm:p-7 border border-dota-red/40 relative max-h-[92vh] overflow-y-auto">
+<button aria-label="Закрити" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl" onclick="closeNewsEditor()" type="button"><i class="fa-solid fa-xmark"></i></button>
+<div class="mb-6">
+<span class="text-[10px] uppercase tracking-[.2em] text-dota-red font-bold">Контент сайту</span>
+<h3 class="font-rajdhani font-black text-2xl sm:text-3xl text-white" id="newsModalTitle">Додати новину</h3>
+</div>
+<form class="space-y-4" id="newsForm" onsubmit="saveNewsFromForm(event)">
+<input id="editNewsId" type="hidden"/>
+<div>
+<label class="block text-xs text-gray-400 font-bold mb-1.5" for="newsTitleInput">Заголовок новини *</label>
+<input class="news-editor-input" id="newsTitleInput" maxlength="140" placeholder="Наприклад: Стартував весняний турнір!" required="" type="text"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div>
+<label class="block text-xs text-gray-400 font-bold mb-1.5" for="newsDateInput">Дата публікації</label>
+<input class="news-editor-input" id="newsDateInput" maxlength="60" placeholder="04 листопада 2026" type="text"/>
+</div>
+<div>
+<label class="block text-xs text-gray-400 font-bold mb-1.5" for="newsImageInput">Посилання на зображення</label>
+<input class="news-editor-input" id="newsImageInput" oninput="updateNewsImagePreview()" placeholder="https://example.com/image.jpg" type="url"/>
+</div>
+</div>
+<div>
+<label class="block text-xs text-gray-400 font-bold mb-1.5" for="newsDescInput">Текст новини *</label>
+<textarea class="news-editor-input min-h-[130px] resize-y" id="newsDescInput" maxlength="1200" placeholder="Напиши короткий опис новини..." required=""></textarea>
+</div>
+<div class="rounded-xl border border-dota-border bg-dota-bg/70 p-3">
+<span class="block text-[10px] text-gray-500 uppercase font-bold mb-2">Попередній перегляд зображення</span>
+<img alt="Попередній перегляд новини" class="w-full max-h-44 object-cover rounded-lg" id="newsImagePreview" src="https://placehold.co/800x400/161c2b/e53935?text=Tournament+News"/>
+</div>
+<div class="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
+<button class="bg-dota-panel hover:bg-dota-border text-gray-200 px-5 py-2.5 rounded-xl text-xs font-bold" onclick="closeNewsEditor()" type="button">Скасувати</button>
+<button class="bg-dota-red hover:bg-red-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold" type="submit"><i class="fa-solid fa-floppy-disk mr-1"></i> Зберегти новину</button>
+</div>
+</form>
+</div>
+</div>
+<!-- TOAST NOTIFICATION -->
+<div class="fixed bottom-6 right-6 z-50 hidden bg-dota-panel border border-dota-gold text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3" id="toast">
+<i class="fa-solid fa-circle-check text-dota-gold text-xl"></i>
+<div>
+<h5 class="font-bold text-xs uppercase text-dota-gold" id="toastTitle">Успішно</h5>
+<p class="text-xs text-gray-300" id="toastBody">Зміни збережено.</p>
+</div>
+</div>
+<!-- APPLICATION JAVASCRIPT -->
+<script>
+        // INITIAL DATA
+        const DEFAULT_TEAMS = [
+            { id: 1, name: "KNU Lions", tag: "KNU", uni: "КНУ ім. Шевченка", logo: "🦁", captain: "NightStalker", roster: ["InvokerPro", "StormKing", "AxeMaster", "RubickUA", "WardSaver"] },
+            { id: 2, name: "KPI Cyber Titans", tag: "KPI", uni: "КПІ ім. Сікорського", logo: "⚡", captain: "TechLord", roster: ["ShadowCarry", "VoidSpirit", "CentaurOff", "Clockwork", "OracleUA"] },
+            { id: 3, name: "LNU Aegis", tag: "LNU", uni: "ЛНУ ім. Франка", logo: "🛡️", captain: "LionHeart", roster: ["PhantomP1", "PuckGod", "Tidehunter", "Mirana4", "Dazzle5"] },
+            { id: 4, name: "NaUKMA Geeks", tag: "KMA", uni: "НаУКМА", logo: "🎓", captain: "CodeMaster", roster: ["MorphlingUA", "TinkerGod", "MagnusSmash", "EarthSpirit", "AncientApp"] },
+            { id: 5, name: "KhNU Cyber", tag: "KhNU", uni: "ХНУРЕ", logo: "💻", captain: "SvenSmash", roster: ["SvenSmash", "EmberSpirit", "MarsGod", "BountyHunter", "ChenArmy"] },
+            { id: 6, name: "DNU Dragons", tag: "DNU", uni: "ДНУ ім. Гончара", logo: "🐉", captain: "AegisHunter", roster: ["SpectreCarry", "ViperMid", "DoomBring", "EnigmaBlack", "JakiroIce"] },
+            { id: 7, name: "ONU Kraken", tag: "ONU", uni: "ОНУ ім. Мечникова", logo: "🐙", captain: "BlackSea", roster: ["Juggernaut", "SniperMid", "Bristleback", "Vengeful", "KeeperLight"] },
+            { id: 8, name: "NUPP Storm", tag: "NUPP", uni: "НПУ ім. Драгоманова", logo: "🌩️", captain: "StormRider", roster: ["LunaBeam", "Stormer", "Slardar", "Grimstroke", "Treant"] }
+        ];
 
-</body>
+        const DEFAULT_MATCHES = [
+            { id: "UB_QF1", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 1, team2Id: 2, score1: 2, score2: 0, status: "finished", winnerId: 1, loserId: 2, date: "12 Лис, 14:00", format: "BO3" },
+            { id: "UB_QF2", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 3, team2Id: 4, score1: 2, score2: 1, status: "finished", winnerId: 3, loserId: 4, date: "12 Лис, 17:00", format: "BO3" },
+            { id: "UB_QF3", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 5, team2Id: 6, score1: 2, score2: 0, status: "finished", winnerId: 5, loserId: 6, date: "13 Лис, 14:00", format: "BO3" },
+            { id: "UB_QF4", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 7, team2Id: 8, score1: 1, score2: 2, status: "finished", winnerId: 8, loserId: 7, date: "13 Лис, 17:00", format: "BO3" },
+            { id: "UB_SF1", bracket: "upper", round: "1/2 Фіналу UB", team1Id: 1, team2Id: 3, score1: 2, score2: 1, status: "finished", winnerId: 1, loserId: 3, date: "14 Лис, 15:00", format: "BO3" },
+            { id: "UB_SF2", bracket: "upper", round: "1/2 Фіналу UB", team1Id: 5, team2Id: 8, score1: 1, score2: 2, status: "finished", winnerId: 8, loserId: 5, date: "14 Лис, 18:00", format: "BO3" },
+            { id: "UB_FINAL", bracket: "upper", round: "Фінал Верхньої Сітки", team1Id: 1, team2Id: 8, score1: 1, score2: 1, status: "live", winnerId: null, loserId: null, date: "СЬОГОДНІ LIVE", format: "BO3" },
+            { id: "LB_R1_M1", bracket: "lower", round: "Раунд 1 LB", team1Id: 2, team2Id: 4, score1: 1, score2: 0, status: "finished", winnerId: 2, loserId: 4, date: "14 Лис, 12:00", format: "BO1" },
+            { id: "LB_R1_M2", bracket: "lower", round: "Раунд 1 LB", team1Id: 6, team2Id: 7, score1: 0, score2: 1, status: "finished", winnerId: 7, loserId: 6, date: "14 Лис, 13:30", format: "BO1" },
+            { id: "LB_R2_M1", bracket: "lower", round: "Раунд 2 LB", team1Id: 5, team2Id: 2, score1: 2, score2: 1, status: "finished", winnerId: 5, loserId: 2, date: "15 Лис, 14:00", format: "BO3" },
+            { id: "LB_R2_M2", bracket: "lower", round: "Раунд 2 LB", team1Id: 3, team2Id: 7, score1: 2, score2: 0, status: "finished", winnerId: 3, loserId: 7, date: "15 Лис, 17:00", format: "BO3" },
+            { id: "LB_R3", bracket: "lower", round: "Півфінал LB", team1Id: 5, team2Id: 3, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "16 Лис, 16:00", format: "BO3" },
+            { id: "LB_FINAL", bracket: "lower", round: "Фінал Нижньої Сітки", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "17 Лис, 16:00", format: "BO3" },
+            { id: "GF", bracket: "gf", round: "🏆 ГРАНД-ФІНАЛ", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "18 Лис, 18:00", format: "BO5" }
+        ];
+
+        const DEFAULT_NEWS = [
+            { id: 1, title: "Розпочався грандіозний плей-оф міжвузівського турніру!", date: "12 Листопада 2026", desc: "Сьогодні стартували перші чвертьфінальні матчі у верхній сітці між командами провідних університетів.", img: "https://placehold.co/600x400/161c2b/e53935?text=Play-offs+Start" },
+            { id: 2, title: "Рекордні перегляди на офіційному стрімі чемпіонату", date: "11 Листопада 2026", desc: "Понад 14 000 студентів та фанатів доти одночасно спостерігали за напруженими дербі між КНУ та КПІ.", img: "https://placehold.co/600x400/161c2b/e53935?text=Record+Views" },
+            { id: 3, title: "Оголошено призовий фонд та партнерів ліги", date: "10 Листопада 2026", desc: "Головний призовий фонд цього сезону становить 150 000 гривень за підтримки провідних IT-компаній.", img: "https://placehold.co/600x400/161c2b/e53935?text=Prize+Pool+150k" }
+        ];
+
+        let state = {
+            prizePool: "150,000 ₴",
+            teams: [],
+            matches: [],
+            news: [],
+            streamUrl: "dota2ti"
+        };
+
+        const ADMIN_PASSWORD = 'DotaAdmin2026!'; // Заміни цей пароль у файлі admin.html на власний.
+        let adminUnlocked = false;
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            renderAllViews();
+            document.getElementById('adminPasswordInput')?.focus();
+        };
+
+        function loginToAdmin(event) {
+            event?.preventDefault();
+            const field = document.getElementById('adminPasswordInput');
+            const error = document.getElementById('adminLoginError');
+            if (!field || field.value !== ADMIN_PASSWORD) {
+                error?.classList.remove('hidden');
+                if (field) { field.value = ''; field.focus(); }
+                return;
+            }
+            adminUnlocked = true;
+            error?.classList.add('hidden');
+            document.getElementById('adminLoginScreen').classList.add('hidden');
+            document.getElementById('adminAppShell').classList.remove('hidden');
+            showTab('admin');
+            switchAdminTab('matches');
+        }
+
+        function adminLogout() {
+            adminUnlocked = false;
+            document.getElementById('adminAppShell').classList.add('hidden');
+            document.getElementById('adminLoginScreen').classList.remove('hidden');
+            const field = document.getElementById('adminPasswordInput');
+            if (field) { field.value = ''; field.focus(); }
+        }
+
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('dota2_master_app_state');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    if (!Array.isArray(state.teams)) state.teams = JSON.parse(JSON.stringify(DEFAULT_TEAMS));
+                    if (!Array.isArray(state.matches)) state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
+                    if (!Array.isArray(state.news)) state.news = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+                } catch(e) {
+                    resetStateToDefaults();
+                }
+            } else {
+                resetStateToDefaults();
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('dota2_master_app_state', JSON.stringify(state));
+            renderAllViews();
+        }
+
+        function resetStateToDefaults() {
+            state.prizePool = "150,000 ₴";
+            state.teams = JSON.parse(JSON.stringify(DEFAULT_TEAMS));
+            state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
+            state.news = JSON.parse(JSON.stringify(DEFAULT_NEWS));
+            state.streamUrl = "dota2ti";
+            saveToLocalStorage();
+        }
+
+        // NAVIGATION TABS
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            const btn = document.getElementById(`nav-${tabId}`);
+            if (btn) btn.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('mobileNav').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileNav').classList.toggle('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            const active = tab.charAt(0).toUpperCase() + tab.slice(1);
+            ['Matches', 'Teams', 'News', 'Settings'].forEach(t => {
+                const tabButton = document.getElementById(`admTab${t}`);
+                const section = document.getElementById(`adminSec${t}`);
+                if (tabButton) tabButton.className = "bg-dota-panel text-gray-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all";
+                if (section) section.classList.add('hidden');
+            });
+            const activeButton = document.getElementById(`admTab${active}`);
+            const activeSection = document.getElementById(`adminSec${active}`);
+            if (activeButton) activeButton.className = "bg-dota-red text-white px-4 py-2 rounded-xl text-xs font-bold transition-all";
+            if (activeSection) activeSection.classList.remove('hidden');
+        }
+
+        function renderAllViews() {
+            renderHomeView();
+            renderBracketView();
+            renderTeamsView();
+            renderStreamView();
+            renderNewsView();
+            renderAdminView();
+        }
+
+        // HOME VIEW
+        function renderHomeView() {
+            document.getElementById('homePrizePool').innerText = state.prizePool;
+            document.getElementById('homeTeamsCount').innerText = state.teams.length;
+            
+            const container = document.getElementById('homeNewsContainer');
+            container.innerHTML = state.news.slice(0, 3).map(n => `
+                <div class="dota-glass rounded-2xl overflow-hidden border border-dota-border flex flex-col">
+                    <img src="${safeImageUrl(n.img)}" alt="${escapeHTML(n.title)}" class="h-44 w-full object-cover">
+                    <div class="p-5 space-y-2 flex-grow flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] text-dota-gold font-mono">${escapeHTML(n.date || '')}</span>
+                            <h3 class="font-rajdhani font-bold text-white text-lg mt-1">${escapeHTML(n.title)}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${escapeHTML(n.desc)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // BRACKET VIEW
+        function renderBracketView() {
+            const ub1 = state.matches.filter(m => m.id.startsWith('UB_QF'));
+            const ub2 = state.matches.filter(m => m.id.startsWith('UB_SF'));
+            const ub3 = state.matches.filter(m => m.id === 'UB_FINAL');
+
+            document.getElementById('upperBracketRender').innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">1/4 Фіналу</div>
+                    ${ub1.map(m => createBracketCardHTML(m)).join('')}
+                </div>
+                <div class="space-y-12">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-border pb-1.5">1/2 Фіналу</div>
+                    ${ub2.map(m => createBracketCardHTML(m)).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/50 pb-1.5">👑 Фінал Верхньої Сітки</div>
+                    ${ub3.map(m => createBracketCardHTML(m, 'gold')).join('')}
+                </div>
+            `;
+
+            const lb1 = state.matches.filter(m => m.id.startsWith('LB_R1'));
+            const lb2 = state.matches.filter(m => m.id.startsWith('LB_R2'));
+            const lb3 = state.matches.filter(m => m.id === 'LB_R3');
+            const lb4 = state.matches.filter(m => m.id === 'LB_FINAL');
+
+            document.getElementById('lowerBracketRender').innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 1 (BO1)</div>
+                    ${lb1.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-8">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 2 (BO3)</div>
+                    ${lb2.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-purple-400 uppercase text-center border-b border-dota-border pb-1.5">Півфінал LB</div>
+                    ${lb3.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/40 pb-1.5">🔥 Фінал Нижньої Сітки</div>
+                    ${lb4.map(m => createBracketCardHTML(m, 'gold')).join('')}
+                </div>
+            `;
+
+            const gf = state.matches.find(m => m.id === 'GF');
+            const t1 = state.teams.find(t => t.id === gf.team1Id) || { name: "Переможець UB", tag: "UB", logo: "👑" };
+            const t2 = state.teams.find(t => t.id === gf.team2Id) || { name: "Переможець LB", tag: "LB", logo: "🔥" };
+
+            const gfWinner = state.teams.find(t => t.id === gf.winnerId);
+            document.getElementById('grandFinalRender').innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-dota-border/70 pb-4">
+                        <div>
+                            <span class="text-[10px] text-dota-red font-bold uppercase tracking-[.22em]">ФІНАЛЬНИЙ ЕТАП</span>
+                            <h3 class="font-rajdhani font-black text-2xl sm:text-3xl text-white">ГРАНД-ФІНАЛ</h3>
+                        </div>
+                        <span class="text-xs font-mono text-gray-300 bg-dota-bg border border-dota-border px-3 py-2 rounded-lg">BO5 · ${gf.date}</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-[1fr_72px_1.35fr] gap-4 items-center">
+                        <div class="grid gap-3">
+                            <div class="gf-source gf-source-upper flex items-center gap-3 rounded-xl border border-dota-red/40 bg-dota-bg/80 p-3">
+                                <span class="w-10 h-10 rounded-lg bg-dota-panel flex items-center justify-center text-xl">${t1.logo}</span>
+                                <span class="min-w-0"><small class="block text-[9px] uppercase tracking-wider text-dota-red font-bold">Верхня сітка</small><strong class="block text-sm text-white truncate">${t1.name}</strong></span>
+                            </div>
+                            <div class="gf-source gf-source-lower flex items-center gap-3 rounded-xl border border-dota-gold/40 bg-dota-bg/80 p-3">
+                                <span class="w-10 h-10 rounded-lg bg-dota-panel flex items-center justify-center text-xl">${t2.logo}</span>
+                                <span class="min-w-0"><small class="block text-[9px] uppercase tracking-wider text-dota-gold font-bold">Нижня сітка</small><strong class="block text-sm text-white truncate">${t2.name}</strong></span>
+                            </div>
+                        </div>
+                        <div class="hidden lg:flex flex-col items-center justify-center gap-8 gf-connectors" aria-hidden="true">
+                            <span></span><span></span>
+                        </div>
+                        <div class="rounded-2xl border-2 ${gf.winnerId ? 'border-dota-gold shadow-lg shadow-dota-gold/10' : 'border-dota-red/60 shadow-lg shadow-dota-red/10'} bg-gradient-to-br from-dota-panel to-dota-bg p-4 sm:p-5">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <span class="text-[10px] font-bold tracking-widest text-dota-red uppercase">🏆 Матч за чемпіонство</span>
+                                <span class="text-[10px] font-mono text-gray-400">${gf.status === 'live' ? '● LIVE' : gf.status === 'finished' ? 'ЗАВЕРШЕНО' : 'ОЧІКУЄТЬСЯ'}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex-1 min-w-0 text-center">
+                                    <div class="w-12 h-12 rounded-xl bg-dota-bg border border-dota-red/60 flex items-center justify-center text-2xl mx-auto mb-2">${t1.logo}</div>
+                                    <strong class="block text-xs sm:text-sm text-white truncate">${t1.name}</strong>
+                                </div>
+                                <div class="shrink-0 text-center">
+                                    <div class="font-mono font-black text-2xl sm:text-3xl text-white">${gf.score1} <span class="text-dota-red">:</span> ${gf.score2}</div>
+                                    <span class="text-[9px] text-gray-500 font-bold">BO5</span>
+                                </div>
+                                <div class="flex-1 min-w-0 text-center">
+                                    <div class="w-12 h-12 rounded-xl bg-dota-bg border border-dota-gold/60 flex items-center justify-center text-2xl mx-auto mb-2">${t2.logo}</div>
+                                    <strong class="block text-xs sm:text-sm text-white truncate">${t2.name}</strong>
+                                </div>
+                            </div>
+                            ${gfWinner ? `<div class="text-center mt-4 text-xs text-dota-gold font-bold"><i class="fa-solid fa-crown mr-1"></i> Чемпіон: ${gfWinner.name}</div>` : ''}
+                            <button onclick="openMatchModal('${gf.id}')" class="w-full mt-4 bg-dota-red hover:bg-red-700 text-white font-rajdhani font-black text-xs px-5 py-3 rounded-xl shadow-lg shadow-dota-red/20">ДЕТАЛІ ГРАНД-ФІНАЛУ</button>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-center text-gray-500">Переможець верхньої сітки та переможець нижньої сітки зустрічаються у фіналі турніру</p>
+                </div>
+            `;
+        }
+
+        function createBracketCardHTML(m, theme = 'normal') {
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "🛡️" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "🛡️" };
+            const isLive = m.status === 'live';
+
+            let borderStyle = 'border-dota-border';
+            if (theme === 'gold') borderStyle = 'border-dota-gold/70';
+            if (theme === 'cyan') borderStyle = 'border-dota-red/50';
+            if (isLive) borderStyle = 'border-dota-red shadow-lg shadow-dota-red/30 animate-pulse';
+
+            return `
+                <div onclick="openMatchModal('${m.id}')" class="dota-match-card bg-dota-bg/90 border ${borderStyle} rounded-xl p-3 cursor-pointer relative space-y-2">
+                    ${isLive ? '<span class="absolute -top-2.5 -right-2 bg-dota-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full">LIVE</span>' : ''}
+                    <div class="flex justify-between items-center text-[10px] text-gray-400 font-mono border-b border-dota-border/50 pb-1">
+                        <span>${m.round}</span>
+                        <span class="text-dota-gold">${m.format}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm">${t1.logo}</span>
+                            <span class="text-xs font-bold ${m.winnerId === t1.id ? 'text-dota-gold' : 'text-white'}">${t1.name}</span>
+                        </div>
+                        <span class="font-mono font-bold text-xs ${m.score1 > m.score2 ? 'text-dota-gold' : 'text-gray-400'}">${m.score1}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-t border-dota-border/30">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm">${t2.logo}</span>
+                            <span class="text-xs font-bold ${m.winnerId === t2.id ? 'text-dota-gold' : 'text-white'}">${t2.name}</span>
+                        </div>
+                        <span class="font-mono font-bold text-xs ${m.score2 > m.score1 ? 'text-dota-gold' : 'text-gray-400'}">${m.score2}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // TEAMS VIEW
+        function renderTeamsView() {
+            const container = document.getElementById('teamsContainer');
+            const q = (document.getElementById('teamSearchInput')?.value || '').toLowerCase();
+            
+            const filtered = state.teams.filter(t => 
+                t.name.toLowerCase().includes(q) || 
+                t.tag.toLowerCase().includes(q) || 
+                t.uni.toLowerCase().includes(q) ||
+                t.roster.some(r => r.toLowerCase().includes(q))
+            );
+
+            container.innerHTML = filtered.map(t => `
+                <div class="dota-glass rounded-2xl p-6 border border-dota-border space-y-4 hover:border-dota-red/50 transition-all">
+                    <div class="flex items-center justify-between border-b border-dota-border pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">${t.logo}</span>
+                            <div>
+                                <h3 class="font-rajdhani font-bold text-white text-lg">${t.name}</h3>
+                                <span class="text-xs text-dota-gold font-mono">[${t.tag}]</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-dota-bg px-2.5 py-1 rounded-full border border-dota-border text-dota-red font-bold">${t.uni}</span>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        <i class="fa-solid fa-crown text-dota-gold mr-1"></i> Капітан: <strong class="text-white">${t.captain}</strong>
+                    </div>
+                    <div class="space-y-1.5 pt-1">
+                        <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Ростер гравців:</div>
+                        ${t.roster.map((p, idx) => `
+                            <div class="flex justify-between text-xs bg-dota-bg px-3 py-1.5 rounded-lg border border-dota-border/40">
+                                <span class="text-white font-medium">${p}</span>
+                                <span class="text-dota-gold font-mono text-[10px]">Pos ${idx+1}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2 border-t border-dota-border">
+                        <button onclick="openTeamModal(${t.id})" class="bg-dota-panel hover:bg-dota-border text-dota-gold text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-pen mr-1"></i> Редагувати</button>
+                        <button onclick="deleteTeam(${t.id})" class="bg-red-950/60 hover:bg-dota-red text-red-200 text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // STREAM VIEW
+        function renderStreamView() {
+            const wrapper = document.getElementById('twitchWrapper');
+            const channel = state.streamUrl || "dota2ti";
+            wrapper.innerHTML = `
+                <iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname || 'localhost'}&autoplay=false" height="100%" width="100%" allowfullscreen></iframe>
+            `;
+        }
+
+        // NEWS VIEW
+        function renderNewsView() {
+            const container = document.getElementById('newsContainer');
+            container.innerHTML = state.news.map(n => `
+                <div class="dota-glass rounded-2xl overflow-hidden border border-dota-border flex flex-col">
+                    <img src="${safeImageUrl(n.img)}" alt="${escapeHTML(n.title)}" class="h-48 w-full object-cover">
+                    <div class="p-6 space-y-3 flex-grow flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-dota-gold font-mono">${escapeHTML(n.date || '')}</span>
+                            <h3 class="font-rajdhani font-bold text-white text-xl mt-1">${escapeHTML(n.title)}</h3>
+                            <p class="text-xs text-gray-300 mt-2 leading-relaxed">${escapeHTML(n.desc)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ADMIN VIEW
+        function renderAdminView() {
+            document.getElementById('settingPrize').value = state.prizePool;
+            document.getElementById('settingStream').value = state.streamUrl;
+
+            // Matches editor
+            const matchesContainer = document.getElementById('adminMatchesEditor');
+            matchesContainer.innerHTML = state.matches.map(m => {
+                const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", id: null };
+                const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", id: null };
+
+                return `
+                    <div class="bg-dota-bg p-3.5 rounded-2xl border border-dota-border flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="w-full md:w-44">
+                            <span class="font-bold text-dota-gold font-mono">[${m.bracket}] ${m.round}</span>
+                            <div class="text-[10px] text-gray-400">${m.format}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white text-right w-24 truncate">${t1.name}</span>
+                            <input type="number" min="0" max="3" value="${m.score1}" onchange="updateScore('${m.id}', 1, this.value)" class="w-12 bg-dota-panel border border-dota-border text-center rounded-lg py-1 text-white font-mono">
+                            <span class="text-gray-500 font-bold">:</span>
+                            <input type="number" min="0" max="3" value="${m.score2}" onchange="updateScore('${m.id}', 2, this.value)" class="w-12 bg-dota-panel border border-dota-border text-center rounded-lg py-1 text-white font-mono">
+                            <span class="font-bold text-white w-24 truncate">${t2.name}</span>
+                        </div>
+                        <div>
+                            <select onchange="adminSetWinner('${m.id}', this.value)" class="bg-dota-panel border border-dota-gold text-dota-gold font-bold rounded-lg px-2 py-1 text-xs">
+                                <option value="">-- Переможець --</option>
+                                ${t1.id ? `<option value="${t1.id}" ${m.winnerId === t1.id ? 'selected' : ''}>${t1.name}</option>` : ''}
+                                ${t2.id ? `<option value="${t2.id}" ${m.winnerId === t2.id ? 'selected' : ''}>${t2.name}</option>` : ''}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Teams list editor
+            const teamsList = document.getElementById('adminTeamsList');
+            teamsList.innerHTML = state.teams.map(t => `
+                <div class="bg-dota-bg p-4 rounded-xl border border-dota-border flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${t.logo}</span>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">${t.name} <span class="text-dota-gold font-mono text-xs">[${t.tag}]</span></h4>
+                            <span class="text-[10px] text-gray-400">${t.uni}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openTeamModal(${t.id})" class="bg-dota-panel hover:bg-dota-border text-dota-gold text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteTeam(${t.id})" class="bg-red-950 text-red-200 text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+
+            // News editor list
+            const newsList = document.getElementById('adminNewsList');
+            newsList.innerHTML = state.news.length ? state.news.map(n => `
+                <article class="admin-action-card rounded-2xl p-3 sm:p-4 flex gap-3 min-w-0">
+                    <img src="${safeImageUrl(n.img)}" alt="" class="w-24 h-24 sm:w-28 sm:h-24 object-cover rounded-xl border border-dota-border shrink-0">
+                    <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="text-[10px] text-dota-red font-mono mb-1">${escapeHTML(n.date || '')}</div>
+                            <h4 class="text-sm sm:text-base text-white font-bold leading-snug">${escapeHTML(n.title)}</h4>
+                            <p class="text-[11px] text-gray-400 mt-1 line-clamp-2">${escapeHTML(n.desc)}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openNewsEditor(${Number(n.id)})" class="bg-dota-panel hover:bg-dota-border text-white text-[11px] font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-pen mr-1 text-dota-red"></i> Редагувати</button>
+                            <button onclick="deleteNews(${Number(n.id)})" class="bg-red-950/70 hover:bg-red-900 border border-red-900/50 text-red-200 text-[11px] font-bold px-3 py-2 rounded-lg"><i class="fa-solid fa-trash mr-1"></i> Видалити</button>
+                        </div>
+                    </div>
+                </article>
+            `).join('') : '<div class="text-sm text-gray-400 bg-dota-bg border border-dota-border rounded-xl p-6 text-center">Новин ще немає. Натисни «Додати новину», щоб створити першу.</div>';
+        }
+
+        // NEWS EDITOR + CRUD
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        function safeImageUrl(value) {
+            const raw = String(value || '').trim();
+            return /^https?:\/\//i.test(raw) ? escapeHTML(raw) : 'https://placehold.co/800x400/161c2b/e53935?text=Tournament+News';
+        }
+
+        function openNewsEditor(newsId = null) {
+            const news = newsId == null ? null : state.news.find(item => Number(item.id) === Number(newsId));
+            document.getElementById('newsForm').reset();
+            document.getElementById('editNewsId').value = news ? news.id : '';
+            document.getElementById('newsModalTitle').innerText = news ? 'Редагувати новину' : 'Додати новину';
+            document.getElementById('newsTitleInput').value = news?.title || '';
+            document.getElementById('newsDateInput').value = news?.date || new Date().toLocaleDateString('uk-UA', { day: '2-digit', month: 'long', year: 'numeric' });
+            document.getElementById('newsImageInput').value = news?.img || '';
+            document.getElementById('newsDescInput').value = news?.desc || '';
+            updateNewsImagePreview();
+            document.getElementById('newsModal').classList.remove('hidden');
+            document.getElementById('newsTitleInput').focus();
+        }
+
+        function closeNewsEditor() {
+            document.getElementById('newsModal').classList.add('hidden');
+        }
+
+        function updateNewsImagePreview() {
+            const input = document.getElementById('newsImageInput');
+            const preview = document.getElementById('newsImagePreview');
+            if (input && preview) {
+                const raw = String(input.value || '').trim();
+                preview.src = /^https?:\/\//i.test(raw) ? raw : 'https://placehold.co/800x400/161c2b/e53935?text=Tournament+News';
+            }
+        }
+
+        function saveNewsFromForm(event) {
+            event.preventDefault();
+            const editId = document.getElementById('editNewsId').value;
+            const title = document.getElementById('newsTitleInput').value.trim();
+            const date = document.getElementById('newsDateInput').value.trim();
+            const img = document.getElementById('newsImageInput').value.trim();
+            const desc = document.getElementById('newsDescInput').value.trim();
+            if (!title || !desc) {
+                showToast('Перевір поля', 'Заповни заголовок і текст новини.');
+                return;
+            }
+            if (img && !/^https?:\/\//i.test(img)) {
+                showToast('Некоректне зображення', 'Посилання має починатися з https:// або http://');
+                return;
+            }
+            const item = { title, date: date || new Date().toLocaleDateString('uk-UA'), desc, img: img || 'https://placehold.co/800x400/161c2b/e53935?text=Tournament+News' };
+            if (editId) {
+                const existing = state.news.find(n => Number(n.id) === Number(editId));
+                if (existing) Object.assign(existing, item);
+                showToast('Новину оновлено', 'Зміни збережено та опубліковано на сайті.');
+            } else {
+                const newId = state.news.length ? Math.max(...state.news.map(n => Number(n.id) || 0)) + 1 : 1;
+                state.news.unshift({ id: newId, ...item });
+                showToast('Новину додано', 'Новина з’явилася на головній сторінці та у розділі новин.');
+            }
+            closeNewsEditor();
+            saveToLocalStorage();
+            switchAdminTab('news');
+        }
+
+        function deleteNews(newsId) {
+            const item = state.news.find(n => Number(n.id) === Number(newsId));
+            if (!item) return;
+            if (!confirm(`Видалити новину «${item.title}»?`)) return;
+            state.news = state.news.filter(n => Number(n.id) !== Number(newsId));
+            saveToLocalStorage();
+            switchAdminTab('news');
+            showToast('Новину видалено', 'Публікацію прибрано з сайту.');
+        }
+
+        // TEAM MODAL & CRUD LOGIC (FIXED)
+        function openTeamModal(teamId = null) {
+            document.getElementById('editTeamId').value = teamId || '';
+            if (teamId) {
+                const t = state.teams.find(x => x.id === teamId);
+                if (t) {
+                    document.getElementById('teamModalTitle').innerText = "Редагувати команду";
+                    document.getElementById('teamNameInput').value = t.name;
+                    document.getElementById('teamTagInput').value = t.tag;
+                    document.getElementById('teamLogoInput').value = t.logo;
+                    document.getElementById('teamUniInput').value = t.uni;
+                    document.getElementById('teamCaptainInput').value = t.captain;
+                    document.getElementById('teamRosterInput').value = t.roster.join(', ');
+                }
+            } else {
+                document.getElementById('teamModalTitle').innerText = "Додати нову команду";
+                document.getElementById('teamForm').reset();
+                document.getElementById('editTeamId').value = '';
+            }
+            document.getElementById('teamModal').classList.remove('hidden');
+        }
+
+        function closeTeamModal() {
+            document.getElementById('teamModal').classList.add('hidden');
+        }
+
+        function handleTeamFormSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editTeamId').value;
+            const name = document.getElementById('teamNameInput').value;
+            const tag = document.getElementById('teamTagInput').value;
+            const logo = document.getElementById('teamLogoInput').value;
+            const uni = document.getElementById('teamUniInput').value;
+            const captain = document.getElementById('teamCaptainInput').value;
+            const roster = document.getElementById('teamRosterInput').value.split(',').map(s => s.trim()).filter(Boolean);
+
+            if (editId) {
+                const t = state.teams.find(x => x.id == editId);
+                if (t) {
+                    t.name = name;
+                    t.tag = tag;
+                    t.logo = logo;
+                    t.uni = uni;
+                    t.captain = captain;
+                    t.roster = roster;
+                }
+                showToast("Команду оновлено", "Зміни збережено успішно.");
+            } else {
+                const newId = state.teams.length > 0 ? Math.max(...state.teams.map(t => t.id)) + 1 : 1;
+                state.teams.push({ id: newId, name, tag, logo, uni, captain, roster });
+                showToast("Команду додано", "Нова команда успішно зареєстрована.");
+            }
+
+            saveToLocalStorage();
+            closeTeamModal();
+        }
+
+        function deleteTeam(id) {
+            if (confirm("Ви дійсно бажаєте видалити цю команду?")) {
+                state.teams = state.teams.filter(t => t.id !== id);
+                saveToLocalStorage();
+                showToast("Видалено", "Команду видалено з турніру.");
+            }
+        }
+
+        // MATCH UPDATES & BRACKET ADVANCEMENT
+        function updateScore(matchId, teamNum, score) {
+            const m = state.matches.find(x => x.id === matchId);
+            if (m) {
+                if (teamNum === 1) m.score1 = parseInt(score) || 0;
+                if (teamNum === 2) m.score2 = parseInt(score) || 0;
+                saveToLocalStorage();
+            }
+        }
+
+        function adminSetWinner(matchId, winnerId) {
+            const m = state.matches.find(x => x.id === matchId);
+            if (!m) return;
+
+            m.winnerId = winnerId ? parseInt(winnerId) : null;
+            m.status = m.winnerId ? 'finished' : 'upcoming';
+            m.loserId = m.winnerId ? ((m.winnerId === m.team1Id) ? m.team2Id : m.team1Id) : null;
+
+            const win = m.winnerId;
+            const lose = m.loserId;
+
+            if (matchId === 'UB_QF1') { setMatchTeam('UB_SF1', 1, win); setMatchTeam('LB_R1_M1', 1, lose); }
+            if (matchId === 'UB_QF2') { setMatchTeam('UB_SF1', 2, win); setMatchTeam('LB_R1_M1', 2, lose); }
+            if (matchId === 'UB_QF3') { setMatchTeam('UB_SF2', 1, win); setMatchTeam('LB_R1_M2', 1, lose); }
+            if (matchId === 'UB_QF4') { setMatchTeam('UB_SF2', 2, win); setMatchTeam('LB_R1_M2', 2, lose); }
+            if (matchId === 'UB_SF1') { setMatchTeam('UB_FINAL', 1, win); setMatchTeam('LB_R2_M2', 1, lose); }
+            if (matchId === 'UB_SF2') { setMatchTeam('UB_FINAL', 2, win); setMatchTeam('LB_R2_M1', 1, lose); }
+            if (matchId === 'UB_FINAL') { setMatchTeam('GF', 1, win); setMatchTeam('LB_FINAL', 1, lose); }
+            if (matchId === 'LB_R1_M1') { setMatchTeam('LB_R2_M1', 2, win); }
+            if (matchId === 'LB_R1_M2') { setMatchTeam('LB_R2_M2', 2, win); }
+            if (matchId === 'LB_R2_M1') { setMatchTeam('LB_R3', 1, win); }
+            if (matchId === 'LB_R2_M2') { setMatchTeam('LB_R3', 2, win); }
+            if (matchId === 'LB_R3') { setMatchTeam('LB_FINAL', 2, win); }
+            if (matchId === 'LB_FINAL') { setMatchTeam('GF', 2, win); }
+
+            saveToLocalStorage();
+            showToast("Сітку оновлено", "Переможець автоматично пройшов далі!");
+        }
+
+        function setMatchTeam(targetId, pos, teamId) {
+            const tm = state.matches.find(x => x.id === targetId);
+            if (tm) {
+                if (pos === 1) tm.team1Id = teamId;
+                if (pos === 2) tm.team2Id = teamId;
+            }
+        }
+
+        function saveSettings() {
+            state.prizePool = document.getElementById('settingPrize').value;
+            state.streamUrl = document.getElementById('settingStream').value;
+            saveToLocalStorage();
+            showToast("Налаштування збережено", "Зміни застосовано успішно.");
+        }
+
+        function adminResetToDefaults() {
+            if (confirm("Скинути всі дані до початкових?")) {
+                resetStateToDefaults();
+                showToast("Скинуто", "Початкові дані відновлено.");
+            }
+        }
+
+        function openMatchModal(matchId) {
+            const m = state.matches.find(x => x.id === matchId);
+            if (!m) return;
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "🛡️" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "🛡️" };
+
+            document.getElementById('matchModalContent').innerHTML = `
+                <div class="text-center space-y-2 border-b border-dota-border pb-4">
+                    <span class="bg-dota-red text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase font-mono">${m.round} • ${m.format}</span>
+                    <h2 class="font-rajdhani font-black text-2xl text-white">${t1.name} VS ${t2.name}</h2>
+                    <div class="font-mono text-3xl font-black text-dota-gold">${m.score1} : ${m.score2}</div>
+                    <p class="text-xs text-gray-400">Час: ${m.date}</p>
+                </div>
+                <div class="py-4 text-center text-xs text-gray-300">
+                    <p>Офіційний мапінг драфту героїв та післяматчева статистика активні під час прямої трансляції.</p>
+                </div>
+            `;
+            document.getElementById('matchModal').classList.remove('hidden');
+        }
+
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.add('hidden');
+        }
+
+        function showToast(title, body) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastBody').innerText = body;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+    </script>
+</div></body>
 </html>
