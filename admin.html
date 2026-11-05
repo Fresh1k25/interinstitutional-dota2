@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Адмін-панель — Dota 2 Championship</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -19,24 +16,11 @@
                 extend: {
                     colors: {
                         dota: {
-                            bg: '#080b11',
-                            card: '#0f141f',
-                            panel: '#161c2b',
-                            border: '#232d42',
-                            red: '#e53935',
-                            redGlow: '#ff4655',
-                            gold: '#f59e0b',
-                            goldGlow: '#fbbf24',
-                            cyan: '#06b6d4',
-                            purple: '#a855f7',
-                            text: '#e2e8f0'
+                            bg: '#080b11', card: '#0f141f', panel: '#161c2b', border: '#232d42',
+                            red: '#e53935', redGlow: '#ff4655', gold: '#f59e0b', cyan: '#06b6d4', text: '#e2e8f0'
                         }
                     },
-                    fontFamily: {
-                        rajdhani: ['Rajdhani', 'sans-serif'],
-                        cinzel: ['Cinzel', 'serif'],
-                        sans: ['Inter', 'sans-serif']
-                    }
+                    fontFamily: { rajdhani: ['Rajdhani', 'sans-serif'], sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -111,7 +95,8 @@
 
             <!-- TAB MATCHES -->
             <div id="adminSecMatches" class="space-y-4">
-                <h3 class="font-rajdhani text-xl font-bold text-white">Керування результатами</h3>
+                <h3 class="font-rajdhani text-xl font-bold text-white">Керування результатами плей-оф</h3>
+                <p class="text-xs text-gray-400">Встановіть рахунок та оберіть переможця. Переможець автоматично просунеться далі по турнірній сітці.</p>
                 <div id="adminMatchesEditor" class="space-y-3"></div>
             </div>
 
@@ -127,7 +112,7 @@
             <!-- TAB NEWS -->
             <div id="adminSecNews" class="space-y-4 hidden">
                 <div class="flex justify-between items-center">
-                    <h3 class="font-rajdhani text-xl font-bold text-white">Керування новинами (з фотографіями)</h3>
+                    <h3 class="font-rajdhani text-xl font-bold text-white">Керування новинами</h3>
                     <button onclick="openNewsEditor()" class="bg-dota-red text-white text-xs font-bold px-4 py-2 rounded-xl"><i class="fa-solid fa-plus mr-1"></i> Додати новину</button>
                 </div>
                 <div id="adminNewsList" class="grid grid-cols-1 gap-4"></div>
@@ -154,7 +139,7 @@
     <!-- MODAL TEAM -->
     <div id="teamModal" class="fixed inset-0 z-50 hidden bg-black/85 flex items-center justify-center p-4">
         <div class="dota-glass max-w-xl w-full rounded-3xl p-6 relative space-y-4 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeTeamModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeTeamModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="teamModalTitle" class="font-rajdhani font-black text-2xl text-white">Команда</h3>
             <form id="teamForm" onsubmit="handleTeamFormSubmit(event)" class="space-y-3">
                 <input type="hidden" id="editTeamId">
@@ -168,9 +153,13 @@
                         <input type="text" id="teamTagInput" required class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2 text-xs text-white">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1">Логотип (URL посилання на зображення)</label>
-                        <input type="text" id="teamLogoInput" required class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2 text-xs text-white" placeholder="https://...">
+                        <label class="block text-xs text-gray-400 mb-1">Логотип (завантажити файл)</label>
+                        <input type="file" id="teamLogoInput" accept="image/*" class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-1.5 text-xs text-white" onchange="processTeamLogoFile()">
+                        <input type="hidden" id="teamLogoBase64">
                     </div>
+                </div>
+                <div>
+                    <img id="teamLogoPreview" src="" class="mt-1 w-16 h-16 object-cover rounded-xl border border-dota-border hidden bg-black">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">MMR команди</label>
@@ -184,7 +173,7 @@
                     <label class="block text-xs text-gray-400 mb-1">Ростер (5 гравців через кому)</label>
                     <input type="text" id="teamRosterInput" required class="w-full bg-dota-bg border border-dota-border rounded-xl px-4 py-2 text-xs text-white">
                 </div>
-                <button type="submit" class="w-full bg-dota-red text-white py-2.5 rounded-xl text-xs font-bold">Зберегти</button>
+                <button type="submit" class="w-full bg-dota-red text-white py-2.5 rounded-xl text-xs font-bold">Зберегти команду</button>
             </form>
         </div>
     </div>
@@ -192,7 +181,7 @@
     <!-- MODAL NEWS -->
     <div id="newsModal" class="fixed inset-0 hidden bg-black/85 flex items-center justify-center p-4 z-50">
         <div class="dota-glass w-full max-w-xl rounded-3xl p-6 relative space-y-4 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeNewsEditor()" class="absolute top-5 right-5 text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeNewsEditor()" class="absolute top-5 right-5 text-gray-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="newsModalTitle" class="font-rajdhani font-black text-2xl text-white">Новина</h3>
             <form id="newsForm" onsubmit="saveNewsFromForm(event)" class="space-y-3">
                 <input type="hidden" id="editNewsId">
@@ -205,12 +194,13 @@
                     <input type="text" id="newsDateInput" class="news-editor-input">
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1">Посилання на фотографію (URL)</label>
-                    <input type="url" id="newsImageInput" oninput="updateNewsImagePreview()" placeholder="https://..." class="news-editor-input">
+                    <label class="block text-xs text-gray-400 mb-1">Фотографія (завантажити файл)</label>
+                    <input type="file" id="newsImageInput" accept="image/*" class="news-editor-input" onchange="processNewsImageFile()">
+                    <input type="hidden" id="newsImageBase64">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Попередній перегляд фото</label>
-                    <img id="newsImagePreview" src="" class="w-full h-32 object-cover rounded-xl border border-dota-border">
+                    <img id="newsImagePreview" src="" class="w-full h-32 object-cover rounded-xl border border-dota-border hidden bg-black">
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1">Текст новини</label>
@@ -218,6 +208,15 @@
                 </div>
                 <button type="submit" class="w-full bg-dota-red text-white py-2.5 rounded-xl text-xs font-bold">Зберегти новину</button>
             </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-dota-panel border border-dota-gold text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-dota-gold text-xl"></i>
+        <div>
+            <h5 id="toastTitle" class="font-bold text-xs uppercase text-dota-gold">Успішно</h5>
+            <p id="toastBody" class="text-xs text-gray-300">Зміни збережено.</p>
         </div>
     </div>
 
@@ -229,6 +228,14 @@
             loadFromLocalStorage();
             document.getElementById('adminPasswordInput')?.focus();
         };
+
+        function showToast(title, body) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastBody').innerText = body;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
 
         function loginToAdmin(event) {
             event.preventDefault();
@@ -250,18 +257,7 @@
         function loadFromLocalStorage() {
             const saved = localStorage.getItem('dota2_master_app_state');
             if (saved) {
-                state = JSON.parse(saved);
-            } else {
-                // Дефолти
-                state.teams = [
-                    { id: 1, name: "KNU Lions", tag: "KNU", mmr: "7800 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=LIONS", captain: "NightStalker", roster: ["InvokerPro", "StormKing", "AxeMaster", "RubickUA", "WardSaver"] },
-                    { id: 2, name: "KPI Cyber Titans", tag: "KPI", mmr: "7500 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=KPI", captain: "TechLord", roster: ["ShadowCarry", "VoidSpirit", "CentaurOff", "Clockwork", "OracleUA"] }
-                ];
-                state.news = [
-                    { id: 1, title: "Стартував новий сезон!", date: "12 Листопада 2026", desc: "Розпочались ігри серед найкращих команд.", img: "https://placehold.co/600x400/161c2b/e53935?text=News" }
-                ];
-                state.matches = [];
-                saveToLocalStorage();
+                try { state = JSON.parse(saved); } catch(e) { }
             }
         }
 
@@ -278,15 +274,50 @@
             document.getElementById(`adminSec${tab.charAt(0).toUpperCase()+tab.slice(1)}`).classList.remove('hidden');
         }
 
+        function safeImageUrl(value) {
+            const raw = String(value || '').trim();
+            if (raw.startsWith('data:image/') || /^https?:\/\//i.test(raw)) return raw;
+            return 'https://placehold.co/800x400/161c2b/e53935?text=Dota2';
+        }
+
         function renderAdminView() {
             document.getElementById('settingPrize').value = state.prizePool;
             document.getElementById('settingStream').value = state.streamUrl;
+
+            // Матчі
+            const matchesContainer = document.getElementById('adminMatchesEditor');
+            matchesContainer.innerHTML = state.matches.map(m => {
+                const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", id: null };
+                const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", id: null };
+                
+                return `
+                    <div class="bg-dota-bg p-3.5 rounded-2xl border border-dota-border flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="w-full md:w-44">
+                            <span class="font-bold text-dota-gold font-mono">[${m.bracket}] ${m.round}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white text-right w-24 truncate">${t1.name}</span>
+                            <input type="number" min="0" max="3" value="${m.score1}" onchange="updateScore('${m.id}', 1, this.value)" class="w-12 bg-dota-panel border border-dota-border text-center rounded-lg py-1 text-white font-mono">
+                            <span class="text-gray-500 font-bold">:</span>
+                            <input type="number" min="0" max="3" value="${m.score2}" onchange="updateScore('${m.id}', 2, this.value)" class="w-12 bg-dota-panel border border-dota-border text-center rounded-lg py-1 text-white font-mono">
+                            <span class="font-bold text-white w-24 truncate">${t2.name}</span>
+                        </div>
+                        <div>
+                            <select onchange="adminSetWinner('${m.id}', this.value)" class="bg-dota-panel border border-dota-gold text-dota-gold font-bold rounded-lg px-2 py-1 text-xs outline-none">
+                                <option value="">-- Переможець --</option>
+                                ${t1.id ? `<option value="${t1.id}" ${m.winnerId === t1.id ? 'selected' : ''}>${t1.name}</option>` : ''}
+                                ${t2.id ? `<option value="${t2.id}" ${m.winnerId === t2.id ? 'selected' : ''}>${t2.name}</option>` : ''}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             // Команди в адмінці
             document.getElementById('adminTeamsList').innerHTML = state.teams.map(t => `
                 <div class="bg-dota-bg p-4 rounded-xl border border-dota-border flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <img src="${t.logo}" class="w-10 h-10 object-cover rounded-lg">
+                        <img src="${safeImageUrl(t.logo)}" class="w-10 h-10 object-cover rounded-lg bg-black">
                         <div>
                             <h4 class="font-bold text-white text-sm">${t.name} <span class="text-dota-gold text-xs">[${t.tag}]</span></h4>
                             <span class="text-[10px] text-gray-400">${t.mmr}</span>
@@ -302,7 +333,7 @@
             // Новини в адмінці
             document.getElementById('adminNewsList').innerHTML = state.news.map(n => `
                 <div class="bg-dota-bg p-4 rounded-xl border border-dota-border flex gap-4 items-center">
-                    <img src="${n.img}" class="w-20 h-20 object-cover rounded-lg">
+                    <img src="${safeImageUrl(n.img)}" class="w-20 h-20 object-cover rounded-lg bg-black">
                     <div class="flex-grow">
                         <span class="text-xs text-dota-gold">${n.date}</span>
                         <h4 class="text-white font-bold">${n.title}</h4>
@@ -316,17 +347,103 @@
             `).join('');
         }
 
+        // ЛОГІКА СІТКИ (Bracket)
+        function updateScore(matchId, teamNum, score) {
+            const m = state.matches.find(x => x.id === matchId);
+            if (m) {
+                if (teamNum === 1) m.score1 = parseInt(score) || 0;
+                if (teamNum === 2) m.score2 = parseInt(score) || 0;
+                saveToLocalStorage();
+            }
+        }
+
+        function adminSetWinner(matchId, winnerId) {
+            const m = state.matches.find(x => x.id === matchId);
+            if (!m) return;
+
+            m.winnerId = winnerId ? parseInt(winnerId) : null;
+            m.status = m.winnerId ? 'finished' : 'upcoming';
+            m.loserId = m.winnerId ? ((m.winnerId === m.team1Id) ? m.team2Id : m.team1Id) : null;
+
+            const win = m.winnerId;
+            const lose = m.loserId;
+
+            // Логіка автоматичного просування команди по сітці
+            if (matchId === 'UB_QF1') { setMatchTeam('UB_SF1', 1, win); setMatchTeam('LB_R1_M1', 1, lose); }
+            if (matchId === 'UB_QF2') { setMatchTeam('UB_SF1', 2, win); setMatchTeam('LB_R1_M1', 2, lose); }
+            if (matchId === 'UB_QF3') { setMatchTeam('UB_SF2', 1, win); setMatchTeam('LB_R1_M2', 1, lose); }
+            if (matchId === 'UB_QF4') { setMatchTeam('UB_SF2', 2, win); setMatchTeam('LB_R1_M2', 2, lose); }
+            if (matchId === 'UB_SF1') { setMatchTeam('UB_FINAL', 1, win); setMatchTeam('LB_R2_M2', 1, lose); }
+            if (matchId === 'UB_SF2') { setMatchTeam('UB_FINAL', 2, win); setMatchTeam('LB_R2_M1', 1, lose); }
+            if (matchId === 'UB_FINAL') { setMatchTeam('GF', 1, win); setMatchTeam('LB_FINAL', 1, lose); }
+            if (matchId === 'LB_R1_M1') { setMatchTeam('LB_R2_M1', 2, win); }
+            if (matchId === 'LB_R1_M2') { setMatchTeam('LB_R2_M2', 2, win); }
+            if (matchId === 'LB_R2_M1') { setMatchTeam('LB_R3', 1, win); }
+            if (matchId === 'LB_R2_M2') { setMatchTeam('LB_R3', 2, win); }
+            if (matchId === 'LB_R3') { setMatchTeam('LB_FINAL', 2, win); }
+            if (matchId === 'LB_FINAL') { setMatchTeam('GF', 2, win); }
+
+            saveToLocalStorage();
+            renderAdminView();
+            showToast("Сітку оновлено", "Переможець автоматично пройшов далі!");
+        }
+
+        function setMatchTeam(targetId, pos, teamId) {
+            const tm = state.matches.find(x => x.id === targetId);
+            if (tm) {
+                if (pos === 1) tm.team1Id = teamId;
+                if (pos === 2) tm.team2Id = teamId;
+            }
+        }
+
+        // ОБРОБКА ЗОБРАЖЕНЬ (ФАЙЛИ -> Base64)
+        function processNewsImageFile() {
+            const file = document.getElementById('newsImageInput').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('newsImageBase64').value = e.target.result;
+                    const preview = document.getElementById('newsImagePreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function processTeamLogoFile() {
+            const file = document.getElementById('teamLogoInput').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('teamLogoBase64').value = e.target.result;
+                    const preview = document.getElementById('teamLogoPreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         // Керування новинами
         function openNewsEditor(newsId = null) {
             const news = newsId ? state.news.find(n => n.id === newsId) : null;
             document.getElementById('newsForm').reset();
             document.getElementById('editNewsId').value = news ? news.id : '';
-            document.getElementById('newsModalTitle').innerText = news ? 'Редагувати новину' : 'Додати новину';
             document.getElementById('newsTitleInput').value = news?.title || '';
             document.getElementById('newsDateInput').value = news?.date || new Date().toLocaleDateString('uk-UA');
-            document.getElementById('newsImageInput').value = news?.img || '';
             document.getElementById('newsDescInput').value = news?.desc || '';
-            updateNewsImagePreview();
+            
+            document.getElementById('newsImageBase64').value = news?.img || '';
+            const preview = document.getElementById('newsImagePreview');
+            if (news?.img) {
+                preview.src = news.img;
+                preview.classList.remove('hidden');
+            } else {
+                preview.src = '';
+                preview.classList.add('hidden');
+            }
+            
             document.getElementById('newsModal').classList.remove('hidden');
         }
 
@@ -334,18 +451,14 @@
             document.getElementById('newsModal').classList.add('hidden');
         }
 
-        function updateNewsImagePreview() {
-            const url = document.getElementById('newsImageInput').value;
-            document.getElementById('newsImagePreview').src = url || 'https://placehold.co/600x400';
-        }
-
         function saveNewsFromForm(event) {
             event.preventDefault();
             const editId = document.getElementById('editNewsId').value;
             const title = document.getElementById('newsTitleInput').value;
             const date = document.getElementById('newsDateInput').value;
-            const img = document.getElementById('newsImageInput').value;
             const desc = document.getElementById('newsDescInput').value;
+            // Беремо Base64 строку, яку згенерував FileReader
+            const img = document.getElementById('newsImageBase64').value || 'https://placehold.co/600x400';
 
             if (editId) {
                 const n = state.news.find(item => item.id == editId);
@@ -357,6 +470,7 @@
             saveToLocalStorage();
             closeNewsEditor();
             renderAdminView();
+            showToast("Новину збережено", "");
         }
 
         function deleteNews(id) {
@@ -370,13 +484,24 @@
         // Керування командами
         function openTeamModal(teamId = null) {
             const t = teamId ? state.teams.find(x => x.id === teamId) : null;
+            document.getElementById('teamForm').reset();
             document.getElementById('editTeamId').value = t ? t.id : '';
             document.getElementById('teamNameInput').value = t?.name || '';
             document.getElementById('teamTagInput').value = t?.tag || '';
-            document.getElementById('teamLogoInput').value = t?.logo || '';
             document.getElementById('teamMmrInput').value = t?.mmr || '';
             document.getElementById('teamCaptainInput').value = t?.captain || '';
             document.getElementById('teamRosterInput').value = t?.roster ? t.roster.join(', ') : '';
+            
+            document.getElementById('teamLogoBase64').value = t?.logo || '';
+            const preview = document.getElementById('teamLogoPreview');
+            if (t?.logo) {
+                preview.src = t.logo;
+                preview.classList.remove('hidden');
+            } else {
+                preview.src = '';
+                preview.classList.add('hidden');
+            }
+
             document.getElementById('teamModal').classList.remove('hidden');
         }
 
@@ -389,10 +514,10 @@
             const editId = document.getElementById('editTeamId').value;
             const name = document.getElementById('teamNameInput').value;
             const tag = document.getElementById('teamTagInput').value;
-            const logo = document.getElementById('teamLogoInput').value;
             const mmr = document.getElementById('teamMmrInput').value;
             const captain = document.getElementById('teamCaptainInput').value;
             const roster = document.getElementById('teamRosterInput').value.split(',').map(s => s.trim()).filter(Boolean);
+            const logo = document.getElementById('teamLogoBase64').value || 'https://placehold.co/100x100';
 
             if (editId) {
                 const t = state.teams.find(x => x.id == editId);
@@ -404,6 +529,7 @@
             saveToLocalStorage();
             closeTeamModal();
             renderAdminView();
+            showToast("Команду збережено", "");
         }
 
         function deleteTeam(id) {
@@ -418,7 +544,7 @@
             state.prizePool = document.getElementById('settingPrize').value;
             state.streamUrl = document.getElementById('settingStream').value;
             saveToLocalStorage();
-            alert("Налаштування збережено!");
+            showToast("Налаштування збережено", "Зміни успішно застосовані.");
         }
     </script>
 </body>
