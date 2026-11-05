@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spring Cup Dota 2 — Головна</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -16,11 +19,24 @@
                 extend: {
                     colors: {
                         dota: {
-                            bg: '#080b11', card: '#0f141f', panel: '#161c2b', border: '#232d42',
-                            red: '#e53935', redGlow: '#ff4655', gold: '#f59e0b', cyan: '#06b6d4', text: '#e2e8f0'
+                            bg: '#080b11',
+                            card: '#0f141f',
+                            panel: '#161c2b',
+                            border: '#232d42',
+                            red: '#e53935',
+                            redGlow: '#ff4655',
+                            gold: '#f59e0b',
+                            goldGlow: '#fbbf24',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7',
+                            text: '#e2e8f0'
                         }
                     },
-                    fontFamily: { rajdhani: ['Rajdhani', 'sans-serif'], sans: ['Inter', 'sans-serif'] }
+                    fontFamily: {
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
                 }
             }
         }
@@ -35,28 +51,46 @@
             color: #e2e8f0;
             background-attachment: fixed;
         }
+
         .dota-glass {
             background: linear-gradient(135deg, rgba(22, 28, 43, 0.94) 0%, rgba(12, 16, 25, 0.97) 100%);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
         }
-        .dota-match-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .dota-match-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -4px rgba(229, 57, 53, 0.28); border-color: rgba(229, 57, 53, 0.62); }
+
+        .dota-match-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dota-match-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(229, 57, 53, 0.28);
+            border-color: rgba(229, 57, 53, 0.62);
+        }
+
         .glow-red { text-shadow: 0 0 12px rgba(255, 70, 85, 0.88); }
+        .glow-gold { text-shadow: 0 0 12px rgba(245, 158, 11, 0.85); }
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #080b11; }
         ::-webkit-scrollbar-thumb { background: #232d42; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #e53935; }
-        .nav-link.active { background-color: rgba(229, 57, 53, 0.2); border-color: rgba(229, 57, 53, 0.7); color: #ffffff; }
+
+        .nav-link.active {
+            background-color: rgba(229, 57, 53, 0.2);
+            border-color: rgba(229, 57, 53, 0.7);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(229, 57, 53, 0.28);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased selection:bg-dota-red selection:text-white">
-
     <!-- HEADER NAVIGATION -->
     <header class="sticky top-0 z-40 bg-dota-bg/95 backdrop-blur-md border-b border-dota-border shadow-2xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
                 <a href="#" onclick="showTab('home')" class="flex items-center gap-3 group">
                     <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-dota-red via-red-800 to-dota-gold p-0.5 shadow-lg shadow-dota-red/30 group-hover:scale-105 transition-transform duration-300">
                         <div class="w-full h-full bg-dota-bg rounded-[10px] flex items-center justify-center">
@@ -73,48 +107,69 @@
                         </div>
                     </div>
                 </a>
+                <!-- Nav Items -->
                 <nav class="hidden lg:flex items-center gap-1">
-                    <button id="nav-home" onclick="showTab('home')" class="nav-link active px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all"><i class="fa-solid fa-house mr-1 text-dota-gold"></i>Головна</button>
-                    <button id="nav-bracket" onclick="showTab('bracket')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all"><i class="fa-solid fa-sitemap mr-1 text-dota-red"></i>Плей-офф</button>
-                    <button id="nav-teams" onclick="showTab('teams')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all"><i class="fa-solid fa-users mr-1 text-dota-red"></i>Команди</button>
-                    <button id="nav-stream" onclick="showTab('stream')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all"><i class="fa-solid fa-tv mr-1 text-purple-400"></i>Стрім</button>
-                    <button id="nav-news" onclick="showTab('news')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all"><i class="fa-solid fa-newspaper mr-1 text-dota-red"></i>Новини</button>
+                    <button id="nav-home" onclick="showTab('home')" class="nav-link active px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-house mr-1 text-dota-gold"></i>Головна
+                    </button>
+                    <button id="nav-bracket" onclick="showTab('bracket')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-sitemap mr-1 text-dota-red"></i>Плей-офф
+                    </button>
+                    <button id="nav-teams" onclick="showTab('teams')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-users mr-1 text-dota-red"></i>Команди
+                    </button>
+                    <button id="nav-stream" onclick="showTab('stream')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-tv mr-1 text-purple-400"></i>Стрім
+                    </button>
+                    <button id="nav-news" onclick="showTab('news')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-newspaper mr-1 text-dota-red"></i>Новини
+                    </button>
                 </nav>
+                <!-- Mobile menu button -->
                 <div class="flex items-center gap-3">
-                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="lg:hidden text-gray-300 hover:text-white text-2xl p-1"><i class="fa-solid fa-bars"></i></button>
+                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="lg:hidden text-gray-300 hover:text-white text-2xl p-1">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
                 </div>
             </div>
         </div>
+        <!-- Mobile Navigation Menu -->
         <div id="mobileNav" class="hidden lg:hidden bg-dota-card border-b border-dota-border px-4 py-3 space-y-2">
-            <button onclick="showTab('home')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold">Головна</button>
-            <button onclick="showTab('bracket')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold">Плей-оф Сітка</button>
-            <button onclick="showTab('teams')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold">Команди</button>
-            <button onclick="showTab('stream')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold">Стріми</button>
-            <button onclick="showTab('news')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold">Новини</button>
+            <button onclick="showTab('home')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-house mr-2 text-dota-gold"></i>Головна</button>
+            <button onclick="showTab('bracket')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-sitemap mr-2 text-dota-red"></i>Плей-оф Сітка</button>
+            <button onclick="showTab('teams')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-users mr-2 text-dota-red"></i>Команди</button>
+            <button onclick="showTab('stream')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-tv mr-2 text-purple-400"></i>Стріми</button>
+            <button onclick="showTab('news')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-newspaper mr-2 text-dota-red"></i>Новини</button>
         </div>
     </header>
 
     <!-- MAIN APP CONTAINER -->
     <main class="flex-grow">
-        <!-- VIEW 1: HOME -->
+        <!-- VIEW 1: HOME (ГОЛОВНА) -->
         <div id="tab-home" class="tab-content">
+            <!-- Hero Banner -->
             <section class="relative overflow-hidden py-16 lg:py-24 border-b border-dota-border bg-gradient-to-b from-dota-panel via-dota-bg to-dota-bg">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-6">
                     <div class="inline-flex items-center gap-2 bg-dota-bg border border-dota-gold/50 px-4 py-1.5 rounded-full text-xs font-bold text-dota-gold shadow-lg">
-                        <i class="fa-solid fa-fire text-dota-red animate-bounce"></i> ВСЕУКРАЇНСЬКИЙ КІБЕРСПОРТ
+                        <i class="fa-solid fa-fire text-dota-red animate-bounce"></i> ВСЕУКРАЇНСЬКИЙ КІБЕРСПОРТИВНИЙ КУБОК
                     </div>
                     <h1 class="font-rajdhani font-black text-4xl sm:text-6xl lg:text-7xl text-white tracking-wider uppercase">
                         Spring <span class="text-dota-red glow-red">DOTA 2</span> Cup
                     </h1>
                     <p class="max-w-2xl text-sm sm:text-base text-gray-300">
-                        Найсильніші команди зійдуться у грандіозній битві за звання чемпіона та призовий фонд у 6000 гривень!
+                        8 найсильніших команд зійдуться у грандіозній битві за звання чемпіона та призовий фонд у 6 000 гривень!
                     </p>
                     <div class="flex flex-wrap justify-center gap-4 pt-4">
-                        <button onclick="showTab('bracket')" class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-dota-red/30 transition-all flex items-center gap-2"><i class="fa-solid fa-sitemap"></i> Дивитись Плей-офф Сітку</button>
-                        <button onclick="showTab('teams')" class="dota-glass hover:bg-dota-panel text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl border border-dota-border transition-all flex items-center gap-2"><i class="fa-solid fa-users text-dota-red"></i> Переглянути Команди</button>
+                        <button onclick="showTab('bracket')" class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-dota-red/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-sitemap"></i> Дивитись Плей-офф Сітку
+                        </button>
+                        <button onclick="showTab('teams')" class="dota-glass hover:bg-dota-panel text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl border border-dota-border transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-users text-dota-red"></i> Переглянути Команди
+                        </button>
                     </div>
                 </div>
             </section>
+            <!-- Quick Stats & Highlights -->
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
@@ -123,13 +178,14 @@
                     </div>
                     <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
                         <div id="homeTeamsCount" class="text-3xl font-rajdhani font-black text-dota-red">8</div>
-                        <div class="text-xs text-gray-400 uppercase font-bold">Учасників</div>
+                        <div class="text-xs text-gray-400 uppercase font-bold">Команд-учасниць</div>
                     </div>
                     <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
                         <div class="text-3xl font-rajdhani font-black text-dota-red">Double Elim</div>
                         <div class="text-xs text-gray-400 uppercase font-bold">Формат турніру</div>
                     </div>
                 </div>
+                <!-- Latest News Preview -->
                 <div class="space-y-6">
                     <div class="flex items-center justify-between border-b border-dota-border pb-4">
                         <h2 class="font-rajdhani font-black text-2xl text-white uppercase tracking-wider">ОСТАННІ НОВИНИ ТУРНІРУ</h2>
@@ -140,16 +196,19 @@
             </section>
         </div>
 
-        <!-- VIEW 2: BRACKET -->
+        <!-- VIEW 2: PLAY-OFF DOUBLE ELIMINATION BRACKET -->
         <div id="tab-bracket" class="tab-content hidden">
             <section class="border-b border-dota-border bg-gradient-to-b from-dota-panel to-dota-bg py-8">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <span class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1 block">Кіберспортивна Ліга 2027</span>
-                    <h1 class="font-rajdhani font-black text-3xl sm:text-4xl text-white">ПЛЕЙ-ОФ СІТКА (DOUBLE ELIMINATION)</h1>
-                    <p class="text-xs text-gray-400 mt-1">Натисніть на матч для перегляду деталей.</p>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <span class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1 block">Кіберспортивна Ліга 2027</span>
+                        <h1 class="font-rajdhani font-black text-3xl sm:text-4xl text-white">ПЛЕЙ-ОФ СІТКА (DOUBLE ELIMINATION)</h1>
+                        <p class="text-xs text-gray-400 mt-1">Натисніть на матч для перегляду деталей.</p>
+                    </div>
                 </div>
             </section>
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+                <!-- Upper Bracket -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
@@ -159,6 +218,7 @@
                         <div id="upperBracketRender" class="min-w-[960px] grid grid-cols-3 gap-8 items-center"></div>
                     </div>
                 </div>
+                <!-- Lower Bracket -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
@@ -168,25 +228,26 @@
                         <div id="lowerBracketRender" class="min-w-[1100px] grid grid-cols-4 gap-6 items-center"></div>
                     </div>
                 </div>
+                <!-- Grand Final -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-3.5 h-7 bg-dota-gold rounded-full"></div>
-                        <h2 class="font-rajdhani text-2xl font-black text-white uppercase">🏆 ГРАНД-ФІНАЛ (BO3)</h2>
+                        <h2 class="font-rajdhani text-2xl font-black text-white uppercase">🏆 ГРАНД-ФІНАЛ (BO5)</h2>
                     </div>
                     <div id="grandFinalRender" class="dota-glass rounded-3xl p-6 border border-dota-gold/60 bg-gradient-to-r from-dota-panel via-dota-bg to-dota-panel"></div>
                 </div>
             </section>
         </div>
 
-        <!-- VIEW 3: TEAMS -->
+        <!-- VIEW 3: TEAMS ROSTERS -->
         <div id="tab-teams" class="tab-content hidden">
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
                 <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-dota-border pb-6">
                     <div>
-                        <div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Учасники</div>
+                        <div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Учасники турніру</div>
                         <h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">КОМАНДИ</h1>
                     </div>
-                    <div>
+                    <div class="flex items-center gap-3">
                         <input type="text" id="teamSearchInput" onkeyup="renderTeamsView()" placeholder="Пошук команди..." class="bg-dota-panel border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-dota-red w-64">
                     </div>
                 </div>
@@ -201,7 +262,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
-                            <h2 class="font-rajdhani font-bold text-white text-xl">ОФІЦІЙНА ТРАНСЛЯЦІЯ</h2>
+                            <h2 class="font-rajdhani font-bold text-white text-xl uppercase">ОФІЦІЙНА ТРАНСЛЯЦІЯ</h2>
                         </div>
                     </div>
                     <div id="twitchWrapper" class="aspect-video w-full rounded-2xl bg-black border border-dota-border overflow-hidden"></div>
@@ -221,21 +282,25 @@
         </div>
     </main>
 
+    <!-- FOOTER -->
     <footer class="bg-dota-bg border-t border-dota-border py-8 text-xs text-gray-400">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
-            <p>© 2027 Spring Cup Dota 2. Всі права захищено.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="font-rajdhani font-bold text-white text-sm">SPRING CUP DOTA 2</span>
+                <p>© 2027 Всі права захищено.</p>
+            </div>
         </div>
     </footer>
 
-    <!-- MODAL: MATCH DETAILS -->
+    <!-- MODAL MATCH DETAILS -->
     <div id="matchModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="dota-glass max-w-3xl w-full rounded-3xl p-6 border border-dota-border relative space-y-6">
+        <div class="dota-glass max-w-3xl w-full rounded-3xl p-6 border border-dota-border relative space-y-6 max-h-[90vh] overflow-y-auto">
             <button onclick="closeMatchModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             <div id="matchModalContent"></div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- APPLICATION JAVASCRIPT -->
     <script>
         const DEFAULT_TEAMS = [
             { id: 1, name: "KNU Lions", tag: "KNU", mmr: "7800 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=LIONS", captain: "NightStalker", roster: ["InvokerPro", "StormKing", "AxeMaster", "RubickUA", "WardSaver"] },
@@ -249,28 +314,34 @@
         ];
 
         const DEFAULT_MATCHES = [
-            { id: "UB_QF1", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 1, team2Id: 2, score1: 2, score2: 0, status: "finished", winnerId: 1, loserId: 2, date: "12 Лис, 14:00", format: "BO3" },
-            { id: "UB_QF2", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 3, team2Id: 4, score1: 2, score2: 1, status: "finished", winnerId: 3, loserId: 4, date: "12 Лис, 17:00", format: "BO3" },
-            { id: "UB_QF3", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 5, team2Id: 6, score1: 2, score2: 0, status: "finished", winnerId: 5, loserId: 6, date: "13 Лис, 14:00", format: "BO3" },
-            { id: "UB_QF4", bracket: "upper", round: "1/4 Фіналу UB", team1Id: 7, team2Id: 8, score1: 1, score2: 2, status: "finished", winnerId: 8, loserId: 7, date: "13 Лис, 17:00", format: "BO3" },
-            { id: "UB_SF1", bracket: "upper", round: "1/2 Фіналу UB", team1Id: 1, team2Id: 3, score1: 2, score2: 1, status: "finished", winnerId: 1, loserId: 3, date: "14 Лис, 15:00", format: "BO3" },
-            { id: "UB_SF2", bracket: "upper", round: "1/2 Фіналу UB", team1Id: 5, team2Id: 8, score1: 1, score2: 2, status: "finished", winnerId: 8, loserId: 5, date: "14 Лис, 18:00", format: "BO3" },
-            { id: "UB_FINAL", bracket: "upper", round: "Фінал Верхньої Сітки", team1Id: 1, team2Id: 8, score1: 1, score2: 1, status: "live", winnerId: null, loserId: null, date: "СЬОГОДНІ LIVE", format: "BO3" },
-            { id: "LB_R1_M1", bracket: "lower", round: "Раунд 1 LB", team1Id: 2, team2Id: 4, score1: 1, score2: 0, status: "finished", winnerId: 2, loserId: 4, date: "14 Лис, 12:00", format: "BO1" },
-            { id: "LB_R1_M2", bracket: "lower", round: "Раунд 1 LB", team1Id: 6, team2Id: 7, score1: 0, score2: 1, status: "finished", winnerId: 7, loserId: 6, date: "14 Лис, 13:30", format: "BO1" },
-            { id: "LB_R2_M1", bracket: "lower", round: "Раунд 2 LB", team1Id: 5, team2Id: 2, score1: 2, score2: 1, status: "finished", winnerId: 5, loserId: 2, date: "15 Лис, 14:00", format: "BO3" },
-            { id: "LB_R2_M2", bracket: "lower", round: "Раунд 2 LB", team1Id: 3, team2Id: 7, score1: 2, score2: 0, status: "finished", winnerId: 3, loserId: 7, date: "15 Лис, 17:00", format: "BO3" },
-            { id: "LB_R3", bracket: "lower", round: "Півфінал LB", team1Id: 5, team2Id: 3, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "16 Лис, 16:00", format: "BO3" },
+            { id: "UB_QF1", bracket: "upper", round: "1/4 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "12 Лис, 14:00", format: "BO3" },
+            { id: "UB_QF2", bracket: "upper", round: "1/4 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "12 Лис, 17:00", format: "BO3" },
+            { id: "UB_QF3", bracket: "upper", round: "1/4 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "13 Лис, 14:00", format: "BO3" },
+            { id: "UB_QF4", bracket: "upper", round: "1/4 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "13 Лис, 17:00", format: "BO3" },
+            { id: "UB_SF1", bracket: "upper", round: "1/2 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "14 Лис, 15:00", format: "BO3" },
+            { id: "UB_SF2", bracket: "upper", round: "1/2 Фіналу UB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "14 Лис, 18:00", format: "BO3" },
+            { id: "UB_FINAL", bracket: "upper", round: "Фінал Верхньої Сітки", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "15 Лис, 18:00", format: "BO3" },
+            { id: "LB_R1_M1", bracket: "lower", round: "Раунд 1 LB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "14 Лис, 12:00", format: "BO1" },
+            { id: "LB_R1_M2", bracket: "lower", round: "Раунд 1 LB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "14 Лис, 13:30", format: "BO1" },
+            { id: "LB_R2_M1", bracket: "lower", round: "Раунд 2 LB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "15 Лис, 14:00", format: "BO3" },
+            { id: "LB_R2_M2", bracket: "lower", round: "Раунд 2 LB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "15 Лис, 17:00", format: "BO3" },
+            { id: "LB_R3", bracket: "lower", round: "Півфінал LB", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "16 Лис, 16:00", format: "BO3" },
             { id: "LB_FINAL", bracket: "lower", round: "Фінал Нижньої Сітки", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "17 Лис, 16:00", format: "BO3" },
             { id: "GF", bracket: "gf", round: "🏆 ГРАНД-ФІНАЛ", team1Id: null, team2Id: null, score1: 0, score2: 0, status: "upcoming", winnerId: null, loserId: null, date: "18 Лис, 18:00", format: "BO5" }
         ];
 
         const DEFAULT_NEWS = [
             { id: 1, title: "Розпочався грандіозний плей-оф турніру!", date: "12 Листопада 2026", desc: "Сьогодні стартували перші чвертьфінальні матчі у верхній сітці між найсильнішими командами.", img: "https://placehold.co/600x400/161c2b/e53935?text=Play-offs+Start" },
-            { id: 2, title: "Рекордні перегляди на офіційному стрімі чемпіонату", date: "11 Листопада 2026", desc: "Тисячі фанатів доти одночасно спостерігали за напруженими дербі.", img: "https://placehold.co/600x400/161c2b/e53935?text=Record+Views" }
+            { id: 2, title: "Анонс турніру та реєстрація команд", date: "10 Листопада 2026", desc: "Головний призовий фонд цього сезону становить 6000 гривень. Всі 8 команд готові до битви!", img: "https://placehold.co/600x400/161c2b/e53935?text=Tournament+Announce" }
         ];
 
-        let state = { prizePool: "6,000 ₴", teams: [], matches: [], news: [], streamUrl: "dota2ti" };
+        let state = {
+            prizePool: "6,000 ₴",
+            teams: [],
+            matches: [],
+            news: [],
+            streamUrl: "dota2ti"
+        };
 
         window.onload = function() {
             loadFromLocalStorage();
@@ -285,7 +356,9 @@
                     if (!Array.isArray(state.teams)) state.teams = JSON.parse(JSON.stringify(DEFAULT_TEAMS));
                     if (!Array.isArray(state.matches)) state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
                     if (!Array.isArray(state.news)) state.news = JSON.parse(JSON.stringify(DEFAULT_NEWS));
-                } catch(e) { resetStateToDefaults(); }
+                } catch(e) {
+                    resetStateToDefaults();
+                }
             } else {
                 resetStateToDefaults();
             }
@@ -303,26 +376,35 @@
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
             const target = document.getElementById(`tab-${tabId}`);
             if (target) target.classList.remove('hidden');
+
             const btn = document.getElementById(`nav-${tabId}`);
             if (btn) btn.classList.add('active');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.getElementById('mobileNav')?.classList.add('hidden');
         }
 
-        function toggleMobileMenu() { document.getElementById('mobileNav').classList.toggle('hidden'); }
-
-        function renderAllViews() {
-            renderHomeView(); renderBracketView(); renderTeamsView(); renderStreamView(); renderNewsView();
+        function toggleMobileMenu() {
+            document.getElementById('mobileNav').classList.toggle('hidden');
         }
 
-        // Безпечний вивід зображень (підтримує Data-URL (Base64) та звичайні посилання)
+        function renderAllViews() {
+            renderHomeView();
+            renderBracketView();
+            renderTeamsView();
+            renderStreamView();
+            renderNewsView();
+        }
+
         function safeImageUrl(value) {
             const raw = String(value || '').trim();
             if (raw.startsWith('data:image/') || /^https?:\/\//i.test(raw)) return raw;
             return 'https://placehold.co/800x400/161c2b/e53935?text=Dota2';
         }
+
         function escapeHTML(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
         }
@@ -330,10 +412,11 @@
         function renderHomeView() {
             document.getElementById('homePrizePool').innerText = state.prizePool;
             document.getElementById('homeTeamsCount').innerText = state.teams.length;
+            
             const container = document.getElementById('homeNewsContainer');
             container.innerHTML = state.news.slice(0, 3).map(n => `
                 <div class="dota-glass rounded-2xl overflow-hidden border border-dota-border flex flex-col">
-                    <img src="${safeImageUrl(n.img)}" alt="News" class="h-44 w-full object-cover">
+                    <img src="${safeImageUrl(n.img)}" alt="${escapeHTML(n.title)}" class="h-44 w-full object-cover">
                     <div class="p-5 space-y-2 flex-grow flex flex-col justify-between">
                         <div>
                             <span class="text-[10px] text-dota-gold font-mono">${escapeHTML(n.date || '')}</span>
@@ -351,9 +434,18 @@
             const ub3 = state.matches.filter(m => m.id === 'UB_FINAL');
 
             document.getElementById('upperBracketRender').innerHTML = `
-                <div class="space-y-6"><div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">1/4 Фіналу</div>${ub1.map(m => createBracketCardHTML(m)).join('')}</div>
-                <div class="space-y-12"><div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-border pb-1.5">1/2 Фіналу</div>${ub2.map(m => createBracketCardHTML(m)).join('')}</div>
-                <div class="space-y-6"><div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/50 pb-1.5">👑 Фінал Верхньої Сітки</div>${ub3.map(m => createBracketCardHTML(m, 'gold')).join('')}</div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">1/4 Фіналу</div>
+                    ${ub1.map(m => createBracketCardHTML(m)).join('')}
+                </div>
+                <div class="space-y-12">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-border pb-1.5">1/2 Фіналу</div>
+                    ${ub2.map(m => createBracketCardHTML(m)).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/50 pb-1.5">👑 Фінал Верхньої Сітки</div>
+                    ${ub3.map(m => createBracketCardHTML(m, 'gold')).join('')}
+                </div>
             `;
 
             const lb1 = state.matches.filter(m => m.id.startsWith('LB_R1'));
@@ -362,15 +454,27 @@
             const lb4 = state.matches.filter(m => m.id === 'LB_FINAL');
 
             document.getElementById('lowerBracketRender').innerHTML = `
-                <div class="space-y-6"><div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 1 (BO1)</div>${lb1.map(m => createBracketCardHTML(m, 'cyan')).join('')}</div>
-                <div class="space-y-8"><div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 2 (BO3)</div>${lb2.map(m => createBracketCardHTML(m, 'cyan')).join('')}</div>
-                <div class="space-y-6"><div class="text-xs font-rajdhani font-bold text-purple-400 uppercase text-center border-b border-dota-border pb-1.5">Півфінал LB</div>${lb3.map(m => createBracketCardHTML(m, 'cyan')).join('')}</div>
-                <div class="space-y-6"><div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/40 pb-1.5">🔥 Фінал Нижньої Сітки</div>${lb4.map(m => createBracketCardHTML(m, 'gold')).join('')}</div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 1 (BO1)</div>
+                    ${lb1.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-8">
+                    <div class="text-xs font-rajdhani font-bold text-dota-red uppercase text-center border-b border-dota-border pb-1.5">Раунд 2 (BO3)</div>
+                    ${lb2.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-purple-400 uppercase text-center border-b border-dota-border pb-1.5">Півфінал LB</div>
+                    ${lb3.map(m => createBracketCardHTML(m, 'cyan')).join('')}
+                </div>
+                <div class="space-y-6">
+                    <div class="text-xs font-rajdhani font-bold text-dota-gold uppercase text-center border-b border-dota-gold/40 pb-1.5">🔥 Фінал Нижньої Сітки</div>
+                    ${lb4.map(m => createBracketCardHTML(m, 'gold')).join('')}
+                </div>
             `;
 
             const gf = state.matches.find(m => m.id === 'GF');
-            const t1 = state.teams.find(t => t.id === gf.team1Id) || { name: "Переможець UB", logo: "https://placehold.co/100x100" };
-            const t2 = state.teams.find(t => t.id === gf.team2Id) || { name: "Переможець LB", logo: "https://placehold.co/100x100" };
+            const t1 = state.teams.find(t => t.id === gf.team1Id) || { name: "Очікується (UB)", tag: "UB", logo: "" };
+            const t2 = state.teams.find(t => t.id === gf.team2Id) || { name: "Очікується (LB)", tag: "LB", logo: "" };
             const gfWinner = state.teams.find(t => t.id === gf.winnerId);
 
             document.getElementById('grandFinalRender').innerHTML = `
@@ -380,17 +484,17 @@
                             <span class="text-[10px] text-dota-red font-bold uppercase tracking-[.22em]">ФІНАЛЬНИЙ ЕТАП</span>
                             <h3 class="font-rajdhani font-black text-2xl sm:text-3xl text-white">ГРАНД-ФІНАЛ</h3>
                         </div>
-                        <span class="text-xs font-mono text-gray-300 bg-dota-bg border border-dota-border px-3 py-2 rounded-lg">BO3 · ${gf.date}</span>
+                        <span class="text-xs font-mono text-gray-300 bg-dota-bg border border-dota-border px-3 py-2 rounded-lg">BO5 · ${gf.date}</span>
                     </div>
                     <div class="flex items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
-                            <img src="${safeImageUrl(t1.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border bg-black">
+                            ${t1.logo ? `<img src="${safeImageUrl(t1.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border bg-black">` : `<div class="w-10 h-10 rounded-lg bg-dota-panel border border-dota-border flex items-center justify-center text-xs font-bold text-gray-500">TBA</div>`}
                             <strong class="text-sm text-white">${t1.name}</strong>
                         </div>
                         <div class="font-mono font-black text-2xl text-white">${gf.score1} : ${gf.score2}</div>
                         <div class="flex items-center gap-3">
                             <strong class="text-sm text-white">${t2.name}</strong>
-                            <img src="${safeImageUrl(t2.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border bg-black">
+                            ${t2.logo ? `<img src="${safeImageUrl(t2.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border bg-black">` : `<div class="w-10 h-10 rounded-lg bg-dota-panel border border-dota-border flex items-center justify-center text-xs font-bold text-gray-500">TBA</div>`}
                         </div>
                     </div>
                     ${gfWinner ? `<div class="text-center text-xs text-dota-gold font-bold"><i class="fa-solid fa-crown mr-1"></i> Чемпіон: ${gfWinner.name}</div>` : ''}
@@ -399,9 +503,10 @@
         }
 
         function createBracketCardHTML(m, theme = 'normal') {
-            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "https://placehold.co/50x50" };
-            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "https://placehold.co/50x50" };
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "Очікується", logo: "" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "Очікується", logo: "" };
             const isLive = m.status === 'live';
+
             let borderStyle = 'border-dota-border';
             if (theme === 'gold') borderStyle = 'border-dota-gold/70';
             if (theme === 'cyan') borderStyle = 'border-dota-red/50';
@@ -416,15 +521,15 @@
                     </div>
                     <div class="flex justify-between items-center py-1">
                         <div class="flex items-center gap-2">
-                            <img src="${safeImageUrl(t1.logo)}" class="w-6 h-6 object-cover rounded bg-black">
-                            <span class="text-xs font-bold ${m.winnerId === t1.id ? 'text-dota-gold' : 'text-white'}">${t1.name}</span>
+                            ${t1.logo ? `<img src="${safeImageUrl(t1.logo)}" class="w-6 h-6 object-cover rounded bg-black">` : `<div class="w-6 h-6 rounded bg-dota-panel flex items-center justify-center text-[9px] text-gray-500 font-bold">?</div>`}
+                            <span class="text-xs font-bold ${m.winnerId && m.winnerId === t1.id ? 'text-dota-gold' : 'text-white'}">${t1.name}</span>
                         </div>
                         <span class="font-mono font-bold text-xs ${m.score1 > m.score2 ? 'text-dota-gold' : 'text-gray-400'}">${m.score1}</span>
                     </div>
                     <div class="flex justify-between items-center py-1 border-t border-dota-border/30">
                         <div class="flex items-center gap-2">
-                            <img src="${safeImageUrl(t2.logo)}" class="w-6 h-6 object-cover rounded bg-black">
-                            <span class="text-xs font-bold ${m.winnerId === t2.id ? 'text-dota-gold' : 'text-white'}">${t2.name}</span>
+                            ${t2.logo ? `<img src="${safeImageUrl(t2.logo)}" class="w-6 h-6 object-cover rounded bg-black">` : `<div class="w-6 h-6 rounded bg-dota-panel flex items-center justify-center text-[9px] text-gray-500 font-bold">?</div>`}
+                            <span class="text-xs font-bold ${m.winnerId && m.winnerId === t2.id ? 'text-dota-gold' : 'text-white'}">${t2.name}</span>
                         </div>
                         <span class="font-mono font-bold text-xs ${m.score2 > m.score1 ? 'text-dota-gold' : 'text-gray-400'}">${m.score2}</span>
                     </div>
@@ -435,6 +540,7 @@
         function renderTeamsView() {
             const container = document.getElementById('teamsContainer');
             const q = (document.getElementById('teamSearchInput')?.value || '').toLowerCase();
+            
             const filtered = state.teams.filter(t => 
                 t.name.toLowerCase().includes(q) || 
                 t.tag.toLowerCase().includes(q) || 
@@ -473,14 +579,16 @@
         function renderStreamView() {
             const wrapper = document.getElementById('twitchWrapper');
             const channel = state.streamUrl || "dota2ti";
-            wrapper.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname || 'localhost'}&autoplay=false" height="100%" width="100%" allowfullscreen></iframe>`;
+            wrapper.innerHTML = `
+                <iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname || 'localhost'}&autoplay=false" height="100%" width="100%" allowfullscreen></iframe>
+            `;
         }
 
         function renderNewsView() {
             const container = document.getElementById('newsContainer');
             container.innerHTML = state.news.map(n => `
                 <div class="dota-glass rounded-2xl overflow-hidden border border-dota-border flex flex-col">
-                    <img src="${safeImageUrl(n.img)}" alt="News" class="h-48 w-full object-cover">
+                    <img src="${safeImageUrl(n.img)}" alt="${escapeHTML(n.title)}" class="h-48 w-full object-cover">
                     <div class="p-6 space-y-3 flex-grow flex flex-col justify-between">
                         <div>
                             <span class="text-xs text-dota-gold font-mono">${escapeHTML(n.date || '')}</span>
@@ -495,21 +603,23 @@
         function openMatchModal(matchId) {
             const m = state.matches.find(x => x.id === matchId);
             if (!m) return;
-            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA" };
-            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA" };
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "Очікується" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "Очікується" };
 
             document.getElementById('matchModalContent').innerHTML = `
                 <div class="text-center space-y-2 border-b border-dota-border pb-4">
                     <span class="bg-dota-red text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase font-mono">${m.round} • ${m.format}</span>
                     <h2 class="font-rajdhani font-black text-2xl text-white">${t1.name} VS ${t2.name}</h2>
                     <div class="font-mono text-3xl font-black text-dota-gold">${m.score1} : ${m.score2}</div>
-                    <p class="text-xs text-gray-400">Час: ${m.date}</p>
+                    <p class="text-xs text-gray-400">Час проведення: ${m.date}</p>
                 </div>
             `;
             document.getElementById('matchModal').classList.remove('hidden');
         }
 
-        function closeMatchModal() { document.getElementById('matchModal').classList.add('hidden'); }
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
