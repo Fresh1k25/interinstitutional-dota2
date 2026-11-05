@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-
-<html class="dark scroll-smooth" lang="uk">
+<html lang="uk" class="dark scroll-smooth">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Міжвузівський Dota 2 Championship — Головна</title>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&amp;family=Inter:wght@300;400;500;600;700;800&amp;family=Rajdhani:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
-<!-- FontAwesome Icons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Cup Dota 2 — Головна</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -42,7 +41,7 @@
             }
         }
     </script>
-<style>
+    <style>
         body {
             background-color: #080b11;
             background-image: 
@@ -52,652 +51,258 @@
             color: #e2e8f0;
             background-attachment: fixed;
         }
-
         .dota-glass {
             background: linear-gradient(135deg, rgba(22, 28, 43, 0.94) 0%, rgba(12, 16, 25, 0.97) 100%);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
         }
-
         .dota-match-card {
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .dota-match-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px -4px rgba(229, 57, 53, 0.28);
             border-color: rgba(229, 57, 53, 0.62);
         }
-
         .glow-red { text-shadow: 0 0 12px rgba(255, 70, 85, 0.88); }
         .glow-gold { text-shadow: 0 0 12px rgba(245, 158, 11, 0.85); }
-        .glow-cyan { text-shadow: 0 0 12px rgba(6, 182, 212, 0.85); }
-
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #080b11; }
         ::-webkit-scrollbar-thumb { background: #232d42; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #e53935; }
-
         .nav-link.active {
             background-color: rgba(229, 57, 53, 0.2);
             border-color: rgba(229, 57, 53, 0.7);
             color: #ffffff;
             box-shadow: 0 0 15px rgba(229, 57, 53, 0.28);
         }
-
-
-        /* VISUAL POLISH — preserves the existing tournament structure and logic */
-        :root {
-            color-scheme: dark;
-            --accent: #e53935;
-            --accent-bright: #ff4655;
-            --surface: rgba(15, 22, 36, .88);
-            --line: rgba(180, 90, 95, .16);
-        }
-        html { scroll-padding-top: 88px; }
-        body {
-            background-color: #070c16;
-            background-image:
-                radial-gradient(ellipse at 50% -12%, rgba(229,57,53,.22), transparent 58%),
-                radial-gradient(circle at 92% 34%, rgba(6,182,212,.075), transparent 34%),
-                linear-gradient(180deg, #080e1a 0%, #070b13 58%, #080d17 100%);
-            line-height: 1.55;
-        }
-        ::selection { background: rgba(229,57,53,.42); color: #fff; }
-        ::-webkit-scrollbar { width: 9px; height: 9px; }
-        ::-webkit-scrollbar-track { background: #080d17; }
-        ::-webkit-scrollbar-thumb { background: #542326; border: 2px solid #080d17; border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: #e53935; }
-        button, input, select { -webkit-tap-highlight-color: transparent; }
-        button { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease; }
-        button:focus-visible, input:focus-visible, select:focus-visible {
-            outline: 2px solid #ff4655; outline-offset: 3px;
-        }
-        .dota-glass {
-            background: linear-gradient(145deg, rgba(19,29,47,.94), rgba(10,16,27,.96));
-            border-color: rgba(180,90,95,.15);
-            box-shadow: 0 14px 38px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.025);
-        }
-        .dota-match-card {
-            background: linear-gradient(145deg, rgba(16,25,41,.98), rgba(8,14,25,.98));
-            border-color: rgba(180,90,95,.18);
-            box-shadow: 0 8px 20px rgba(0,0,0,.16);
-        }
-        .dota-match-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255,70,85,.72);
-            box-shadow: 0 12px 28px rgba(150,25,32,.20);
-        }
-        .nav-link.active {
-            background: linear-gradient(135deg, rgba(229,57,53,.22), rgba(229,57,53,.08));
-            border-color: rgba(255,70,85,.45);
-            color: #fff;
-            box-shadow: 0 0 22px rgba(229,57,53,.12);
-        }
-        header {
-            background: rgba(7,12,22,.88) !important;
-            border-color: rgba(180,90,95,.16) !important;
-            box-shadow: 0 10px 35px rgba(0,0,0,.24) !important;
-        }
-        header > div { min-height: 72px; }
-        .tab-content section { scroll-margin-top: 90px; }
-        .dota-glass, .dota-match-card { backdrop-filter: blur(14px); }
-        #tab-home > section:first-child {
-            background-image: radial-gradient(ellipse at 50% 0%, rgba(229,57,53,.16), transparent 62%), linear-gradient(180deg, rgba(19,29,47,.78), rgba(7,12,22,0));
-        }
-        #tab-home h1 { text-wrap: balance; }
-        #homeNewsContainer > div, #newsContainer > div, #teamsContainer > div {
-            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-        }
-        #homeNewsContainer > div:hover, #newsContainer > div:hover, #teamsContainer > div:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255,70,85,.38);
-            box-shadow: 0 16px 34px rgba(0,0,0,.22);
-        }
-        input, select {
-            transition: border-color .18s ease, box-shadow .18s ease;
-        }
-        input:focus, select:focus {
-            border-color: rgba(255,70,85,.75) !important;
-            box-shadow: 0 0 0 3px rgba(229,57,53,.12);
-            outline: none;
-        }
-        #mobileNav { background: rgba(10,17,29,.98) !important; }
-        #mobileNav button { border-radius: 10px; padding: 10px 12px; }
-        #mobileNav button:hover { background: rgba(229,57,53,.12); }
-        #toast { backdrop-filter: blur(16px); box-shadow: 0 18px 50px rgba(0,0,0,.42); }
-        footer { border-color: rgba(180,90,95,.16) !important; }
-
-        .gf-connectors span { width: 100%; height: 1px; background: linear-gradient(90deg, rgba(229,57,53,.85), rgba(229,57,53,.2)); position: relative; }
-        .gf-connectors span::after { content: ""; position: absolute; right: -1px; top: -4px; width: 8px; height: 8px; border-top: 1px solid rgba(229,57,53,.9); border-right: 1px solid rgba(229,57,53,.9); transform: rotate(45deg); }
-        .gf-source { min-height: 64px; }
-        .admin-action-card { background: linear-gradient(145deg, rgba(23,25,34,.96), rgba(9,12,19,.98)); border: 1px solid rgba(229,57,53,.2); }
-        .news-editor-input { width: 100%; background: #080b11; border: 1px solid #3b2930; border-radius: 12px; padding: 11px 13px; color: #f8fafc; font-size: 12px; }
-        .news-editor-input:focus { border-color: #e53935; outline: none; box-shadow: 0 0 0 3px rgba(229,57,53,.12); }
-        #newsModal { z-index: 70; }
-        @media (max-width: 1023px) { .gf-connectors { display: none !important; } }
-
-        /* The existing bracket becomes a compact vertical round layout on phones. */
-        @media (max-width: 767px) {
-            header .h-20 { height: 66px; }
-            header a .w-11 { width: 38px; height: 38px; }
-            header a span.font-rajdhani { font-size: 14px; letter-spacing: .035em; }
-            header a .text-\[10px\] { font-size: 8px; }
-            #nav-admin { padding: 9px 11px !important; font-size: 10px !important; }
-            #mobileMenuBtn { font-size: 21px; }
-            #tab-home > section:first-child { padding-top: 54px; padding-bottom: 58px; }
-            #tab-home h1 { font-size: clamp(2.15rem, 9vw, 3.5rem); line-height: .98; }
-            #tab-home .grid { gap: 12px; }
-            #tab-home .grid > div { padding: 18px 12px; }
-            #tab-bracket .dota-glass { padding: 13px; overflow: visible !important; }
-            #upperBracketRender, #lowerBracketRender {
-                min-width: 0 !important;
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 20px !important;
-                width: 100%;
-            }
-            #upperBracketRender > div, #lowerBracketRender > div {
-                width: 100%;
-                min-width: 0;
-                padding: 12px;
-                border: 1px solid rgba(180,90,95,.13);
-                border-radius: 15px;
-                background: rgba(5,11,20,.32);
-            }
-            #upperBracketRender .dota-match-card, #lowerBracketRender .dota-match-card {
-                width: 100%;
-                padding: 12px;
-            }
-            #upperBracketRender .dota-match-card span, #lowerBracketRender .dota-match-card span {
-                min-width: 0;
-                overflow-wrap: anywhere;
-            }
-            #upperBracketRender .dota-match-card .flex.items-center,
-            #lowerBracketRender .dota-match-card .flex.items-center { min-width: 0; gap: 6px; }
-            #upperBracketRender .dota-match-card .text-xs,
-            #lowerBracketRender .dota-match-card .text-xs { font-size: 11px; }
-            #grandFinalRender { padding: 18px 12px; }
-            #grandFinalRender .flex.items-center.gap-6 { gap: 12px; width: 100%; justify-content: center; }
-            #grandFinalRender .text-3xl { font-size: 1.5rem; padding: 8px 12px; }
-            #tab-teams .flex.items-center.gap-3 { flex-wrap: wrap; }
-            #teamSearchInput { width: 100%; min-width: 0; }
-            #tab-teams .flex.items-center.gap-3:has(#teamSearchInput) { width: 100%; }
-            #tab-teams .flex.items-center.gap-3:has(#teamSearchInput) button { white-space: nowrap; }
-            #adminMatchesEditor > div { align-items: stretch; }
-            #adminMatchesEditor > div > div:nth-child(2) { width: 100%; justify-content: center; flex-wrap: wrap; }
-            #adminMatchesEditor > div > div:last-child, #adminMatchesEditor select { width: 100%; }
-            #adminSecTeams > div:first-child { gap: 12px; flex-wrap: wrap; }
-            #toast { left: 14px; right: 14px; bottom: 14px; }
-        }
-        @media (max-width: 420px) {
-            #nav-admin span { display: none; }
-            #nav-admin { min-width: 38px; justify-content: center; }
-            #tab-bracket h1 { font-size: 1.65rem; line-height: 1.05; }
-            #tab-bracket h2 { font-size: 1.15rem; }
-            #grandFinalRender .flex.items-center.gap-6 { gap: 7px; }
-            #grandFinalRender .w-14 { width: 42px; height: 42px; }
-            #grandFinalRender .text-xs { font-size: 10px; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-        }
-
     </style>
-<style>
-
-/* ===== CINEMATIC VISUAL REFRESH — presentation only; no behavior changes ===== */
-:root {
-  --ui-bg: #07090f;
-  --ui-panel: #10141e;
-  --ui-panel-2: #151a26;
-  --ui-line: rgba(255,255,255,.075);
-  --ui-line-red: rgba(239,55,63,.25);
-  --ui-red: #ed343d;
-  --ui-red-hot: #ff515a;
-  --ui-muted: #9299a8;
-  color-scheme: dark;
-}
-html { background: var(--ui-bg); }
-body {
-  color: #edf0f6;
-  background-color: var(--ui-bg) !important;
-  background-image:
-    radial-gradient(ellipse at 50% -14%, rgba(225,35,45,.20), transparent 48%),
-    radial-gradient(ellipse at 4% 38%, rgba(95,20,28,.14), transparent 34%),
-    radial-gradient(ellipse at 98% 72%, rgba(92,18,27,.12), transparent 32%),
-    linear-gradient(180deg,#080a11 0%,#090c14 48%,#07090f 100%) !important;
-  background-attachment: fixed;
-  letter-spacing: .005em;
-}
-body::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; opacity: .16;
-  background-image: linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size: 54px 54px;
-  mask-image: linear-gradient(to bottom,black,transparent 86%);
-}
-::selection { background: rgba(237,52,61,.42); color: #fff; }
-::-webkit-scrollbar-track { background: #080a10 !important; }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#8d2830,#441b23) !important; border: 2px solid #080a10; }
-::-webkit-scrollbar-thumb:hover { background: #ed343d !important; }
-button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
-button { font-family: Inter,sans-serif; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #ff5a63 !important; outline-offset: 3px; }
-
-/* Top navigation */
-header.sticky {
-  background: rgba(7,9,15,.88) !important;
-  border-bottom: 1px solid rgba(239,55,63,.22) !important;
-  box-shadow: 0 12px 36px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.035) !important;
-  backdrop-filter: blur(22px) saturate(145%);
-}
-header.sticky > div { max-width: 1360px; }
-header .h-20 { height: 78px; }
-header a.group { gap: 13px; }
-header a.group > div:first-child {
-  border-radius: 14px !important;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.1),0 7px 24px rgba(229,38,48,.22) !important;
-}
-header nav { padding: 5px; border: 1px solid rgba(255,255,255,.055); background: rgba(255,255,255,.025); border-radius: 15px; }
-.nav-link {
-  padding: 10px 15px !important; border-radius: 11px !important; font-size: 12px !important;
-  letter-spacing: .015em; transition: color .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease !important;
-}
-.nav-link:hover { background: rgba(255,255,255,.055); color: #fff !important; transform: translateY(-1px); }
-.nav-link.active {
-  color: #fff !important; background: linear-gradient(135deg,rgba(237,52,61,.25),rgba(123,22,31,.15)) !important;
-  border-color: rgba(255,80,89,.38) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.08),0 4px 18px rgba(215,35,45,.13) !important;
-}
-.nav-link i { opacity: .95; }
-#mobileNav { padding: 12px 16px 16px !important; background: rgba(8,10,16,.98) !important; border-color: rgba(239,55,63,.2) !important; }
-#mobileNav button { border: 1px solid transparent; padding: 12px 13px !important; border-radius: 11px !important; }
-#mobileNav button:hover { background: rgba(237,52,61,.1) !important; border-color: rgba(237,52,61,.2); }
-#mobileMenuBtn { border-radius: 10px; }
-
-/* Hero section */
-#tab-home > section:first-child {
-  position: relative; isolation: isolate; min-height: 420px;
-  display: flex; align-items: center;
-  border-bottom: 1px solid rgba(239,55,63,.22) !important;
-  background:
-    radial-gradient(ellipse at 50% 2%,rgba(226,37,48,.22),transparent 54%),
-    radial-gradient(ellipse at 50% 100%,rgba(117,22,29,.16),transparent 58%),
-    linear-gradient(180deg,rgba(17,20,30,.92),rgba(7,9,15,.98)) !important;
-}
-#tab-home > section:first-child::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .23;
-  background: repeating-linear-gradient(128deg,transparent 0 46px,rgba(255,255,255,.025) 47px,transparent 48px 96px),
-              linear-gradient(90deg,rgba(0,0,0,.38),transparent 35%,transparent 65%,rgba(0,0,0,.38));
-}
-#tab-home > section:first-child::after {
-  content: "DOTA 2"; position: absolute; z-index: -1; right: max(3vw,calc((100vw - 1320px)/2)); top: 50%; transform: translateY(-50%);
-  font: 900 clamp(100px,19vw,270px)/.8 Rajdhani,sans-serif; letter-spacing: -.085em; color: rgba(255,255,255,.022);
-  white-space: nowrap; pointer-events: none;
-}
-#tab-home > section:first-child > div { padding-top: 20px; padding-bottom: 20px; }
-#tab-home > section:first-child > div > div:first-child {
-  background: rgba(12,14,21,.68) !important; border: 1px solid rgba(244,181,80,.35) !important;
-  box-shadow: 0 8px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.055) !important;
-  padding: 9px 17px !important; letter-spacing: .11em; font-size: 10px !important;
-}
-#tab-home h1 { font-size: clamp(3rem,7vw,6.5rem) !important; line-height: .91 !important; letter-spacing: .015em !important; text-shadow: 0 8px 34px rgba(0,0,0,.52); }
-#tab-home h1 span { text-shadow: 0 0 28px rgba(237,52,61,.36); }
-#tab-home > section:first-child p { max-width: 690px; font-size: clamp(14px,1.3vw,17px) !important; color: #b6bdca !important; line-height: 1.7; }
-#tab-home > section:first-child .pt-4 { padding-top: 15px; }
-#tab-home > section:first-child button { min-height: 48px; padding: 13px 23px !important; border-radius: 12px !important; letter-spacing: .025em; }
-#tab-home > section:first-child button:first-child { background: linear-gradient(135deg,#f0444d,#b91f2b) !important; box-shadow: 0 9px 28px rgba(224,36,47,.27),inset 0 1px 0 rgba(255,255,255,.22) !important; }
-#tab-home > section:first-child button:first-child:hover { transform: translateY(-2px); box-shadow: 0 13px 34px rgba(224,36,47,.34) !important; }
-#tab-home > section:first-child button:last-child { background: rgba(18,22,32,.78) !important; border-color: rgba(255,255,255,.13) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.055); }
-#tab-home > section:first-child button:last-child:hover { border-color: rgba(255,80,89,.4) !important; background: rgba(34,23,29,.9) !important; }
-
-/* Main page content + stat tiles */
-#tab-home > section:nth-child(2) { padding-top: 48px !important; padding-bottom: 64px !important; }
-#tab-home > section:nth-child(2) > .grid { gap: 18px !important; }
-#tab-home > section:nth-child(2) > .grid > div {
-  position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,.075) !important; border-radius: 18px !important;
-  padding: 25px 20px !important; background: linear-gradient(145deg,rgba(21,25,36,.94),rgba(10,13,21,.96)) !important;
-  box-shadow: 0 14px 34px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035) !important;
-  transition: transform .22s ease,border-color .22s ease,box-shadow .22s ease;
-}
-#tab-home > section:nth-child(2) > .grid > div::before { content:""; position:absolute; left:18px; right:18px; top:0; height:2px; background:linear-gradient(90deg,transparent,rgba(239,55,63,.8),transparent); }
-#tab-home > section:nth-child(2) > .grid > div:hover { transform: translateY(-4px); border-color: rgba(255,80,89,.27) !important; box-shadow: 0 20px 42px rgba(0,0,0,.28),0 0 24px rgba(221,38,47,.06) !important; }
-#tab-home > section:nth-child(2) > .grid > div > div:first-child { font-size: clamp(27px,3vw,38px) !important; line-height: 1.1; }
-#tab-home > section:nth-child(2) > .grid > div > div:last-child { font-size: 10px !important; letter-spacing: .16em; color: #929aaa !important; }
-#tab-home > section:nth-child(2) > div:last-child { margin-top: 54px; }
-#tab-home h2, #tab-bracket h2, #tab-teams h1, #tab-news h1 { letter-spacing: .055em; }
-#tab-home > section:nth-child(2) > div:last-child > div:first-child,
-#tab-teams section > div:first-child, #tab-news section > div:first-child { border-color: rgba(255,255,255,.09) !important; }
-#tab-home > section:nth-child(2) > div:last-child > div:first-child button { color: #ff626a !important; }
-
-/* Shared panel and card surfaces */
-.dota-glass {
-  background: linear-gradient(145deg,rgba(20,25,36,.94),rgba(10,13,21,.97)) !important;
-  border: 1px solid rgba(255,255,255,.075) !important;
-  box-shadow: 0 14px 38px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.035) !important;
-  backdrop-filter: blur(16px) saturate(125%);
-}
-.dota-match-card {
-  background: linear-gradient(145deg,rgba(22,27,39,.98),rgba(9,12,20,.99)) !important;
-  border-color: rgba(255,255,255,.09) !important;
-  border-radius: 13px !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025) !important;
-}
-.dota-match-card:hover { transform: translateY(-3px); border-color: rgba(255,80,89,.6) !important; box-shadow: 0 14px 30px rgba(0,0,0,.3),0 0 22px rgba(229,38,48,.09) !important; }
-.dota-match-card .border-b, .dota-match-card .border-t { border-color: rgba(255,255,255,.07) !important; }
-
-/* Bracket */
-#tab-bracket > section:first-child { background: linear-gradient(120deg,rgba(32,15,22,.92),rgba(9,12,19,.98) 62%) !important; border-color: rgba(239,55,63,.18) !important; }
-#tab-bracket > section:first-child > div { padding-top: 34px; padding-bottom: 34px; }
-#tab-bracket > section:first-child h1 { letter-spacing: .025em; text-shadow: 0 5px 25px rgba(0,0,0,.35); }
-#tab-bracket > section:nth-child(2) { padding-top: 42px !important; }
-#tab-bracket > section:nth-child(2) > div { gap: 17px !important; }
-#tab-bracket > section:nth-child(2) > div > .flex.items-center { padding: 0 2px 3px; }
-#tab-bracket > section:nth-child(2) > div > .dota-glass { padding: 23px !important; background: linear-gradient(145deg,rgba(17,21,31,.9),rgba(8,11,18,.96)) !important; }
-#upperBracketRender > div > div:first-child, #lowerBracketRender > div > div:first-child { padding-bottom: 10px !important; border-color: rgba(239,55,63,.27) !important; letter-spacing: .12em; }
-#grandFinalRender { border-color: rgba(242,174,75,.35) !important; box-shadow: 0 16px 42px rgba(0,0,0,.25),inset 0 0 50px rgba(173,103,32,.045) !important; }
-#grandFinalRender + * { border-color: rgba(255,255,255,.1); }
-
-/* Teams and news cards */
-#tab-teams section, #tab-news section { padding-top: 44px !important; }
-#teamsContainer, #newsContainer, #homeNewsContainer { gap: 20px !important; }
-#teamsContainer > div, #newsContainer > div, #homeNewsContainer > div {
-  overflow: hidden; border: 1px solid rgba(255,255,255,.075) !important; border-radius: 18px !important;
-  background: linear-gradient(145deg,rgba(21,26,38,.96),rgba(9,12,20,.98)) !important;
-  box-shadow: 0 12px 30px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.035) !important;
-  transition: transform .22s ease,border-color .22s ease,box-shadow .22s ease !important;
-}
-#teamsContainer > div:hover, #newsContainer > div:hover, #homeNewsContainer > div:hover {
-  transform: translateY(-5px) !important; border-color: rgba(255,80,89,.36) !important;
-  box-shadow: 0 20px 40px rgba(0,0,0,.3),0 0 24px rgba(229,38,48,.06) !important;
-}
-#teamsContainer > div { padding: 21px !important; }
-#teamsContainer > div .border-b { border-color: rgba(255,255,255,.085) !important; }
-#teamsContainer > div .bg-dota-bg { background: rgba(5,8,14,.55) !important; border-color: rgba(255,255,255,.065) !important; }
-#teamsContainer > div > div:first-child > div:first-child > span:first-child { display:inline-flex; width:48px; height:48px; align-items:center; justify-content:center; border-radius:14px; background:linear-gradient(145deg,rgba(237,52,61,.13),rgba(255,255,255,.025)); border:1px solid rgba(237,52,61,.18); font-size:26px !important; }
-#newsContainer > div img, #homeNewsContainer > div img { display:block; width:100%; object-fit:cover; background:#0b0e16; transition: transform .5s ease,filter .4s ease; }
-#newsContainer > div:hover img, #homeNewsContainer > div:hover img { transform: scale(1.035); filter: saturate(1.08) contrast(1.04); }
-#newsContainer > div > div, #homeNewsContainer > div > div { position:relative; }
-#newsContainer > div > div h3, #homeNewsContainer > div > div h3 { line-height:1.2; letter-spacing:.015em; }
-#newsContainer > div > div p, #homeNewsContainer > div > div p { color:#aab2c0 !important; line-height:1.65; }
-#newsContainer > div > div span, #homeNewsContainer > div > div span { color:#ff777d !important; letter-spacing:.08em; }
-#tab-teams input, #tab-news input { background:rgba(12,16,25,.9) !important; border-color:rgba(255,255,255,.12) !important; border-radius:12px !important; min-height:42px; }
-#tab-teams input:focus, #tab-news input:focus { border-color:rgba(255,80,89,.7) !important; box-shadow:0 0 0 3px rgba(237,52,61,.12) !important; }
-
-/* Streaming, footer, dialogs and notifications */
-#tab-stream .dota-glass { padding:22px !important; border-radius:20px !important; }
-#tab-stream .aspect-video { border-color:rgba(255,255,255,.1) !important; box-shadow:0 16px 40px rgba(0,0,0,.38); }
-footer { background:rgba(6,8,13,.8) !important; border-color:rgba(255,255,255,.075) !important; }
-footer .font-rajdhani { letter-spacing:.09em; }
-#matchModal > div, #teamModal > div, #newsModal > div { border-radius:22px !important; border-color:rgba(237,52,61,.25) !important; box-shadow:0 28px 90px rgba(0,0,0,.68),0 0 36px rgba(229,38,48,.08) !important; }
-#toast { background:rgba(15,19,28,.96) !important; border-color:rgba(239,55,63,.42) !important; }
-#toastTitle { color:#ff6a72 !important; }
-
-@media (max-width: 767px) {
-  header .h-20 { height:66px !important; }
-  header nav { display:none; }
-  #tab-home > section:first-child { min-height:370px; padding-top:50px !important; padding-bottom:50px !important; }
-  #tab-home > section:first-child::after { right:-16px; opacity:.7; font-size:28vw; }
-  #tab-home h1 { font-size:clamp(2.65rem,11vw,4.3rem) !important; }
-  #tab-home > section:first-child p { font-size:13px !important; }
-  #tab-home > section:nth-child(2) { padding-top:28px !important; padding-bottom:38px !important; }
-  #tab-home > section:nth-child(2) > .grid > div { padding:18px 12px !important; }
-  #tab-home > section:nth-child(2) > div:last-child { margin-top:38px; }
-  #tab-bracket > section:nth-child(2) > div > .dota-glass { padding:13px !important; }
-  #tab-teams section, #tab-news section { padding-top:28px !important; }
-  #teamsContainer, #newsContainer, #homeNewsContainer { gap:14px !important; }
-  #tab-stream .dota-glass { padding:13px !important; }
-  footer { text-align:center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
-}
-
-</style>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased selection:bg-dota-red selection:text-white">
-<!-- HEADER NAVIGATION -->
-<header class="sticky top-0 z-40 bg-dota-bg/95 backdrop-blur-md border-b border-dota-border shadow-2xl">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex items-center justify-between h-20">
-<!-- Logo -->
-<a class="flex items-center gap-3 group" href="#" onclick="showTab('home')">
-<div class="w-11 h-11 rounded-xl bg-gradient-to-br from-dota-red via-red-800 to-dota-gold p-0.5 shadow-lg shadow-dota-red/30 group-hover:scale-105 transition-transform duration-300">
-<div class="w-full h-full bg-dota-bg rounded-[10px] flex items-center justify-center">
-<i class="fa-solid fa-trophy text-dota-gold text-lg group-hover:text-dota-redGlow transition-colors"></i>
-</div>
-</div>
-<div>
-<span class="font-rajdhani font-black text-lg sm:text-xl tracking-wider text-white block leading-none">
-                            МІЖВУЗІВСЬКИЙ <span class="text-dota-red">DOTA 2</span>
-</span>
-<div class="flex items-center gap-2 mt-1">
-<span class="text-[10px] font-mono font-bold tracking-widest text-dota-gold uppercase">CHAMPIONSHIP 2026</span>
-<span class="bg-red-950 border border-dota-red/60 text-dota-redGlow text-[9px] font-bold px-1.5 py-0.2 rounded animate-pulse">LIVE</span>
-</div>
-</div>
-</a>
-<!-- Nav Items -->
-<nav class="hidden lg:flex items-center gap-1">
-<button class="nav-link active px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all" id="nav-home" onclick="showTab('home')">
-<i class="fa-solid fa-house mr-1 text-dota-gold"></i>Головна
-                    </button>
-<button class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all" id="nav-bracket" onclick="showTab('bracket')">
-<i class="fa-solid fa-sitemap mr-1 text-dota-red"></i>Плей-оф
-                    </button>
-<button class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all" id="nav-teams" onclick="showTab('teams')">
-<i class="fa-solid fa-users mr-1 text-dota-red"></i>Команди
-                    </button>
-<button class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all" id="nav-stream" onclick="showTab('stream')">
-<i class="fa-solid fa-tv mr-1 text-purple-400"></i>Стріми
-                    </button>
-<button class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all" id="nav-news" onclick="showTab('news')">
-<i class="fa-solid fa-newspaper mr-1 text-dota-red"></i>Новини
-                    </button>
-</nav>
-<!-- Admin Action Button -->
-<div class="flex items-center gap-3">
 
-<button class="lg:hidden text-gray-300 hover:text-white text-2xl p-1" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-<i class="fa-solid fa-bars"></i>
-</button>
-</div>
-</div>
-</div>
-<!-- Mobile Navigation Menu -->
-<div class="hidden lg:hidden bg-dota-card border-b border-dota-border px-4 py-3 space-y-2" id="mobileNav">
-<button class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold" onclick="showTab('home')"><i class="fa-solid fa-house mr-2 text-dota-gold"></i>Головна</button>
-<button class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold" onclick="showTab('bracket')"><i class="fa-solid fa-sitemap mr-2 text-dota-red"></i>Плей-оф Сітка</button>
-<button class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold" onclick="showTab('teams')"><i class="fa-solid fa-users mr-2 text-dota-red"></i>Команди</button>
-<button class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold" onclick="showTab('stream')"><i class="fa-solid fa-tv mr-2 text-purple-400"></i>Стріми</button>
-<button class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold" onclick="showTab('news')"><i class="fa-solid fa-newspaper mr-2 text-dota-red"></i>Новини</button>
-
-</div>
-</header>
-<!-- MAIN APP CONTAINER -->
-<main class="flex-grow">
-<!-- VIEW 1: HOME (ГОЛОВНА) -->
-<div class="tab-content" id="tab-home">
-<!-- Hero Banner -->
-<section class="relative overflow-hidden py-16 lg:py-24 border-b border-dota-border bg-gradient-to-b from-dota-panel via-dota-bg to-dota-bg">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-6">
-<div class="inline-flex items-center gap-2 bg-dota-bg border border-dota-gold/50 px-4 py-1.5 rounded-full text-xs font-bold text-dota-gold shadow-lg">
-<i class="fa-solid fa-fire text-dota-red animate-bounce"></i> ВСЕУКРАЇНСЬКИЙ СТУДЕНТСЬКИЙ КІБЕРСПОРТ
+    <!-- HEADER NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-dota-bg/95 backdrop-blur-md border-b border-dota-border shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" onclick="showTab('home')" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-dota-red via-red-800 to-dota-gold p-0.5 shadow-lg shadow-dota-red/30 group-hover:scale-105 transition-transform duration-300">
+                        <div class="w-full h-full bg-dota-bg rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-trophy text-dota-gold text-lg group-hover:text-dota-redGlow transition-colors"></i>
+                        </div>
                     </div>
-<h1 class="font-rajdhani font-black text-4xl sm:text-6xl lg:text-7xl text-white tracking-wider uppercase">
-                        МІЖВУЗІВСЬКИЙ <span class="text-dota-red glow-red">DOTA 2</span> КУБОК
-                    </h1>
-<p class="max-w-2xl text-sm sm:text-base text-gray-300">
-                        Найкращі збірні університетів країни зійшлися у грандіозній битві за звання чемпіона та призовий фонд у 150 000 гривень!
-                    </p>
-<div class="flex flex-wrap justify-center gap-4 pt-4">
-<button class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-dota-red/30 transition-all flex items-center gap-2" onclick="showTab('bracket')">
-<i class="fa-solid fa-sitemap"></i> Дивитись Плей-оф Сітку
-                        </button>
-<button class="dota-glass hover:bg-dota-panel text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl border border-dota-border transition-all flex items-center gap-2" onclick="showTab('teams')">
-<i class="fa-solid fa-users text-dota-red"></i> Переглянути Команди
-                        </button>
-</div>
-</div>
-</section>
-<!-- Quick Stats & Highlights -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
-<div class="text-3xl font-rajdhani font-black text-dota-gold" id="homePrizePool">150,000 ₴</div>
-<div class="text-xs text-gray-400 uppercase font-bold">Призовий фонд</div>
-</div>
-<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
-<div class="text-3xl font-rajdhani font-black text-dota-red" id="homeTeamsCount">8</div>
-<div class="text-xs text-gray-400 uppercase font-bold">Університетських команд</div>
-</div>
-<div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
-<div class="text-3xl font-rajdhani font-black text-dota-red">Double Elim</div>
-<div class="text-xs text-gray-400 uppercase font-bold">Формат турніру</div>
-</div>
-</div>
-<!-- Latest News Preview -->
-<div class="space-y-6">
-<div class="flex items-center justify-between border-b border-dota-border pb-4">
-<h2 class="font-rajdhani font-black text-2xl text-white uppercase tracking-wider">ОСТАННІ НОВИНИ ТУРНІРУ</h2>
-<button class="text-xs font-bold text-dota-gold hover:underline" onclick="showTab('news')">Всі новини →</button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="homeNewsContainer">
-<!-- Populated dynamically -->
-</div>
-</div>
-</section>
-</div>
-<!-- VIEW 2: PLAY-OFF DOUBLE ELIMINATION BRACKET -->
-<div class="tab-content hidden" id="tab-bracket">
-<section class="border-b border-dota-border bg-gradient-to-b from-dota-panel to-dota-bg py-8">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-<div>
-<span class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1 block">Студентська Ліга 2026</span>
-<h1 class="font-rajdhani font-black text-3xl sm:text-4xl text-white">ПЛЕЙ-ОФ СІТКА (DOUBLE ELIMINATION)</h1>
-<p class="text-xs text-gray-400 mt-1">Натисніть на матч для перегляду драфту героїв та деталей.</p>
-</div>
-
-</div>
-</section>
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-<!-- Upper Bracket -->
-<div class="space-y-4">
-<div class="flex items-center gap-3">
-<div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
-<h2 class="font-rajdhani text-2xl font-black text-white uppercase">ВЕРХНЯ СІТКА (UPPER BRACKET)</h2>
-</div>
-<div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
-<div class="min-w-[960px] grid grid-cols-3 gap-8 items-center" id="upperBracketRender"></div>
-</div>
-</div>
-<!-- Lower Bracket -->
-<div class="space-y-4">
-<div class="flex items-center gap-3">
-<div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
-<h2 class="font-rajdhani text-2xl font-black text-white uppercase">НИЖНЯ СІТКА (LOWER BRACKET)</h2>
-</div>
-<div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
-<div class="min-w-[1100px] grid grid-cols-4 gap-6 items-center" id="lowerBracketRender"></div>
-</div>
-</div>
-<!-- Grand Final -->
-<div class="space-y-4">
-<div class="flex items-center gap-3">
-<div class="w-3.5 h-7 bg-dota-gold rounded-full"></div>
-<h2 class="font-rajdhani text-2xl font-black text-white uppercase">🏆 ГРАНД-ФІНАЛ (BO5)</h2>
-</div>
-<div class="dota-glass rounded-3xl p-6 border border-dota-gold/60 bg-gradient-to-r from-dota-panel via-dota-bg to-dota-panel" id="grandFinalRender"></div>
-</div>
-</section>
-</div>
-<!-- VIEW 3: TEAMS & UNIVERSITY ROSTERS -->
-<div class="tab-content hidden" id="tab-teams">
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-dota-border pb-6">
-<div>
-<div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Студентські збірні</div>
-<h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">КОМАНДИ</h1>
-</div>
-<div class="flex items-center gap-3">
-<input class="bg-dota-panel border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-dota-red w-64" id="teamSearchInput" onkeyup="renderTeamsView()" placeholder="Пошук команди..." type="text"/>
-
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="teamsContainer"></div>
-</section>
-</div>
-<!-- VIEW 4: STREAM -->
-<div class="tab-content hidden" id="tab-stream">
-<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-<div class="dota-glass rounded-3xl p-6 border border-dota-border space-y-4">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
-<h2 class="font-rajdhani font-bold text-white text-xl">ОФІЦІЙНА ТРАНСЛЯЦІЯ</h2>
-</div>
-<span class="text-xs font-mono text-dota-gold bg-dota-bg px-3 py-1 rounded-full border border-dota-border">
-<i class="fa-solid fa-eye text-dota-red mr-1"></i> 14,800 Глядачів
+                    <div>
+                        <span class="font-rajdhani font-black text-lg sm:text-xl tracking-wider text-white block leading-none">
+                            Spring Cup <span class="text-dota-red">DOTA 2</span>
                         </span>
-</div>
-<div class="aspect-video w-full rounded-2xl bg-black border border-dota-border overflow-hidden" id="twitchWrapper"></div>
-</div>
-</section>
-</div>
-<!-- VIEW 6: NEWS -->
-<div class="tab-content hidden" id="tab-news">
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-<div class="border-b border-dota-border pb-6">
-<div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Анонси та звіти</div>
-<h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">НОВИНИ ТУРНІРУ</h1>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsContainer"></div>
-</section>
-</div>
-<!-- VIEW 7: ADMIN PANEL -->
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] font-mono font-bold tracking-widest text-dota-gold uppercase">CHAMPIONSHIP 2027</span>
+                            <span class="bg-red-950 border border-dota-red/60 text-dota-redGlow text-[9px] font-bold px-1.5 py-0.2 rounded animate-pulse">LIVE</span>
+                        </div>
+                    </div>
+                </a>
+                <nav class="hidden lg:flex items-center gap-1">
+                    <button id="nav-home" onclick="showTab('home')" class="nav-link active px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-house mr-1 text-dota-gold"></i>Головна
+                    </button>
+                    <button id="nav-bracket" onclick="showTab('bracket')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-sitemap mr-1 text-dota-red"></i>Плей-офф
+                    </button>
+                    <button id="nav-teams" onclick="showTab('teams')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-users mr-1 text-dota-red"></i>Команди
+                    </button>
+                    <button id="nav-stream" onclick="showTab('stream')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-tv mr-1 text-purple-400"></i>Стрім
+                    </button>
+                    <button id="nav-news" onclick="showTab('news')" class="nav-link px-3 py-2 rounded-xl text-xs font-semibold text-gray-300 hover:text-white border border-transparent transition-all">
+                        <i class="fa-solid fa-newspaper mr-1 text-dota-red"></i>Новини
+                    </button>
+                </nav>
+                <div class="flex items-center gap-3">
+                    <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="lg:hidden text-gray-300 hover:text-white text-2xl p-1">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobileNav" class="hidden lg:hidden bg-dota-card border-b border-dota-border px-4 py-3 space-y-2">
+            <button onclick="showTab('home')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-house mr-2 text-dota-gold"></i>Головна</button>
+            <button onclick="showTab('bracket')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-sitemap mr-2 text-dota-red"></i>Плей-оф Сітка</button>
+            <button onclick="showTab('teams')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-users mr-2 text-dota-red"></i>Команди</button>
+            <button onclick="showTab('stream')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-tv mr-2 text-purple-400"></i>Стріми</button>
+            <button onclick="showTab('news')" class="block w-full text-left text-gray-200 hover:text-white py-2 text-xs font-bold"><i class="fa-solid fa-newspaper mr-2 text-dota-red"></i>Новини</button>
+        </div>
+    </header>
 
-</main>
-<!-- FOOTER -->
-<footer class="bg-dota-bg border-t border-dota-border py-8 text-xs text-gray-400">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-<div>
-<span class="font-rajdhani font-bold text-white text-sm">МІЖВУЗІВСЬКА КІБЕРСПОРТИВНА ЛІГА DOTA 2</span>
-<p>© 2026 Всі права захищено.</p>
-</div>
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow">
+        <!-- VIEW 1: HOME -->
+        <div id="tab-home" class="tab-content">
+            <section class="relative overflow-hidden py-16 lg:py-24 border-b border-dota-border bg-gradient-to-b from-dota-panel via-dota-bg to-dota-bg">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-dota-bg border border-dota-gold/50 px-4 py-1.5 rounded-full text-xs font-bold text-dota-gold shadow-lg">
+                        <i class="fa-solid fa-fire text-dota-red animate-bounce"></i> ВСЕУКРАЇНСЬКИЙ КІБЕРСПОРТ
+                    </div>
+                    <h1 class="font-rajdhani font-black text-4xl sm:text-6xl lg:text-7xl text-white tracking-wider uppercase">
+                        Spring <span class="text-dota-red glow-red">DOTA 2</span> Cup
+                    </h1>
+                    <p class="max-w-2xl text-sm sm:text-base text-gray-300">
+                        Найсильніші команди зійдуться у грандіозній битві за звання чемпіона та призовий фонд у 6000 гривень!
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 pt-4">
+                        <button onclick="showTab('bracket')" class="bg-dota-red hover:bg-red-700 text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-dota-red/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-sitemap"></i> Дивитись Плей-офф Сітку
+                        </button>
+                        <button onclick="showTab('teams')" class="dota-glass hover:bg-dota-panel text-white font-rajdhani font-bold text-sm px-8 py-3.5 rounded-xl border border-dota-border transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-users text-dota-red"></i> Переглянути Команди
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+                        <div id="homePrizePool" class="text-3xl font-rajdhani font-black text-dota-gold">6,000 ₴</div>
+                        <div class="text-xs text-gray-400 uppercase font-bold">Призовий фонд</div>
+                    </div>
+                    <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+                        <div id="homeTeamsCount" class="text-3xl font-rajdhani font-black text-dota-red">8</div>
+                        <div class="text-xs text-gray-400 uppercase font-bold">Учасників</div>
+                    </div>
+                    <div class="dota-glass p-6 rounded-2xl border border-dota-border text-center space-y-1">
+                        <div class="text-3xl font-rajdhani font-black text-dota-red">Double Elim</div>
+                        <div class="text-xs text-gray-400 uppercase font-bold">Формат турніру</div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-dota-border pb-4">
+                        <h2 class="font-rajdhani font-black text-2xl text-white uppercase tracking-wider">ОСТАННІ НОВИНИ ТУРНІРУ</h2>
+                        <button onclick="showTab('news')" class="text-xs font-bold text-dota-gold hover:underline">Всі новини →</button>
+                    </div>
+                    <div id="homeNewsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                </div>
+            </section>
+        </div>
 
-</div>
-</footer>
-<!-- MODAL 1: MATCH DETAILS -->
-<div class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4" id="matchModal">
-<div class="dota-glass max-w-3xl w-full rounded-3xl p-6 border border-dota-border relative space-y-6 max-h-[90vh] overflow-y-auto">
-<button class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl" onclick="closeMatchModal()"><i class="fa-solid fa-xmark"></i></button>
-<div id="matchModalContent"></div>
-</div>
-</div>
-<!-- MODAL 2: ADD / EDIT TEAM -->
+        <!-- VIEW 2: BRACKET -->
+        <div id="tab-bracket" class="tab-content hidden">
+            <section class="border-b border-dota-border bg-gradient-to-b from-dota-panel to-dota-bg py-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <span class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1 block">Кіберспортивна Ліга 2027</span>
+                    <h1 class="font-rajdhani font-black text-3xl sm:text-4xl text-white">ПЛЕЙ-ОФ СІТКА (DOUBLE ELIMINATION)</h1>
+                    <p class="text-xs text-gray-400 mt-1">Натисніть на матч для перегляду деталей.</p>
+                </div>
+            </section>
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
+                        <h2 class="font-rajdhani text-2xl font-black text-white uppercase">ВЕРХНЯ СІТКА (UPPER BRACKET)</h2>
+                    </div>
+                    <div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
+                        <div id="upperBracketRender" class="min-w-[960px] grid grid-cols-3 gap-8 items-center"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3.5 h-7 bg-dota-red rounded-full"></div>
+                        <h2 class="font-rajdhani text-2xl font-black text-white uppercase">НИЖНЯ СІТКА (LOWER BRACKET)</h2>
+                    </div>
+                    <div class="dota-glass rounded-3xl p-6 border border-dota-border overflow-x-auto">
+                        <div id="lowerBracketRender" class="min-w-[1100px] grid grid-cols-4 gap-6 items-center"></div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3.5 h-7 bg-dota-gold rounded-full"></div>
+                        <h2 class="font-rajdhani text-2xl font-black text-white uppercase">🏆 ГРАНД-ФІНАЛ (BO3)</h2>
+                    </div>
+                    <div id="grandFinalRender" class="dota-glass rounded-3xl p-6 border border-dota-gold/60 bg-gradient-to-r from-dota-panel via-dota-bg to-dota-panel"></div>
+                </div>
+            </section>
+        </div>
 
-<!-- MODAL: ADD / EDIT NEWS -->
+        <!-- VIEW 3: TEAMS -->
+        <div id="tab-teams" class="tab-content hidden">
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-dota-border pb-6">
+                    <div>
+                        <div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Учасники</div>
+                        <h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">КОМАНДИ</h1>
+                    </div>
+                    <div>
+                        <input type="text" id="teamSearchInput" onkeyup="renderTeamsView()" placeholder="Пошук команди..." class="bg-dota-panel border border-dota-border rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-dota-red w-64">
+                    </div>
+                </div>
+                <div id="teamsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+        </div>
 
-<!-- TOAST NOTIFICATION -->
-<div class="fixed bottom-6 right-6 z-50 hidden bg-dota-panel border border-dota-gold text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3" id="toast">
-<i class="fa-solid fa-circle-check text-dota-gold text-xl"></i>
-<div>
-<h5 class="font-bold text-xs uppercase text-dota-gold" id="toastTitle">Успішно</h5>
-<p class="text-xs text-gray-300" id="toastBody">Зміни збережено.</p>
-</div>
-</div>
-<!-- APPLICATION JAVASCRIPT -->
-<script>
-        // INITIAL DATA
+        <!-- VIEW 4: STREAM -->
+        <div id="tab-stream" class="tab-content hidden">
+            <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+                <div class="dota-glass rounded-3xl p-6 border border-dota-border space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+                            <h2 class="font-rajdhani font-bold text-white text-xl">ОФІЦІЙНА ТРАНСЛЯЦІЯ</h2>
+                        </div>
+                    </div>
+                    <div id="twitchWrapper" class="aspect-video w-full rounded-2xl bg-black border border-dota-border overflow-hidden"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW 5: NEWS -->
+        <div id="tab-news" class="tab-content hidden">
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+                <div class="border-b border-dota-border pb-6">
+                    <div class="text-xs font-bold text-dota-red uppercase tracking-widest mb-1">Анонси та звіти</div>
+                    <h1 class="font-rajdhani text-3xl sm:text-4xl font-black text-white">НОВИНИ ТУРНІРУ</h1>
+                </div>
+                <div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dota-bg border-t border-dota-border py-8 text-xs text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="font-rajdhani font-bold text-white text-sm">SPRING CUP DOTA 2</span>
+                <p>© 2027 Всі права захищено.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: MATCH DETAILS -->
+    <div id="matchModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="dota-glass max-w-3xl w-full rounded-3xl p-6 border border-dota-border relative space-y-6 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeMatchModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <div id="matchModalContent"></div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-dota-panel border border-dota-gold text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-dota-gold text-xl"></i>
+        <div>
+            <h5 id="toastTitle" class="font-bold text-xs uppercase text-dota-gold">Успішно</h5>
+            <p id="toastBody" class="text-xs text-gray-300">Зміни збережено.</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
         const DEFAULT_TEAMS = [
-            { id: 1, name: "KNU Lions", tag: "KNU", uni: "КНУ ім. Шевченка", logo: "🦁", captain: "NightStalker", roster: ["InvokerPro", "StormKing", "AxeMaster", "RubickUA", "WardSaver"] },
-            { id: 2, name: "KPI Cyber Titans", tag: "KPI", uni: "КПІ ім. Сікорського", logo: "⚡", captain: "TechLord", roster: ["ShadowCarry", "VoidSpirit", "CentaurOff", "Clockwork", "OracleUA"] },
-            { id: 3, name: "LNU Aegis", tag: "LNU", uni: "ЛНУ ім. Франка", logo: "🛡️", captain: "LionHeart", roster: ["PhantomP1", "PuckGod", "Tidehunter", "Mirana4", "Dazzle5"] },
-            { id: 4, name: "NaUKMA Geeks", tag: "KMA", uni: "НаУКМА", logo: "🎓", captain: "CodeMaster", roster: ["MorphlingUA", "TinkerGod", "MagnusSmash", "EarthSpirit", "AncientApp"] },
-            { id: 5, name: "KhNU Cyber", tag: "KhNU", uni: "ХНУРЕ", logo: "💻", captain: "SvenSmash", roster: ["SvenSmash", "EmberSpirit", "MarsGod", "BountyHunter", "ChenArmy"] },
-            { id: 6, name: "DNU Dragons", tag: "DNU", uni: "ДНУ ім. Гончара", logo: "🐉", captain: "AegisHunter", roster: ["SpectreCarry", "ViperMid", "DoomBring", "EnigmaBlack", "JakiroIce"] },
-            { id: 7, name: "ONU Kraken", tag: "ONU", uni: "ОНУ ім. Мечникова", logo: "🐙", captain: "BlackSea", roster: ["Juggernaut", "SniperMid", "Bristleback", "Vengeful", "KeeperLight"] },
-            { id: 8, name: "NUPP Storm", tag: "NUPP", uni: "НПУ ім. Драгоманова", logo: "🌩️", captain: "StormRider", roster: ["LunaBeam", "Stormer", "Slardar", "Grimstroke", "Treant"] }
+            { id: 1, name: "KNU Lions", tag: "KNU", mmr: "7800 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=LIONS", captain: "NightStalker", roster: ["InvokerPro", "StormKing", "AxeMaster", "RubickUA", "WardSaver"] },
+            { id: 2, name: "KPI Cyber Titans", tag: "KPI", mmr: "7500 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=KPI", captain: "TechLord", roster: ["ShadowCarry", "VoidSpirit", "CentaurOff", "Clockwork", "OracleUA"] },
+            { id: 3, name: "LNU Aegis", tag: "LNU", mmr: "7200 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=AEGIS", captain: "LionHeart", roster: ["PhantomP1", "PuckGod", "Tidehunter", "Mirana4", "Dazzle5"] },
+            { id: 4, name: "NaUKMA Geeks", tag: "KMA", mmr: "7000 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=GEEKS", captain: "CodeMaster", roster: ["MorphlingUA", "TinkerGod", "MagnusSmash", "EarthSpirit", "AncientApp"] },
+            { id: 5, name: "KhNU Cyber", tag: "KhNU", mmr: "6900 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=KHNU", captain: "SvenSmash", roster: ["SvenSmash", "EmberSpirit", "MarsGod", "BountyHunter", "ChenArmy"] },
+            { id: 6, name: "DNU Dragons", tag: "DNU", mmr: "6750 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=DNU", captain: "AegisHunter", roster: ["SpectreCarry", "ViperMid", "DoomBring", "EnigmaBlack", "JakiroIce"] },
+            { id: 7, name: "ONU Kraken", tag: "ONU", mmr: "6600 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=ONU", captain: "BlackSea", roster: ["Juggernaut", "SniperMid", "Bristleback", "Vengeful", "KeeperLight"] },
+            { id: 8, name: "NUPP Storm", tag: "NUPP", mmr: "6500 MMR", logo: "https://placehold.co/100x100/161c2b/e53935?text=NUPP", captain: "StormRider", roster: ["LunaBeam", "Stormer", "Slardar", "Grimstroke", "Treant"] }
         ];
 
         const DEFAULT_MATCHES = [
@@ -718,18 +323,12 @@ footer .font-rajdhani { letter-spacing:.09em; }
         ];
 
         const DEFAULT_NEWS = [
-            { id: 1, title: "Розпочався грандіозний плей-оф міжвузівського турніру!", date: "12 Листопада 2026", desc: "Сьогодні стартували перші чвертьфінальні матчі у верхній сітці між командами провідних університетів.", img: "https://placehold.co/600x400/161c2b/e53935?text=Play-offs+Start" },
-            { id: 2, title: "Рекордні перегляди на офіційному стрімі чемпіонату", date: "11 Листопада 2026", desc: "Понад 14 000 студентів та фанатів доти одночасно спостерігали за напруженими дербі між КНУ та КПІ.", img: "https://placehold.co/600x400/161c2b/e53935?text=Record+Views" },
-            { id: 3, title: "Оголошено призовий фонд та партнерів ліги", date: "10 Листопада 2026", desc: "Головний призовий фонд цього сезону становить 150 000 гривень за підтримки провідних IT-компаній.", img: "https://placehold.co/600x400/161c2b/e53935?text=Prize+Pool+150k" }
+            { id: 1, title: "Розпочався грандіозний плей-оф турніру!", date: "12 Листопада 2026", desc: "Сьогодні стартували перші чвертьфінальні матчі у верхній сітці між найсильнішими командами.", img: "https://placehold.co/600x400/161c2b/e53935?text=Play-offs+Start" },
+            { id: 2, title: "Рекордні перегляди на офіційному стрімі чемпіонату", date: "11 Листопада 2026", desc: "Тисячі фанатів доти одночасно спостерігали за напруженими дербі.", img: "https://placehold.co/600x400/161c2b/e53935?text=Record+Views" },
+            { id: 3, title: "Оголошено призовий фонд та партнерів ліги", date: "10 Листопада 2026", desc: "Головний призовий фонд цього сезону становить 6000 гривень за підтримки спонсорів.", img: "https://placehold.co/600x400/161c2b/e53935?text=Prize+Pool" }
         ];
 
-        let state = {
-            prizePool: "150,000 ₴",
-            teams: [],
-            matches: [],
-            news: [],
-            streamUrl: "dota2ti"
-        };
+        let state = { prizePool: "6,000 ₴", teams: [], matches: [], news: [], streamUrl: "dota2ti" };
 
         window.onload = function() {
             loadFromLocalStorage();
@@ -752,31 +351,22 @@ footer .font-rajdhani { letter-spacing:.09em; }
             }
         }
 
-        function saveToLocalStorage() {
-            localStorage.setItem('dota2_master_app_state', JSON.stringify(state));
-            renderAllViews();
-        }
-
         function resetStateToDefaults() {
-            state.prizePool = "150,000 ₴";
+            state.prizePool = "6,000 ₴";
             state.teams = JSON.parse(JSON.stringify(DEFAULT_TEAMS));
             state.matches = JSON.parse(JSON.stringify(DEFAULT_MATCHES));
             state.news = JSON.parse(JSON.stringify(DEFAULT_NEWS));
             state.streamUrl = "dota2ti";
-            saveToLocalStorage();
+            localStorage.setItem('dota2_master_app_state', JSON.stringify(state));
         }
 
-        // NAVIGATION TABS
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            
             const target = document.getElementById(`tab-${tabId}`);
             if (target) target.classList.remove('hidden');
-
             const btn = document.getElementById(`nav-${tabId}`);
             if (btn) btn.classList.add('active');
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
             document.getElementById('mobileNav')?.classList.add('hidden');
         }
@@ -793,11 +383,9 @@ footer .font-rajdhani { letter-spacing:.09em; }
             renderNewsView();
         }
 
-        // HOME VIEW
         function renderHomeView() {
             document.getElementById('homePrizePool').innerText = state.prizePool;
             document.getElementById('homeTeamsCount').innerText = state.teams.length;
-            
             const container = document.getElementById('homeNewsContainer');
             container.innerHTML = state.news.slice(0, 3).map(n => `
                 <div class="dota-glass rounded-2xl overflow-hidden border border-dota-border flex flex-col">
@@ -813,7 +401,6 @@ footer .font-rajdhani { letter-spacing:.09em; }
             `).join('');
         }
 
-        // BRACKET VIEW
         function renderBracketView() {
             const ub1 = state.matches.filter(m => m.id.startsWith('UB_QF'));
             const ub2 = state.matches.filter(m => m.id.startsWith('UB_SF'));
@@ -859,10 +446,10 @@ footer .font-rajdhani { letter-spacing:.09em; }
             `;
 
             const gf = state.matches.find(m => m.id === 'GF');
-            const t1 = state.teams.find(t => t.id === gf.team1Id) || { name: "Переможець UB", tag: "UB", logo: "👑" };
-            const t2 = state.teams.find(t => t.id === gf.team2Id) || { name: "Переможець LB", tag: "LB", logo: "🔥" };
-
+            const t1 = state.teams.find(t => t.id === gf.team1Id) || { name: "Переможець UB", tag: "UB", logo: "https://placehold.co/100x100" };
+            const t2 = state.teams.find(t => t.id === gf.team2Id) || { name: "Переможець LB", tag: "LB", logo: "https://placehold.co/100x100" };
             const gfWinner = state.teams.find(t => t.id === gf.winnerId);
+
             document.getElementById('grandFinalRender').innerHTML = `
                 <div class="space-y-5">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-dota-border/70 pb-4">
@@ -870,55 +457,28 @@ footer .font-rajdhani { letter-spacing:.09em; }
                             <span class="text-[10px] text-dota-red font-bold uppercase tracking-[.22em]">ФІНАЛЬНИЙ ЕТАП</span>
                             <h3 class="font-rajdhani font-black text-2xl sm:text-3xl text-white">ГРАНД-ФІНАЛ</h3>
                         </div>
-                        <span class="text-xs font-mono text-gray-300 bg-dota-bg border border-dota-border px-3 py-2 rounded-lg">BO5 · ${gf.date}</span>
+                        <span class="text-xs font-mono text-gray-300 bg-dota-bg border border-dota-border px-3 py-2 rounded-lg">BO3 · ${gf.date}</span>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-[1fr_72px_1.35fr] gap-4 items-center">
-                        <div class="grid gap-3">
-                            <div class="gf-source gf-source-upper flex items-center gap-3 rounded-xl border border-dota-red/40 bg-dota-bg/80 p-3">
-                                <span class="w-10 h-10 rounded-lg bg-dota-panel flex items-center justify-center text-xl">${t1.logo}</span>
-                                <span class="min-w-0"><small class="block text-[9px] uppercase tracking-wider text-dota-red font-bold">Верхня сітка</small><strong class="block text-sm text-white truncate">${t1.name}</strong></span>
-                            </div>
-                            <div class="gf-source gf-source-lower flex items-center gap-3 rounded-xl border border-dota-gold/40 bg-dota-bg/80 p-3">
-                                <span class="w-10 h-10 rounded-lg bg-dota-panel flex items-center justify-center text-xl">${t2.logo}</span>
-                                <span class="min-w-0"><small class="block text-[9px] uppercase tracking-wider text-dota-gold font-bold">Нижня сітка</small><strong class="block text-sm text-white truncate">${t2.name}</strong></span>
-                            </div>
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${safeImageUrl(t1.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border">
+                            <strong class="text-sm text-white">${t1.name}</strong>
                         </div>
-                        <div class="hidden lg:flex flex-col items-center justify-center gap-8 gf-connectors" aria-hidden="true">
-                            <span></span><span></span>
-                        </div>
-                        <div class="rounded-2xl border-2 ${gf.winnerId ? 'border-dota-gold shadow-lg shadow-dota-gold/10' : 'border-dota-red/60 shadow-lg shadow-dota-red/10'} bg-gradient-to-br from-dota-panel to-dota-bg p-4 sm:p-5">
-                            <div class="flex items-center justify-between gap-3 mb-4">
-                                <span class="text-[10px] font-bold tracking-widest text-dota-red uppercase">🏆 Матч за чемпіонство</span>
-                                <span class="text-[10px] font-mono text-gray-400">${gf.status === 'live' ? '● LIVE' : gf.status === 'finished' ? 'ЗАВЕРШЕНО' : 'ОЧІКУЄТЬСЯ'}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="flex-1 min-w-0 text-center">
-                                    <div class="w-12 h-12 rounded-xl bg-dota-bg border border-dota-red/60 flex items-center justify-center text-2xl mx-auto mb-2">${t1.logo}</div>
-                                    <strong class="block text-xs sm:text-sm text-white truncate">${t1.name}</strong>
-                                </div>
-                                <div class="shrink-0 text-center">
-                                    <div class="font-mono font-black text-2xl sm:text-3xl text-white">${gf.score1} <span class="text-dota-red">:</span> ${gf.score2}</div>
-                                    <span class="text-[9px] text-gray-500 font-bold">BO5</span>
-                                </div>
-                                <div class="flex-1 min-w-0 text-center">
-                                    <div class="w-12 h-12 rounded-xl bg-dota-bg border border-dota-gold/60 flex items-center justify-center text-2xl mx-auto mb-2">${t2.logo}</div>
-                                    <strong class="block text-xs sm:text-sm text-white truncate">${t2.name}</strong>
-                                </div>
-                            </div>
-                            ${gfWinner ? `<div class="text-center mt-4 text-xs text-dota-gold font-bold"><i class="fa-solid fa-crown mr-1"></i> Чемпіон: ${gfWinner.name}</div>` : ''}
-                            <button onclick="openMatchModal('${gf.id}')" class="w-full mt-4 bg-dota-red hover:bg-red-700 text-white font-rajdhani font-black text-xs px-5 py-3 rounded-xl shadow-lg shadow-dota-red/20">ДЕТАЛІ ГРАНД-ФІНАЛУ</button>
+                        <div class="font-mono font-black text-2xl text-white">${gf.score1} : ${gf.score2}</div>
+                        <div class="flex items-center gap-3">
+                            <strong class="text-sm text-white">${t2.name}</strong>
+                            <img src="${safeImageUrl(t2.logo)}" class="w-10 h-10 object-cover rounded-lg border border-dota-border">
                         </div>
                     </div>
-                    <p class="text-[10px] text-center text-gray-500">Переможець верхньої сітки та переможець нижньої сітки зустрічаються у фіналі турніру</p>
+                    ${gfWinner ? `<div class="text-center text-xs text-dota-gold font-bold"><i class="fa-solid fa-crown mr-1"></i> Чемпіон: ${gfWinner.name}</div>` : ''}
                 </div>
             `;
         }
 
         function createBracketCardHTML(m, theme = 'normal') {
-            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "🛡️" };
-            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "🛡️" };
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "https://placehold.co/50x50" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "https://placehold.co/50x50" };
             const isLive = m.status === 'live';
-
             let borderStyle = 'border-dota-border';
             if (theme === 'gold') borderStyle = 'border-dota-gold/70';
             if (theme === 'cyan') borderStyle = 'border-dota-red/50';
@@ -933,14 +493,14 @@ footer .font-rajdhani { letter-spacing:.09em; }
                     </div>
                     <div class="flex justify-between items-center py-1">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm">${t1.logo}</span>
+                            <img src="${safeImageUrl(t1.logo)}" class="w-6 h-6 object-cover rounded">
                             <span class="text-xs font-bold ${m.winnerId === t1.id ? 'text-dota-gold' : 'text-white'}">${t1.name}</span>
                         </div>
                         <span class="font-mono font-bold text-xs ${m.score1 > m.score2 ? 'text-dota-gold' : 'text-gray-400'}">${m.score1}</span>
                     </div>
                     <div class="flex justify-between items-center py-1 border-t border-dota-border/30">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm">${t2.logo}</span>
+                            <img src="${safeImageUrl(t2.logo)}" class="w-6 h-6 object-cover rounded">
                             <span class="text-xs font-bold ${m.winnerId === t2.id ? 'text-dota-gold' : 'text-white'}">${t2.name}</span>
                         </div>
                         <span class="font-mono font-bold text-xs ${m.score2 > m.score1 ? 'text-dota-gold' : 'text-gray-400'}">${m.score2}</span>
@@ -949,15 +509,13 @@ footer .font-rajdhani { letter-spacing:.09em; }
             `;
         }
 
-        // TEAMS VIEW
         function renderTeamsView() {
             const container = document.getElementById('teamsContainer');
             const q = (document.getElementById('teamSearchInput')?.value || '').toLowerCase();
-            
             const filtered = state.teams.filter(t => 
                 t.name.toLowerCase().includes(q) || 
                 t.tag.toLowerCase().includes(q) || 
-                t.uni.toLowerCase().includes(q) ||
+                t.mmr.toLowerCase().includes(q) ||
                 t.roster.some(r => r.toLowerCase().includes(q))
             );
 
@@ -965,13 +523,13 @@ footer .font-rajdhani { letter-spacing:.09em; }
                 <div class="dota-glass rounded-2xl p-6 border border-dota-border space-y-4 hover:border-dota-red/50 transition-all">
                     <div class="flex items-center justify-between border-b border-dota-border pb-3">
                         <div class="flex items-center gap-3">
-                            <span class="text-3xl">${t.logo}</span>
+                            <img src="${safeImageUrl(t.logo)}" class="w-10 h-10 object-cover rounded-xl border border-dota-border">
                             <div>
                                 <h3 class="font-rajdhani font-bold text-white text-lg">${t.name}</h3>
                                 <span class="text-xs text-dota-gold font-mono">[${t.tag}]</span>
                             </div>
                         </div>
-                        <span class="text-[10px] bg-dota-bg px-2.5 py-1 rounded-full border border-dota-border text-dota-red font-bold">${t.uni}</span>
+                        <span class="text-[10px] bg-dota-bg px-2.5 py-1 rounded-full border border-dota-border text-dota-red font-bold">${t.mmr}</span>
                     </div>
                     <div class="text-xs text-gray-400">
                         <i class="fa-solid fa-crown text-dota-gold mr-1"></i> Капітан: <strong class="text-white">${t.captain}</strong>
@@ -989,16 +547,12 @@ footer .font-rajdhani { letter-spacing:.09em; }
             `).join('');
         }
 
-        // STREAM VIEW
         function renderStreamView() {
             const wrapper = document.getElementById('twitchWrapper');
             const channel = state.streamUrl || "dota2ti";
-            wrapper.innerHTML = `
-                <iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname || 'localhost'}&autoplay=false" height="100%" width="100%" allowfullscreen></iframe>
-            `;
+            wrapper.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname || 'localhost'}&autoplay=false" height="100%" width="100%" allowfullscreen></iframe>`;
         }
 
-        // NEWS VIEW
         function renderNewsView() {
             const container = document.getElementById('newsContainer');
             container.innerHTML = state.news.map(n => `
@@ -1015,21 +569,20 @@ footer .font-rajdhani { letter-spacing:.09em; }
             `).join('');
         }
 
-        // NEWS EDITOR + CRUD
         function escapeHTML(value) {
             return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
         }
 
         function safeImageUrl(value) {
             const raw = String(value || '').trim();
-            return /^https?:\/\//i.test(raw) ? escapeHTML(raw) : 'https://placehold.co/800x400/161c2b/e53935?text=Tournament+News';
+            return /^https?:\/\//i.test(raw) ? escapeHTML(raw) : 'https://placehold.co/800x400/161c2b/e53935?text=Dota2';
         }
 
         function openMatchModal(matchId) {
             const m = state.matches.find(x => x.id === matchId);
             if (!m) return;
-            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA", logo: "🛡️" };
-            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA", logo: "🛡️" };
+            const t1 = state.teams.find(t => t.id === m.team1Id) || { name: "TBA" };
+            const t2 = state.teams.find(t => t.id === m.team2Id) || { name: "TBA" };
 
             document.getElementById('matchModalContent').innerHTML = `
                 <div class="text-center space-y-2 border-b border-dota-border pb-4">
@@ -1038,23 +591,12 @@ footer .font-rajdhani { letter-spacing:.09em; }
                     <div class="font-mono text-3xl font-black text-dota-gold">${m.score1} : ${m.score2}</div>
                     <p class="text-xs text-gray-400">Час: ${m.date}</p>
                 </div>
-                <div class="py-4 text-center text-xs text-gray-300">
-                    <p>Офіційний мапінг драфту героїв та післяматчева статистика активні під час прямої трансляції.</p>
-                </div>
             `;
             document.getElementById('matchModal').classList.remove('hidden');
         }
 
         function closeMatchModal() {
             document.getElementById('matchModal').classList.add('hidden');
-        }
-
-        function showToast(title, body) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastBody').innerText = body;
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3000);
         }
     </script>
 </body>
